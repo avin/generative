@@ -4,7 +4,7 @@ import cn from 'clsx';
 import styles from './styles.module.scss';
 
 const colors = {
-  red: '#f00',
+  red: '#000',
   gray: '#ddd',
 };
 

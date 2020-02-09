@@ -1,4 +1,69 @@
 .header {
   padding: 5px 10px;
   border-bottom: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+
+  align-items: center;
+
+  :global {
+    a {
+      color: #000;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: none;
+        color: #000;
+      }
+    }
+  }
+}
+
+.headerTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    .logo {
+      color: #666;
+    }
+  }
+
+  & > *:not(:last-child) {
+    margin-right: 10px;
+  }
+}
+
+.name {
+  color: #666;
+}
+
+.logo {
+  width: 16px;
+  height: 16px;
+  transition: color 200ms linear;
+}
+
+.contacts {
+  a {
+    &:hover {
+      transition: color 200ms linear;
+      color: #999;
+    }
+  }
+
+  & > *:not(:last-child) {
+    position: relative;
+    margin-right: 20px;
+
+    &:before {
+      content: '';
+      position: absolute;
+      width: 1px;
+      height: 20px;
+      background: #000;
+      right: -10px;
+    }
+  }
 }
