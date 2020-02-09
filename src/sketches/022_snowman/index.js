@@ -1,5 +1,5 @@
 import SoundCloudAudio from 'soundcloud-audio';
-import anime from 'animejs';
+import { spring } from 'popmotion';
 
 import floorFragmentShader from './shaders/floor/frag.glsl';
 import glassFragmentShader from './shaders/glass/frag.glsl';
@@ -130,19 +130,8 @@ const sketch = ({ context, canvas }) => {
       return;
     }
 
-    anime({
-      targets: {
-        position: 20,
-      },
-      position: 2,
-
-      easing: 'spring(1, 10, 10, 0)',
-      // round: 1,
-      update: element => {
-        const pos = element.animatables[0].target.position;
-        target = pos;
-      },
-    });
+    const targetAnimation = spring({ from: 20, to: 2, stiffness: 10 });
+    targetAnimation.start(v => (target = v));
 
     canvas.parentNode.removeChild(el);
     ready = true;
