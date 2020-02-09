@@ -38,6 +38,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'react/state-in-constructor': 0,
     'no-await-in-loop': 0,
+    'no-continue': 0,
   },
   settings: {
     react: {
