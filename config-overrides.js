@@ -1,6 +1,6 @@
 /* eslint-disable */
 const { paths } = require('react-app-rewired');
-const { override, addWebpackAlias, addWebpackPlugin } = require('customize-cra');
+const { override, addWebpackAlias, addWebpackPlugin, addWebpackModuleRule } = require('customize-cra');
 const path = require('path');
 const CompressionPlugin = require('compression-webpack-plugin');
 const rewireReactHotLoader = require('react-app-rewire-hot-loader');
@@ -10,6 +10,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 module.exports = override(
   addWebpackAlias({
     ['@']: path.resolve(__dirname, `${paths.appSrc}/`),
+  }),
+
+  addWebpackModuleRule({
+    test: /\.(glsl|vs|fs|vert|frag)$/,
+    exclude: /node_modules/,
+    use: ['raw-loader', 'glslify-loader'],
   }),
 
   // Для продакшен сборки жмем все файлы gzip-ом
