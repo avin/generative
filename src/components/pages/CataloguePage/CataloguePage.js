@@ -1,19 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import config from '@/config';
+import CatalogueItem from '@/components/pages/CataloguePage/CatalogueItem/CatalogueItem';
+import styles from './styles.module.scss';
 
 const CataloguePage = () => {
   return (
-    <div>
-      <ul>
-        {config.scenes.map(({ id }) => {
-          return (
-            <li key={id}>
-              <Link to={`/scene/${id}`}>{id}</Link>
-            </li>
-          );
-        })}
-      </ul>
+    <div className={styles.catalogue}>
+      {config.scenes.map(({ id }) => {
+        return <CatalogueItem sceneId={id} />;
+      })}
     </div>
   );
 };
