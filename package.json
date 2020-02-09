@@ -79,6 +79,7 @@
       "node scripts/preparePreview.js"
     ]
   },
+  "homepage": ".",
   "devDependencies": {
     "@jimp/plugin-resize": "^0.9.3",
     "eslint-config-airbnb": "^18.0.1",
