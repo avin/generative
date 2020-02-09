@@ -12,6 +12,8 @@ class ScenePage extends React.Component {
 
   canvasRef = React.createRef();
 
+  containerRef = React.createRef();
+
   async loadSketch() {
     this.setState({ isReady: false });
 
@@ -25,8 +27,15 @@ class ScenePage extends React.Component {
 
     const { sketch, settings } = sketchModule.default;
 
+    let { dimensions } = settings;
+    if (!dimensions) {
+      const containerEl = this.containerRef.current;
+      dimensions = [containerEl.clientWidth, containerEl.clientHeight];
+    }
+
     this.sketchManagerRef.current = await canvasSketch(sketch, {
       ...settings,
+      dimensions,
       canvas: this.canvasRef.current,
     });
 
@@ -58,7 +67,7 @@ class ScenePage extends React.Component {
     const { isReady } = this.state;
 
     return (
-      <div className={styles.container}>
+      <div className={styles.container} ref={this.containerRef}>
         <canvas ref={this.canvasRef} className={styles.canvas} />
         {!isReady && (
           <div className={styles.loadingContainer}>
@@ -69,33 +78,5 @@ class ScenePage extends React.Component {
     );
   }
 }
-
-// const ScenePage = () => {
-//   const { id } = useParams();
-//   const canvasRef = useRef(null);
-//   const prevIdRef = useRef(null);
-//   const sketchManagerRef = useRef(null);
-//   const [isReady, setIsReady] = useState(false);
-//   const [isSomethingWrong, setIsSomethingWrong] = useState(false);
-//
-//   // Когда меняет ID сцены - убиваем старую сцену и показываем лоадер
-//   useEffect(() => {
-//     console.log('FIRE');
-//     setIsReady(false);
-//
-//     return () => {
-//       if (sketchManagerRef.current) {
-//         console.log('DESTROY');
-//         sketchManagerRef.current.unload();
-//         sketchManagerRef.current = null;
-//       }
-//     };
-//   }, [id]);
-//
-//   if (isSomethingWrong) {
-//     return <div> Something wrong :( </div>;
-//   }
-// };
-// ScenePage.propTypes = {};
 
 export default ScenePage;

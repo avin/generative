@@ -12,7 +12,6 @@ const bunny = require('bunny');
 const settings = {
   animate: true,
   context: 'webgl',
-  dimensions: [1024, 1024],
 };
 
 const sketch = ({ context }) => {

@@ -16,7 +16,6 @@ randomInstance.setSeed('996048');
 const settings = {
   animate: true,
   context: 'webgl',
-  dimensions: [2048, 2048],
 };
 
 function createGreenMaterial() {

@@ -10,7 +10,6 @@ require('three/examples/js/controls/OrbitControls');
 const settings = {
   animate: true,
   context: 'webgl',
-  dimensions: [2048, 2048],
 };
 
 const sketch = ({ context }) => {
