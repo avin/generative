@@ -60,15 +60,17 @@ const sketch = async ({ width, height }) => {
       });
     }
 
-    const sectionRopes = sections.map(section =>
-      rope(section.map((p, idx) => [p[0], p[1], Math.sqrt(section.length - idx) / 2])),
-    );
+    if (sections[0].length > 1) {
+      const sectionRopes = sections.map(section =>
+        rope(section.map((p, idx) => [p[0], p[1], Math.sqrt(section.length - idx) / 2])),
+      );
 
-    sectionRopes.forEach((section, idx) => {
-      context.lineWidth = (Math.cos(idx + time / 2) / 2 + 0.6) * 2;
-      context.strokeStyle = `hsl(${idx * 6 + 150}, 80%, 60%)`;
-      drawLine(context, section);
-    });
+      sectionRopes.forEach((section, idx) => {
+        context.lineWidth = (Math.cos(idx + time / 2) / 2 + 0.6) * 2;
+        context.strokeStyle = `hsl(${idx * 6 + 150}, 80%, 60%)`;
+        drawLine(context, section);
+      });
+    }
   };
 };
 

@@ -7,8 +7,7 @@ random.setSeed(seed);
 
 const settings = {
   dimensions: [1024, 1024],
-  animate: false,
-  duration: 1,
+  animate: true,
 };
 
 const sketch = async ({ width, height }) => {
@@ -17,28 +16,35 @@ const sketch = async ({ width, height }) => {
   const sx = v => lerp(margin, width - margin, v);
   const sy = v => lerp(margin, height - margin, v);
 
-  const tree = circleTree({
-    x: 0.5,
-    y: 1,
-    r: 0.025,
-    angle: -Math.PI / 2,
-    tension: 1.8,
-    newBranchTension: 1.5,
-    limitPolygon: [
-      [0, 0],
-      [1, 0],
-      [1, 1],
-      [0, 1],
-    ],
-    maxGenerations: 40,
-    reduceRadiusFactor: 0.98,
-    maxBends: 10,
-    maxTriesFindNewPoint: 3,
-    subTreesFromNode: 3,
-    reduceRadiusOnFail: false,
-  });
+  let prevTime = -10;
 
   return ({ context, width, height, time, playhead }) => {
+    if (time - prevTime < 2) {
+      return;
+    }
+    prevTime = time;
+
+    const tree = circleTree({
+      x: 0.5,
+      y: 1,
+      r: 0.025,
+      angle: -Math.PI / 2,
+      tension: 1.8,
+      newBranchTension: 1.5,
+      limitPolygon: [
+        [0, 0],
+        [1, 0],
+        [1, 1],
+        [0, 1],
+      ],
+      maxGenerations: 40,
+      reduceRadiusFactor: 0.98,
+      maxBends: 10,
+      maxTriesFindNewPoint: 3,
+      subTreesFromNode: 3,
+      reduceRadiusOnFail: false,
+    });
+
     context.fillStyle = 'hsl(0, 0%, 98%)';
     context.fillRect(0, 0, width, height);
 

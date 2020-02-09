@@ -6,9 +6,9 @@ import styles from './styles.module.scss';
 const CataloguePage = () => {
   return (
     <div className={styles.catalogue}>
-      {config.scenes.map(({ id }) => {
-        return <CatalogueItem sceneId={id} />;
-      })}
+      {config.scenes.map(({ id }) => (
+        <CatalogueItem sceneId={id} key={id} />
+      ))}
     </div>
   );
 };
