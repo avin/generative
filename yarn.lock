@@ -2575,6 +2575,11 @@ babylon@^6.18.0:
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
   integrity sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==
 
+babylonjs@4.1.0-beta.24:
+  version "4.1.0-beta.24"
+  resolved "https://registry.yarnpkg.com/babylonjs/-/babylonjs-4.1.0-beta.24.tgz#325064bea7d6d54bce2cd7990b09742164dcd194"
+  integrity sha512-w/63FPU6HYHxIm5Ug+ZEcRHlCcfAQoKgjyLIGj4II91YNWsoyWf8X9qbPYIE9qTReJNty5pw4a3nUWzkZNYXqA==
+
 bail@^1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/bail/-/bail-1.0.5.tgz#b6fa133404a392cbc1f8c4bf63f5953351e7a776"
