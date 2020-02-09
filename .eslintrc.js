@@ -13,22 +13,7 @@ module.exports = {
         allow: ['__REDUX_DEVTOOLS_EXTENSION__'],
       },
     ],
-    'prefer-destructuring': [
-      'error',
-      {
-        VariableDeclarator: {
-          array: false,
-          object: true,
-        },
-        AssignmentExpression: {
-          array: false,
-          object: false,
-        },
-      },
-      {
-        enforceForRenamedProperties: false,
-      },
-    ],
+    'prefer-destructuring': 0,
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-shadow': 0,
     'no-param-reassign': 0,
