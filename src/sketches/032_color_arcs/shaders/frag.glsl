@@ -23,7 +23,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     float SIZE = 4. + cos(iTime*0.2)*0.5;
     float r = length(uv) * SIZE;
-    r*=10.0;
+    r*=floor(iResolution.y/80.);
     float id = ceil(r);
     float s = mod(id, 2.)*2. - 1.; // Direction
     float a = fract(atan(uv.y, uv.x)/TAU + s*(iTime*(rand1(id+400.)*0.5+0.5)*0.2 + id*0.2));
