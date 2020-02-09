@@ -1,0 +1,11 @@
+:focus {
+  @include focus-outline();
+}
+
+.focus-disabled :focus {
+  outline: none !important;
+
+  ~ .control-indicator {
+    outline: none !important;
+  }
+}

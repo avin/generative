@@ -7,9 +7,12 @@
 
 # testing
 /coverage
+/cypress/screenshots
+/cypress/videos
 
 # production
 /build
+build.zip
 
 # misc
 .DS_Store
@@ -21,3 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+customize-cra.log*
+
+.idea
+.cache
+
+__REMOVE

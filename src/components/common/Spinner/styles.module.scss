@@ -1,0 +1,42 @@
+@import '~@/styles/variables';
+
+$duration: 150ms;
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  vertical-align: middle;
+
+  svg {
+    display: block;
+  }
+
+  path {
+    fill-opacity: 0;
+  }
+
+  .spinnerHead {
+    transform-origin: center;
+    transition: stroke-dashoffset ($duration * 2) linear;
+    stroke-linecap: round;
+  }
+
+  .spinnerTrack {
+  }
+}
+
+.spinnerAnimation {
+  animation: spinner-animation ($duration * 5) linear infinite;
+}
+
+@keyframes spinner-animation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
