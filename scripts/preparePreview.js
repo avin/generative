@@ -14,12 +14,12 @@ const maxHeight = 300;
   } = image;
 
   if (width >= maxWidth || height >= maxHeight) {
-    if (maxWidth >= maxHeight) {
-      const ratio = width / height;
-      await image.resize(maxWidth * ratio, maxHeight);
-    } else {
+    if (width >= height) {
       const ratio = height / width;
       await image.resize(maxWidth, maxHeight * ratio);
+    } else {
+      const ratio = width/height;
+      await image.resize(maxWidth* ratio, maxHeight );
     }
 
     const resultFileName = file.replace(/\.(png|jpg|jpeg)$/, '_sm.jpg');
