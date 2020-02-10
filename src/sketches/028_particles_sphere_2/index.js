@@ -15,9 +15,18 @@ const sketch = async ({ canvas, width, height }) => {
 
   const scene = new BABYLON.Scene(engine);
   scene.clearColor = BABYLON.Color3.Black;
-  const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 2.75, BABYLON.Vector3.Zero(), scene);
-  camera.panningSensibility = 0;
-  camera.fov = 1;
+  const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 2, 2.25, BABYLON.Vector3.Zero(), scene);
+  camera.attachControl(canvas, true);
+  camera.fov = 5.0;
+  camera.allowUpsideDown = true;
+  camera.norotationconstraint = true;
+  camera.lowerBetaLimit = null;
+  camera.upperBetaLimit = null;
+
+  camera.lowerRadiusLimit = 2.25;
+  camera.upperRadiusLimit = 2.25;
+
+
 
   BABYLON.Effect.ShadersStore.customVertexShader = customVertexShader;
   BABYLON.Effect.ShadersStore.customFragmentShader = customFragmentShader;
@@ -25,7 +34,7 @@ const sketch = async ({ canvas, width, height }) => {
   const sphere = new BABYLON.MeshBuilder.CreateIcoSphere('sphere', { radius: 1, subdivisions: 5 }, scene);
 
   const pcs = new BABYLON.PointsCloudSystem('pcs', 0, scene, { updatable: false });
-  pcs.addSurfacePoints(sphere, 20000, BABYLON.Color3.White);
+  pcs.addSurfacePoints(sphere, 100000, BABYLON.Color3.White);
 
   const pMaterial = new BABYLON.ShaderMaterial(
     'shader',
@@ -46,7 +55,7 @@ const sketch = async ({ canvas, width, height }) => {
   pMaterial.backFaceCulling = false;
 
   pMaterial.setFloat('iResolution', new BABYLON.Vector2(1, 1));
-  pMaterial.setFloat('pSize', 10);
+  pMaterial.setFloat('pSize', 5);
 
   pcs.buildMeshAsync().then(mesh => {
     pcs.mesh.material = pMaterial;
