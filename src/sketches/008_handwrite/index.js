@@ -4,7 +4,7 @@ import { rope, smoothPath } from '@/utils/shape';
 
 const settings = {
   dimensions: 'A4',
-  animate: false,
+  animate: true,
 };
 
 const sketch = async () => {
@@ -19,7 +19,14 @@ const sketch = async () => {
     return linePoints;
   };
 
-  return ({ context, width, height }) => {
+  let prevTime = -10;
+
+  return ({ context, width, height, time }) => {
+    if (time - prevTime < 2) {
+      return;
+    }
+    prevTime = time;
+
     context.fillStyle = 'hsl(0, 0%, 98%)';
     context.fillRect(0, 0, width, height);
 

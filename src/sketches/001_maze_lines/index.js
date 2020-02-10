@@ -2,10 +2,18 @@ import random from 'canvas-sketch-util/random';
 
 const settings = {
   dimensions: [2048, 2048],
+  animate: true,
 };
 
 const sketch = () => {
-  return ({ context, width, height }) => {
+  let prevTime = -10;
+
+  return ({ context, width, height, time }) => {
+    if (time - prevTime < 2) {
+      return;
+    }
+    prevTime = time;
+
     context.fillStyle = 'hsl(0, 0%, 98%)';
     context.fillRect(0, 0, width, height);
 

@@ -14,37 +14,43 @@ const sketch = ({ width, height }) => {
 
   const totalPoints = 200;
 
-  const points = new Array(totalPoints).fill(null).map(() => {
-    return {
-      x: random.gaussian() / random.range(5, 10) + 0.5,
-      y: random.gaussian() / random.range(5, 10) + 0.5,
-      mx: random.range(-1, 1),
-      my: random.range(-1, 1),
-      r: random.value(),
-      speedC: random.range(200, 500),
-      seed: random.getRandomSeed(),
-      seedX: random.range(0.5, 3),
-      seedY: random.range(0.5, 3),
-      seedR: random.range(0.5, 3),
-      speedA: random.range(0.5, 3),
-      seedA: random.range(-Math.PI, Math.PI),
-      alpha: random.range(0.3, 0.7),
-      colorSpeed: random.range(20, 60),
-      maxR: 1, // random.value(3,4)
-    };
-  });
-
   let firstTime = true;
 
-  const maxTime = random.range(3, 8);
+  let maxTime = random.range(3, 5);
+
+  let points;
 
   return ({ context, width, height, time }) => {
     if (time > maxTime) {
+      if (time > maxTime + 3) {
+        maxTime = maxTime + 3 + random.range(3, 8);
+        firstTime = true;
+      }
       return;
     }
     if (firstTime) {
       context.fillStyle = 'hsl(0, 0%, 98%)';
       context.fillRect(0, 0, width, height);
+
+      points = new Array(totalPoints).fill(null).map(() => {
+        return {
+          x: random.gaussian() / random.range(5, 10) + 0.5,
+          y: random.gaussian() / random.range(5, 10) + 0.5,
+          mx: random.range(-1, 1),
+          my: random.range(-1, 1),
+          r: random.value(),
+          speedC: random.range(200, 500),
+          seed: random.getRandomSeed(),
+          seedX: random.range(0.5, 3),
+          seedY: random.range(0.5, 3),
+          seedR: random.range(0.5, 3),
+          speedA: random.range(0.5, 3),
+          seedA: random.range(-Math.PI, Math.PI),
+          alpha: random.range(0.3, 0.7),
+          colorSpeed: random.range(20, 60),
+          maxR: 1, // random.value(3,4)
+        };
+      });
 
       firstTime = false;
     }

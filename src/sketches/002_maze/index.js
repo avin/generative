@@ -3,7 +3,7 @@ import { lerp } from 'canvas-sketch-util/math';
 
 const settings = {
   dimensions: [2048, 2048],
-  animate: false,
+  animate: true,
 };
 
 const sketch = () => {
@@ -11,93 +11,102 @@ const sketch = () => {
   const maxTries = size;
   const maxLines = Number.MAX_SAFE_INTEGER;
   const maxLineLength = size * size;
-  const matrix = new Array(size).fill(null).map(() => new Array(size).fill(0));
 
-  const cellsAround = [
-    [-1, 0],
-    [1, 0],
-    [0, -1],
-    [0, 1],
-  ];
 
-  const lines = [];
+  let prevTime = -10;
 
-  let iterations = 0;
-  while (iterations < maxLines) {
-    let success = false;
-    let tries = 0;
-    while (!success) {
-      let cellsCounter = 0;
+  return ({ context, width, height, time }) => {
+    if (time - prevTime < 2) {
+      return;
+    }
+    prevTime = time;
 
-      let x;
-      let y;
-      if (tries > maxTries) {
-        let firstCellFound = false;
-        for (let iy = 0; iy < size; iy += 1) {
-          if (firstCellFound) {
-            break;
-          }
-          for (let ix = 0; ix < size; ix += 1) {
-            if (!matrix[iy][ix]) {
-              y = iy;
-              x = ix;
+    const matrix = new Array(size).fill(null).map(() => new Array(size).fill(0));
 
-              firstCellFound = true;
+    const cellsAround = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+
+    const lines = [];
+
+    let iterations = 0;
+    while (iterations < maxLines) {
+      let success = false;
+      let tries = 0;
+      while (!success) {
+        let cellsCounter = 0;
+
+        let x;
+        let y;
+        if (tries > maxTries) {
+          let firstCellFound = false;
+          for (let iy = 0; iy < size; iy += 1) {
+            if (firstCellFound) {
               break;
             }
-          }
-        }
-        if (!firstCellFound) {
-          // Global stop procedure
-          iterations = maxLines + 1;
-          success = true;
-          break;
-        }
-      } else {
-        x = random.rangeFloor(0, size);
-        y = random.rangeFloor(0, size);
-      }
+            for (let ix = 0; ix < size; ix += 1) {
+              if (!matrix[iy][ix]) {
+                y = iy;
+                x = ix;
 
-      if (!matrix[y][x]) {
-        cellsCounter += 1;
-        matrix[y][x] = cellsCounter;
-        lines[iterations] = [[y, x]];
-
-        let completedLine = false;
-        while (!completedLine) {
-          let foundCell = false;
-          for (const cA of random.shuffle(cellsAround)) {
-            if (!(y + cA[0] >= size || y + cA[0] < 0 || x + cA[1] > size || x + cA[1] < 0)) {
-              if (!matrix[y + cA[0]][x + cA[1]]) {
-                cellsCounter += 1;
-                y += cA[0];
-                x += cA[1];
-                matrix[y][x] = cellsCounter;
-                lines[iterations].push([y, x]);
-
-                if (cellsCounter >= maxLineLength) {
-                  completedLine = true;
-                }
-                foundCell = true;
+                firstCellFound = true;
                 break;
               }
             }
           }
-          if (!foundCell) {
-            completedLine = true;
+          if (!firstCellFound) {
+            // Global stop procedure
+            iterations = maxLines + 1;
+            success = true;
+            break;
           }
+        } else {
+          x = random.rangeFloor(0, size);
+          y = random.rangeFloor(0, size);
         }
 
-        success = true;
-      } else {
-        tries += 1;
+        if (!matrix[y][x]) {
+          cellsCounter += 1;
+          matrix[y][x] = cellsCounter;
+          lines[iterations] = [[y, x]];
+
+          let completedLine = false;
+          while (!completedLine) {
+            let foundCell = false;
+            for (const cA of random.shuffle(cellsAround)) {
+              if (!(y + cA[0] >= size || y + cA[0] < 0 || x + cA[1] > size || x + cA[1] < 0)) {
+                if (!matrix[y + cA[0]][x + cA[1]]) {
+                  cellsCounter += 1;
+                  y += cA[0];
+                  x += cA[1];
+                  matrix[y][x] = cellsCounter;
+                  lines[iterations].push([y, x]);
+
+                  if (cellsCounter >= maxLineLength) {
+                    completedLine = true;
+                  }
+                  foundCell = true;
+                  break;
+                }
+              }
+            }
+            if (!foundCell) {
+              completedLine = true;
+            }
+          }
+
+          success = true;
+        } else {
+          tries += 1;
+        }
       }
+
+      iterations += 1;
     }
 
-    iterations += 1;
-  }
-
-  return ({ context, width, height }) => {
     context.fillStyle = 'hsl(0, 0%, 98%)';
     context.fillRect(0, 0, width, height);
 

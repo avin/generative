@@ -4,7 +4,7 @@ import { findSegmentIntersection, pointsDistance } from '@/utils/geometry';
 
 const settings = {
   dimensions: [2048, 2048],
-  animate: false,
+  animate: true,
 };
 
 const sketch = ({ width, height }) => {
@@ -13,9 +13,7 @@ const sketch = ({ width, height }) => {
   const sx = v => lerp(margin, width - margin, v);
   const sy = v => lerp(margin, height - margin, v);
 
-  const lines = [];
-
-  const generateLine = () => {
+  const generateLine = lines => {
     const zone1 = [
       [
         [0, 0.25],
@@ -79,11 +77,20 @@ const sketch = ({ width, height }) => {
     return newLine;
   };
 
-  for (let i = 0; i < 150; i += 1) {
-    lines.push(generateLine());
-  }
+  let prevTime = -10;
 
-  return ({ context, width, height }) => {
+  return ({ context, width, height, time }) => {
+    if (time - prevTime < 2) {
+      return;
+    }
+    prevTime = time;
+
+    const lines = [];
+
+    for (let i = 0; i < 150; i += 1) {
+      lines.push(generateLine(lines));
+    }
+
     context.fillStyle = 'hsl(0, 0%, 98%)';
     context.fillRect(0, 0, width, height);
 
