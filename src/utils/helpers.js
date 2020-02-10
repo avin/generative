@@ -89,3 +89,19 @@ export function postForm(path, params, method = 'post') {
   document.body.appendChild(form);
   form.submit();
 }
+
+
+/**
+ * Load image by url to Image object
+ * @param url
+ * @returns {Promise<unknown>}
+ */
+export function loadImageByUrl(url) {
+  return new Promise(resolve => {
+    const image = new Image();
+    image.src = url;
+    image.onload = () => {
+      resolve(image);
+    };
+  });
+}
