@@ -5,6 +5,11 @@ const fs = require("fs");
 const files = fs.readdirSync("src/sketches");
 module.exports = files`;
 
+const expSketches = preval`
+const fs = require("fs");
+const files = fs.readdirSync("src/unreleased");
+module.exports = files`;
+
 class Config {
   // Язык по умолчанию
   defaultLanguage = 'en';
@@ -24,6 +29,10 @@ class Config {
   ];
 
   scenes = sketches.map(sketchName => ({
+    id: sketchName,
+  }));
+
+  unreleasedScenes = expSketches.map(sketchName => ({
     id: sketchName,
   }));
 

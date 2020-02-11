@@ -1,3 +1,4 @@
+/* eslint-disable */
 import createShader from 'canvas-sketch-util/shader';
 import { loadImageByUrl } from '@/utils/helpers';
 import mainFragmentShader from './shaders/frag_main.glsl';

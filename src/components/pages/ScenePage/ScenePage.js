@@ -8,6 +8,10 @@ class ScenePage extends React.Component {
     isReady: false,
   };
 
+  static defaultProps = {
+    unreleased: false,
+  };
+
   sketchManagerRef = React.createRef();
 
   canvasRef = React.createRef();
@@ -18,12 +22,19 @@ class ScenePage extends React.Component {
     this.setState({ isReady: false });
 
     const {
+      unreleased,
       match: {
         params: { id },
       },
     } = this.props;
 
-    const sketchModule = await import(`../../../sketches/${id}`);
+    let sketchModule;
+    if(unreleased){
+      sketchModule = await import(`../../../unreleased/${id}`);
+    } else {
+      sketchModule = await import(`../../../sketches/${id}`);
+    }
+
 
     const { sketch, settings } = sketchModule.default;
 

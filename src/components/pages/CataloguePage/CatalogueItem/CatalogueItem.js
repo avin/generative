@@ -7,7 +7,7 @@ const CatalogueItem = ({ sceneId }) => {
   return (
     <div className={styles.itemContainer}>
       <Link to={`/scene/${sceneId}`}>
-        <img src={`static/assets/preview/${sceneId}_sm.jpg`} alt={sceneId} />
+        <img src={`static/assets/preview/${sceneId}_sm.jpg`} alt={sceneId} className={styles.image}/>
       </Link>
     </div>
   );

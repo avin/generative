@@ -47,8 +47,6 @@ const sketch = async ({ canvas, width, height }) => {
 
   const skullMesh = meshes[0];
 
-  console.log(meshes);
-
   camera.target = skullMesh;
 
   const pcs = new BABYLON.PointsCloudSystem('pcs', 0, scene);

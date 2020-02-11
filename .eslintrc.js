@@ -39,6 +39,7 @@ module.exports = {
     'react/state-in-constructor': 0,
     'no-await-in-loop': 0,
     'no-continue': 0,
+    'react/static-property-placement': 0,
   },
   settings: {
     react: {
