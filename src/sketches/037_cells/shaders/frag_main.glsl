@@ -64,6 +64,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float l = length(luv);
     col = hue(fract(mDist*.95 + iTime*.1 + l)).rgb;
 
+    // fragColor = vec4(col,1.0)*.05 + texture(iChannel0, ouv)*.95;
     fragColor = vec4(col,1.0)*.05 + texture(iChannel0, ouv)*.95;
 }
 
@@ -76,8 +77,3 @@ void main( void ) {
     color.w = 1.0;
     outColor = color;
 }
-
-// void main()
-// {
-//   mainImage(gl_FragColor, vUv * iResolution.xy);
-// }

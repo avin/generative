@@ -113,8 +113,3 @@ void main( void ) {
     color.w = 1.0;
     outColor = color;
 }
-
-// void main()
-// {
-//   mainImage(gl_FragColor, vUv * iResolution.xy);
-// }

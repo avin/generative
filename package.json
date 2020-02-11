@@ -21,6 +21,7 @@
     "glsl-noise": "^0.0.0",
     "glsl-random": "^0.0.5",
     "glslify-loader": "^2.0.0",
+    "hex-rgb": "^4.1.0",
     "i18next": "^19.1.0",
     "immer": "^5.3.4",
     "lodash": "^4.17.15",

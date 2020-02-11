@@ -88,7 +88,3 @@ void main( void ) {
     outColor = color;
 }
 
-// void main()
-// {
-//   mainImage(gl_FragColor, vUv * iResolution.xy);
-// }
