@@ -3,6 +3,7 @@
   border-bottom: 1px solid black;
   display: flex;
   justify-content: space-between;
+  height: 31px;
 
   align-items: center;
 
@@ -36,7 +37,12 @@
 }
 
 .name {
+  display: none;
   color: #666;
+
+  @media only screen and (min-width: 400px) {
+    display: inline;
+  }
 }
 
 .logo {
@@ -46,6 +52,8 @@
 }
 
 .contacts {
+  display: none;
+
   a {
     &:hover {
       transition: color 200ms linear;
@@ -65,5 +73,9 @@
       background: #000;
       right: -10px;
     }
+  }
+
+  @media only screen and (min-width: 600px) {
+    display: block;
   }
 }

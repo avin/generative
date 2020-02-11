@@ -27,17 +27,16 @@ class ScenePage extends React.Component {
 
     const { sketch, settings } = sketchModule.default;
 
-    let { dimensions } = settings;
-    if (!dimensions) {
-      const containerEl = this.containerRef.current;
-      dimensions = [containerEl.clientWidth, containerEl.clientHeight];
+    const sketchSettings = {
+      ...settings,
+      canvas: this.canvasRef.current,
+    };
+
+    if (!sketchSettings.dimensions) {
+      sketchSettings.scaleToFit = true;
     }
 
-    this.sketchManagerRef.current = await canvasSketch(sketch, {
-      ...settings,
-      dimensions,
-      canvas: this.canvasRef.current,
-    });
+    this.sketchManagerRef.current = await canvasSketch(sketch, sketchSettings);
 
     this.setState({ isReady: true });
   }

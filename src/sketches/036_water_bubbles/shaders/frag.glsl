@@ -33,7 +33,7 @@ void mainImage( out vec4 c, in vec2 f );
 // Force range [.1, .3]
 #define FORCE .28
 #define INIT_SPEED 80.
-#define AMOUNT 10.
+#define AMOUNT 5.
 #define WATER_COL vec3(18,140,200)/255.
 
 float rand(vec2 p)

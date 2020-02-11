@@ -4,6 +4,7 @@ import { SET_UI_SETTINGS_VALUES, RESET_UI_SETTINGS, CHANGE_LANGUAGE } from './ac
 
 const initialState = {
   language: i18n.language,
+  catalogueScrollPosition: 0
 };
 
 export default function reducer(state = initialState, action = {}) {

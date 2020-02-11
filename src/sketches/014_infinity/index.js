@@ -2,7 +2,6 @@ import { lerp } from 'canvas-sketch-util/math';
 import random from 'canvas-sketch-util/random';
 
 const settings = {
-  dimensions: [1024, 1024],
   animate: true,
 };
 
