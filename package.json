@@ -2,6 +2,7 @@
   "name": "generative",
   "version": "0.1.0",
   "private": true,
+  "license": "Creative Commons",
   "dependencies": {
     "@hot-loader/react-dom": "^16.11.0",
     "@testing-library/jest-dom": "^4.2.4",
