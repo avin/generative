@@ -33,25 +33,18 @@ void mainImage( out vec4 c, in vec2 f );
 #define BLACK_COL vec3(16,22,26)/255.
 #define WHITE_COL vec3(235,241,245)/255.
 
-#define SIZE 10.0
-
-#define SF 1./min(iResolution.x,iResolution.y)*SIZE*.5
-#define SS(l,s) smoothstep(SF,-SF,l-s)
-
 #define rand1(p) fract(sin(p* 78.233)* 43758.5453)
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
     vec2 ouv = (fragCoord - iResolution.xy*.5)/iResolution.y;
 
-    bool gF = mod(floor(ouv.x*2.-ouv.y*1. - iTime*.5), 2.)>0.;
+    float angle = 3.1415926 + sin(iTime*.5)*.25;
+    ouv *= mat2(cos( angle + vec4(0,33,11,0)));
 
-    float sf;
-    if(gF){
-        sf = SF;
-    } else {
-        sf = .1 + abs(ouv.y);
-    }
+    float sf = .1 + abs(ouv.y);
+
+    float SIZE = 5. + (sin(iTime*.25)*.5 + .5)*2.5;
 
 
     float m = 0.;
@@ -59,7 +52,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         vec2 uv = ouv * vec2(1., 1. + .025*n) * (2. + sin(iTime*.25)*.2);
         uv.y+=iTime*.1;
 
-        uv = uv * 15.;
+        uv = uv * SIZE;
         vec2 gid = floor(uv);
         vec2 guv = fract(uv) - .5;
 
@@ -92,10 +85,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
                 m += clamp(m2 - m1, 0., 1.);
             }
         }
-    }
-
-    if(gF){
-        m = 1.-m;
     }
 
     vec3 col = mix(BLACK_COL, WHITE_COL, m);
