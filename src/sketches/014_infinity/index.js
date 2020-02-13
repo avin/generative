@@ -3,6 +3,7 @@ import random from 'canvas-sketch-util/random';
 
 const settings = {
   animate: true,
+  dimensions: [2048, 2048]
 };
 
 const sketch = async ({ width, height }) => {
