@@ -33,7 +33,13 @@ void mainImage( out vec4 c, in vec2 f );
 #define BLACK_COL vec3(16,22,26)/255.
 #define WHITE_COL vec3(235,241,245)/255.
 
-#define rand1(p) fract(sin(p* 78.233)* 43758.5453)
+float rand1(float p)
+{
+    p = fract(p * 0.1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return fract(p);
+}
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
