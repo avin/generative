@@ -27,6 +27,7 @@ yarn-error.log*
 customize-cra.log*
 
 .idea
+.vscode
 .cache
 
 __REMOVE
