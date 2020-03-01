@@ -29,5 +29,6 @@ customize-cra.log*
 .idea
 .vscode
 .cache
+.tmp
 
 __REMOVE
