@@ -7,7 +7,7 @@ cache:
     - node_modules
 
 before_script:
-  - yarn install --production
+  - yarn
 
 script:
   - yarn run build
