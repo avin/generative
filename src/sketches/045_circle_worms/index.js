@@ -35,11 +35,13 @@ const sketch = async ({ canvas, width, height }) => {
 
   const stackSize = 150;
 
-  const wormsCount = 200;
+  const ratio = scene.getEngine().getAspectRatio(camera);
+
+  const wormsCount = 200 * ratio;
   const wormPositions = [];
   for (let i = 0; i < wormsCount; i += 1) {
     const x = (Math.random() - 0.5) * 2;
-    const y = (Math.random() - 0.5) * 2;
+    const y = (Math.random() - 0.5) * 2 * ratio;
 
     wormPositions.push([x, y]);
   }
