@@ -1,4 +1,14 @@
-import * as BABYLON from 'babylonjs';
+import { Engine } from '@babylonjs/core/Engines/engine';
+import { Scene } from '@babylonjs/core/scene';
+import { Vector3, Vector2 } from '@babylonjs/core/Maths/math';
+import { Effect } from "@babylonjs/core/Materials/effect";
+import { DefaultRenderingPipeline } from "@babylonjs/core/PostProcesses/RenderPipeline";
+import "@babylonjs/core/Meshes/meshBuilder";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+
 import customVertexShader from './shaders/vert.glsl';
 import customFragmentShader from './shaders/frag.glsl';
 
@@ -8,28 +18,28 @@ const settings = {
 };
 
 const sketch = async ({ canvas, width, height }) => {
-  const engine = new BABYLON.Engine(canvas, true, {
+  const engine = new Engine(canvas, true, {
     preserveDrawingBuffer: true,
     stencil: true,
   });
 
-  const scene = new BABYLON.Scene(engine);
-  scene.clearColor = BABYLON.Color3.Black;
-  scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+  const scene = new Scene(engine);
+  scene.clearColor = Color3.Black;
+  scene.fogMode = Scene.FOGMODE_EXP2;
   scene.fogDensity = 0.125;
-  scene.fogColor = new BABYLON.Color3(0, 0, 0);
+  scene.fogColor = new Color3(0, 0, 0);
 
-  BABYLON.Effect.ShadersStore.customVertexShader = customVertexShader;
-  BABYLON.Effect.ShadersStore.customFragmentShader = customFragmentShader;
+  Effect.ShadersStore.customVertexShader = customVertexShader;
+  Effect.ShadersStore.customFragmentShader = customFragmentShader;
 
-  const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 3, 5, BABYLON.Vector3.Zero(), scene);
+  const camera = new ArcRotateCamera('Camera', -Math.PI / 2, Math.PI / 3, 5, Vector3.Zero(), scene);
   // camera.attachControl(canvas, true);
   camera.panningSensibility = 0;
   camera.fov = 1;
 
   // ========= VIDEO-FILTER =====================
 
-  const pipeline = new BABYLON.DefaultRenderingPipeline('default-pipeline', true, scene, [camera]);
+  const pipeline = new DefaultRenderingPipeline('default-pipeline', true, scene, [camera]);
   pipeline.samples = 2;
 
   pipeline.chromaticAberrationEnabled = true;
@@ -57,9 +67,9 @@ const sketch = async ({ canvas, width, height }) => {
 
   // =================================================
 
-  const ground = new BABYLON.Mesh.CreateGround('ground', 40, 40, 600, scene);
+  const ground = new Mesh.CreateGround('ground', 40, 40, 600, scene);
 
-  const groundMaterial = new BABYLON.ShaderMaterial(
+  const groundMaterial = new ShaderMaterial(
     'ground-material',
     scene,
     {
@@ -76,9 +86,9 @@ const sketch = async ({ canvas, width, height }) => {
   ground.material = groundMaterial;
   groundMaterial.wireframe = true;
 
-  groundMaterial.alphaMode = BABYLON.Engine.ALPHA_MAXIMIZED;
+  groundMaterial.alphaMode = Engine.ALPHA_MAXIMIZED;
 
-  groundMaterial.setFloat('iResolution', new BABYLON.Vector2(1, 1));
+  groundMaterial.setFloat('iResolution', new Vector2(1, 1));
 
   groundMaterial.onBind = mesh => {
     const effect = groundMaterial.getEffect();
@@ -91,7 +101,7 @@ const sketch = async ({ canvas, width, height }) => {
       camera.alpha += 0.00125;
       groundMaterial.setFloat('iTime', time);
       const aRatio = scene.getEngine().getAspectRatio(camera);
-      groundMaterial.setVector2('iResolution', new BABYLON.Vector2(aRatio, 1));
+      groundMaterial.setVector2('iResolution', new Vector2(aRatio, 1));
 
       scene.render();
     },

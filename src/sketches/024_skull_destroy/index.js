@@ -1,17 +1,15 @@
-import {
-  Engine,
-  Scene,
-  Color3,
-  Effect,
-  Vector3,
-  Vector2,
-  HemisphericLight,
-  SceneLoader,
-  PointsCloudSystem,
-  PointColor,
-  ArcRotateCamera,
-  ShaderMaterial,
-} from '@babylonjs/core';
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { Scene } from "@babylonjs/core/scene";
+import { Vector3, Vector2 } from "@babylonjs/core/Maths/math";
+import { Effect } from "@babylonjs/core/Materials/effect";
+import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+import '@babylonjs/core/Loading/Plugins/babylonFileLoader';
+import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
+import { PointsCloudSystem, PointColor } from '@babylonjs/core/Particles/pointsCloudSystem';
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 

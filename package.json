@@ -5,11 +5,11 @@
   "license": "Creative Commons",
   "dependencies": {
     "@babylonjs/core": "^4.2.0",
+    "@babylonjs/loaders": "^4.2.0",
     "@hot-loader/react-dom": "^16.11.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "babylonjs": "^4.2.0",
     "bunny": "^1.0.1",
     "canvas-sketch": "^0.7.1",
     "canvas-sketch-util": "^1.10.0",

@@ -1,4 +1,13 @@
-import * as BABYLON from 'babylonjs';
+import { Engine } from '@babylonjs/core/Engines/engine';
+import { Scene } from '@babylonjs/core/scene';
+import { Camera } from '@babylonjs/core/Cameras/camera';
+import { Vector3, Vector2 } from '@babylonjs/core/Maths/math';
+import { Effect } from "@babylonjs/core/Materials/effect";
+import { PointsCloudSystem } from '@babylonjs/core/Particles/pointsCloudSystem';
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 
@@ -8,28 +17,28 @@ const settings = {
 };
 
 const sketch = async ({ canvas, width, height }) => {
-  const engine = new BABYLON.Engine(canvas, true, {
+  const engine = new Engine(canvas, true, {
     preserveDrawingBuffer: true,
     stencil: true,
   });
 
-  const scene = new BABYLON.Scene(engine);
-  scene.clearColor = new BABYLON.Color3(16 / 255, 22 / 255, 26 / 255);
+  const scene = new Scene(engine);
+  scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
 
-  BABYLON.Effect.ShadersStore.particlesVertexShader = particlesVertexShader;
-  BABYLON.Effect.ShadersStore.particlesFragmentShader = particlesFragShader;
+  Effect.ShadersStore.particlesVertexShader = particlesVertexShader;
+  Effect.ShadersStore.particlesFragmentShader = particlesFragShader;
 
-  const camera = new BABYLON.ArcRotateCamera('camera1', 0, 0, 10000, BABYLON.Vector3(0, -1, 1), scene);
-  camera.setTarget(BABYLON.Vector3.Zero());
+  const camera = new ArcRotateCamera('camera1', 0, 0, 10000, Vector3.Zero(), scene);
+  camera.setTarget(Vector3.Zero());
   // camera.attachControl(canvas, true);
-  camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+  camera.mode = Camera.ORTHOGRAPHIC_CAMERA;
 
   camera.orthoTop = 1;
   camera.orthoBottom = -1;
   camera.orthoLeft = -1;
   camera.orthoRight = 1;
 
-  const pcs = new BABYLON.PointsCloudSystem('pcs', 0, scene);
+  const pcs = new PointsCloudSystem('pcs', 0, scene);
 
   const sizeStep = 0.75;
 
@@ -49,14 +58,14 @@ const sketch = async ({ canvas, width, height }) => {
   for (let i = 0; i < stackSize; i += 1) {
     wormPositions.forEach(([x, y]) => {
       pcs.addPoints(1, particle => {
-        particle.position = new BABYLON.Vector3(x, i, y);
+        particle.position = new Vector3(x, i, y);
       });
     });
   }
 
   await pcs.buildMeshAsync();
 
-  const particlesMaterial = new BABYLON.ShaderMaterial(
+  const particlesMaterial = new ShaderMaterial(
     'shader',
     scene,
     {
@@ -82,7 +91,7 @@ const sketch = async ({ canvas, width, height }) => {
   );
   particlesMaterial.pointsCloud = true;
 
-  particlesMaterial.setFloat('iResolution', new BABYLON.Vector2(1, 1));
+  particlesMaterial.setFloat('iResolution', new Vector2(1, 1));
   particlesMaterial.setFloat('pSize', 1);
   particlesMaterial.setFloat('stackSize', stackSize);
   particlesMaterial.setFloat('sizeStep', sizeStep);
@@ -95,7 +104,7 @@ const sketch = async ({ canvas, width, height }) => {
       particlesMaterial.setFloat('iTime', time);
       particlesMaterial.setFloat('aRatio', width / height);
       const aRatio = scene.getEngine().getAspectRatio(camera);
-      particlesMaterial.setVector2('iResolution', new BABYLON.Vector2(aRatio, 1));
+      particlesMaterial.setVector2('iResolution', new Vector2(aRatio, 1));
 
       scene.render();
     },

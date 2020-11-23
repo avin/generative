@@ -1,4 +1,4 @@
-import * as BABYLON from 'babylonjs';
+import * as BABYLON from '@babylonjs/core';
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 
