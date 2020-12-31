@@ -28,7 +28,7 @@
     "hex-rgb": "4.1.0",
     "i18next": "19.1.0",
     "immer": "5.3.4",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "node-sass": "4.13.1",
     "point-in-polygon": "1.0.1",
     "popmotion": "8.7.1",
