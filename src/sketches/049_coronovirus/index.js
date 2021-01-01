@@ -10,10 +10,10 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { MotionBlurPostProcess } from '@babylonjs/core/PostProcesses/motionBlurPostProcess';
-import vertexDefinitions from './shaders/vertexDefinitions.glsl'
-import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl'
-import fragmentDefinitions from './shaders/fragmentDefinitions.glsl'
-import fragmentBeforeFragColor from './shaders/fragmentBeforeFragColor.glsl'
+import vertexDefinitions from './shaders/vertexDefinitions.glsl';
+import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
+import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
+import fragmentBeforeFragColor from './shaders/fragmentBeforeFragColor.glsl';
 
 const settings = {
   animate: true,
@@ -54,14 +54,19 @@ const sketch = async ({ canvas, width, height }) => {
   const mesh = Mesh.CreateTube('tube', path, 0.2, 5, null, 0, scene, true, Mesh.DEFAULTSIDE);
   mesh.material = mat;
 
-  mesh.thinInstanceRegisterAttribute('idx', 1);
+  const bufferMatrices = new Float32Array(16 * meshesCount);
+  const bufferIdx = new Float32Array(meshesCount);
 
-  for (let n = 0; n <= meshesCount; n += 1) {
+  const idxArr = [];
+  for (let n = 0; n < meshesCount; n += 1) {
     const matrix = Matrix.Translation(0, 0, 0);
-
-    const idx = mesh.thinInstanceAdd(matrix);
-    mesh.thinInstanceSetAttributeAt('idx', idx, [n]);
+    matrix.copyToArray(bufferMatrices, n * 16);
+    idxArr.push(n);
   }
+  bufferIdx.set(idxArr);
+
+  mesh.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
+  mesh.thinInstanceSetBuffer('idx', bufferIdx, 1);
 
   mat.AddUniform('iTime', 'float');
   mat.AddUniform('maxSegments', 'float');

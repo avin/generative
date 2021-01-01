@@ -78,14 +78,19 @@ const sketch = async ({ canvas, width, height }) => {
   const mesh = Mesh.CreateTube('tube', path, radius, 3, null, 0, scene, true, sideOrientation);
   mesh.material = material;
 
-  mesh.thinInstanceRegisterAttribute('idx', 1);
+  const bufferMatrices = new Float32Array(16 * meshesCount);
+  const bufferIdx = new Float32Array(meshesCount);
 
-  for (let n = 0; n <= meshesCount; n += 1) {
+  const idxArr = [];
+  for (let n = 0; n < meshesCount; n += 1) {
     const matrix = Matrix.Translation(0, 0, 0);
-
-    const idx = mesh.thinInstanceAdd(matrix);
-    mesh.thinInstanceSetAttributeAt('idx', idx, [n]);
+    matrix.copyToArray(bufferMatrices, n * 16);
+    idxArr.push(n);
   }
+  bufferIdx.set(idxArr);
+
+  mesh.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
+  mesh.thinInstanceSetBuffer('idx', bufferIdx, 1);
 
   material.setFloat('meshesCount', meshesCount);
 
