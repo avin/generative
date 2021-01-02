@@ -2,7 +2,6 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { Vector3, Matrix } from '@babylonjs/core/Maths/math';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
@@ -10,10 +9,12 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { MotionBlurPostProcess } from '@babylonjs/core/PostProcesses/motionBlurPostProcess';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import vertexDefinitions from './shaders/vertexDefinitions.glsl';
 import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
 import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
-import fragmentBeforeFragColor from './shaders/fragmentBeforeFragColor.glsl';
+import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
@@ -26,7 +27,7 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
 
-  const camera = new ArcRotateCamera('camera', -Math.PI / 1.7, Math.PI / 3.5, 1.1, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', -Math.PI / 1.7, Math.PI / 3.5, 0.7, new Vector3(0, 0, 0), scene);
   camera.lowerBetaLimit = null;
   camera.upperBetaLimit = null;
   camera.lowerAlphaLimit = null;
@@ -39,19 +40,20 @@ const sketch = async ({ canvas, width, height }) => {
 
   const light = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   light.diffuse = new Color3(1, 1, 1);
-  light.specular = new Color3(1, 1, 1);
-  light.groundColor = new Color3(1, 1, 1);
+  light.specular = new Color3(0, 0, 0);
+  light.groundColor = new Color3(.5, .5, .5);
 
   const mat = new CustomMaterial('s', scene);
+  mat.specularColor = new Color3(0,0,0);
 
-  const meshesCount = 2000;
+  const meshesCount = 10000;
 
   const path = [];
-  const maxSegments = 100;
+  const maxSegments = 20;
   for (let i = 0; i < maxSegments; i += 1) {
     path.push(new Vector3(i, 0, 0));
   }
-  const mesh = Mesh.CreateTube('tube', path, 0.2, 5, null, 0, scene, true, Mesh.DEFAULTSIDE);
+  const mesh = Mesh.CreateTube('tube', path, 0.5, 6, null, Mesh.CAP_END, scene, true, Mesh.DEFAULTSIDE);
   mesh.material = mat;
 
   const bufferMatrices = new Float32Array(16 * meshesCount);
@@ -77,7 +79,7 @@ const sketch = async ({ canvas, width, height }) => {
   mat.Vertex_Definitions(vertexDefinitions);
   mat.Vertex_Before_PositionUpdated(vertexBeforePositionUpdated);
   mat.Fragment_Definitions(fragmentDefinitions);
-  mat.Fragment_Before_FragColor(fragmentBeforeFragColor);
+  mat.Fragment_Custom_Diffuse(fragmentCustomDiffuse);
 
   const initTime = +new Date();
   let time = 0;
@@ -89,6 +91,14 @@ const sketch = async ({ canvas, width, height }) => {
     time = (+new Date() - initTime) * 0.001;
     mat.getEffect().setFloat('iTime', time);
   };
+
+  const sphere = MeshBuilder.CreateSphere('sphere', { diameter: 0.5775, segments: 16 }, scene);
+  const sphereMaterial = new StandardMaterial('texture1', scene);
+  sphere.sideOrientation = Mesh.DOUBLESIDE
+  sphereMaterial.diffuseColor = new Color3(72./255., 175./255., 240./255.);
+  sphereMaterial.specularColor = new Color3(0,0,0);
+  sphere.material = sphereMaterial;
+  sphere.visibility = .5
 
   //
   // PostProcess
@@ -106,14 +116,8 @@ const sketch = async ({ canvas, width, height }) => {
   pipeline.chromaticAberrationEnabled = true;
   pipeline.chromaticAberration.aberrationAmount = 10;
 
-  pipeline.bloomEnabled = true;
-  pipeline.bloomThreshold = 0.5;
-  pipeline.bloomWeight = 1.0;
-  pipeline.bloomKernel = 70;
-  pipeline.bloomScale = 0.5;
-
   pipeline.grainEnabled = true;
-  pipeline.grain.intensity = 50;
+  pipeline.grain.intensity = 25;
   pipeline.grain.animated = true;
 
   const motionBlur = new MotionBlurPostProcess('mb', scene, 2.0, camera);
