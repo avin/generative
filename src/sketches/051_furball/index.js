@@ -14,7 +14,6 @@ import vertexDefinitions from './shaders/vertexDefinitions.glsl';
 import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
 import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
 import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
-import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 
 const settings = {
   animate: true,
@@ -40,7 +39,7 @@ const sketch = async ({ canvas, width, height }) => {
   // scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
   scene.clearColor = new Color3(245 / 255, 248 / 255, 250 / 255);
 
-  const camera = new ArcRotateCamera('camera', -Math.PI / 1.7, Math.PI / 3.5, 50.7, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', Math.PI / 2, Math.PI / 3.5, 50.7, new Vector3(0, 0, 0), scene);
   camera.lowerBetaLimit = null;
   camera.upperBetaLimit = null;
   camera.lowerAlphaLimit = null;
