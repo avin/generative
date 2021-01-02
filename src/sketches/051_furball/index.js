@@ -49,6 +49,8 @@ const sketch = async ({ canvas, width, height }) => {
   camera.fov = 1.0;
   camera.minZ = 0.1;
   // camera.wheelPrecision = 150.0;
+  camera.useAutoRotationBehavior = true;
+  camera.autoRotationBehavior.idleRotationSpeed = 0.19;
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.intensity = 1;
