@@ -18,6 +18,7 @@ module.exports = {
     'no-shadow': 0,
     'no-param-reassign': 0,
     'no-bitwise': 0,
+    'camelcase': 0,
     'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
     'consistent-return': 0,
     'array-callback-return': 0,

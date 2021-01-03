@@ -1119,6 +1119,14 @@
   dependencies:
     tslib ">=1.10.0"
 
+"@babylonjs/gui@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-4.2.0.tgz#c2a35ca6724759731fe0c4ddbfe2490301847f93"
+  integrity sha512-AQnqwFDmQ05FAw4B0BPVUFqWgdSKVI23qVHm/uOOMBQhMo8+WE2pTNATm6Qw/HDVLCp5qUjwIij/3JtG5s0fBw==
+  dependencies:
+    "@babylonjs/core" "4.2.0"
+    tslib ">=1.10.0"
+
 "@babylonjs/loaders@4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@babylonjs/loaders/-/loaders-4.2.0.tgz#a9902dc277c16dcd22cd1907f86310e211c247cb"

@@ -5,6 +5,7 @@
   "license": "Creative Commons",
   "dependencies": {
     "@babylonjs/core": "4.2.0",
+    "@babylonjs/gui": "4.2.0",
     "@babylonjs/loaders": "4.2.0",
     "@babylonjs/materials": "4.2.0",
     "@hot-loader/react-dom": "16.11.0",
