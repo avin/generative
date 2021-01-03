@@ -26,12 +26,17 @@ import capSphere_vertexBeforePositionUpdated from './shaders/capSphere/vertexBef
 import capSphere_fragmentDefinitions from './shaders/capSphere/fragmentDefinitions.glsl';
 import capSphere_fragmentCustomDiffuse from './shaders/capSphere/fragmentCustomDiffuse.glsl';
 
-// import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-// import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
 
 import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
 import { EffectWrapper, EffectRenderer } from '@babylonjs/core/Materials/effectRenderer';
 import { Layer } from '@babylonjs/core/Layers/layer';
+
+import * as BABYLON from '@babylonjs/core/Legacy/legacy'
+
+import {DebugLayer} from "@babylonjs/core/Debug/debugLayer"; // TODO Remove!
+import "@babylonjs/inspector"; // TODO Remove!
 
 const settings = {
   animate: true,
@@ -62,6 +67,11 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   // scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
   scene.clearColor = new Color3(245 / 255, 248 / 255, 250 / 255);
+  scene.autoClear = false;
+
+  scene.debugLayer.show({
+    globalRoot: document.querySelector('#debugger')
+  });
 
   const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 2, 60.0, new Vector3(0, 0, 0), scene);
   camera.lowerBetaLimit = null;
@@ -291,94 +301,83 @@ const sketch = async ({ canvas, width, height }) => {
   // Postprocess
   //
 
-  // var lensEffect = new LensRenderingPipeline('lens', {
-  //   edge_blur: 1.0,
-  //   chromatic_aberration: 1.0,
-  //   distortion: 1.0,
-  //   dof_focus_distance: 50,
-  //   dof_aperture: 3.0,			// set this very high for tilt-shift effect
-  //   grain_amount: 1.0,
-  //   dof_pentagon: true,
-  //   dof_gain: 1.0,
-  //   dof_threshold: 1.0,
-  //   dof_darken: 0.25
-  // }, scene, 1.0, camera);
-
-  // var pipeline = new DefaultRenderingPipeline(
+  // const pipeline = new DefaultRenderingPipeline(
   //   "defaultPipeline", // The name of the pipeline
   //   true, // Do you want the pipeline to use HDR texture?
-  //   scene, // The scene instance
-  //   [camera] // The list of cameras to be attached to
-  // );
-  //
-  // // DOF
-  // pipeline.samples = 4;
-  // pipeline.depthOfFieldEnabled = true;
-  // pipeline.depthOfFieldBlurLevel = DepthOfFieldEffectBlurLevel.Low;
-  // pipeline.depthOfField.focusDistance = 900; // distance of the current focus point from the camera in millimeters considering 1 scene unit is 1 meter
-  // pipeline.depthOfField.focalLength = 25; // focal length of the camera in millimeters
-  // pipeline.depthOfField.fStop = 0.08; // aka F number of the camera defined in stops as it would be on a physical device
-  //
-  // // Chromatic Aberration
-  // pipeline.chromaticAberrationEnabled = true;
-  // pipeline.chromaticAberration.aberrationAmount = 15; // 30 by default
-  //
-  // /* sharpen */
-  // pipeline.sharpenEnabled = true;
-  // pipeline.sharpen.adaptScaleToCurrentViewport = false; // false by default
-  // pipeline.sharpen.edgeAmount = 1.10; // 0.3 by default
-  // pipeline.sharpen.colorAmount = 1; // 1 by default
-  //
-  // // Grain
-  // pipeline.grainEnabled = true;
-  // pipeline.grain.intensity = 12;
-  // pipeline.grain.animated = true;
-
-  // let pipeline = new DefaultRenderingPipeline(
-  //   "defaultPipeline", // The name of the pipeline
-  //   false, // Do you want the pipeline to use HDR texture?
   //   scene, // The game.scene instance
   //   [camera] // The list of cameras to be attached to
   // );
-  //
-  // pipeline.bloomEnabled = true;
-  // pipeline.bloomThreshold = 0.25;
-  // pipeline.bloomWeight = 1.0;
-  // pipeline.bloomKernel = 32;
-  // pipeline.bloomScale = 0.5;
-  //
   // pipeline.samples = 4;
+  // //
+  // pipeline.imageProcessing.vignetteEnabled = true;
 
-  // var gl = new GlowLayer("glow", scene);
 
-  //
-  // Background
-  //
-  var rtt = new RenderTargetTexture('', 200, scene);
+  // var colorPostProcess = new BABYLON.ImageProcessingPostProcess("processing", 1.0, camera, 10);
+  //Didn't know how to apply some color with the postProcesses so
+  //I used vignette as a cheat to achieve that, there is probably better way
 
-  const background = new Layer('back', null, scene);
+  // colorPostProcess.vignetteWeight = 100;
+  // colorPostProcess.vignetteStretch = 50;
+  // colorPostProcess.vignetteColor = new BABYLON.Color4(0.1, 0.1, 1, 0);
+  // colorPostProcess.vignetteEnabled = true;
+  // colorPostProcess.vignetteCentreX = -100;
+  // colorPostProcess.contrast = 0.7;
+
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+  // =======================
+
+
+  // var background = new BABYLON.Layer("back", "https://upload.wikimedia.org/wikipedia/commons/5/59/Kilauea_Volcano_Eruption_Newspaper_Page.jpg", scene);
+  // background.isBackground = true;
+  // background.texture.level = 0;
+  // background.texture.wAng = .2;
+
+
+  // Create a render target.
+  var rtt = new RenderTargetTexture("", 200, scene)
+
+  // Create the background from it
+  var background = new Layer("back", null, scene);
   background.isBackground = true;
   background.texture = rtt;
 
   // Create the background effect.
-  const renderImage = new EffectWrapper({
-    engine,
+  var renderImage = new EffectWrapper({
+    engine: engine,
     fragmentShader: `
-            varying vec2 vUV;
-
             void main(void) {
-                gl_FragColor = vec4(1.,1., 0., 1.0);
+                gl_FragColor = vec4(1., 0., 0., 1.0);
             }
-        `,
+        `
   });
 
   // When the effect has been ready,
   // Create the effect render and change which effects will be renderered
   renderImage.effect.executeWhenCompiled(() => {
     // Render the effect in the RTT.
-    const renderer = new EffectRenderer(engine);
+    var renderer = new EffectRenderer(engine);
     renderer.render(renderImage, rtt);
   });
+
+  // // When the effect has been ready,
+  // // Create the effect render and change which effects will be renderered
+  // renderImage.effect.executeWhenCompiled(() => {
+  //   // Render the effect in the RTT.
+  //   var renderer = new EffectRenderer(engine);
+  //   renderer.render(renderImage, rtt);
+  //   console.log('FIRE');
+  //
+
+  // });
+
 
   return {
     render({ time, width, height }) {

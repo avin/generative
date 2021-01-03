@@ -84,6 +84,7 @@ class ScenePage extends React.Component {
             <LoadingPage />
           </div>
         )}
+        <div id="debugger" className={styles.debugger}/>
       </div>
     );
   }
