@@ -1,20 +1,16 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
-import { Vector3, Matrix, Quaternion } from '@babylonjs/core/Maths/math';
+import { Vector2, Vector3, Matrix, Quaternion } from '@babylonjs/core/Maths/math';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { GlowLayer } from '@babylonjs/core/Layers/glowLayer';
-import '@babylonjs/core/Rendering';
-import { SSAORenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssaoRenderingPipeline';
-import { LensRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/lensRenderingPipeline';
-// import { RenderTargetTexture } from '@babylonjs/core';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import { Effect } from '@babylonjs/core/Materials/effect';
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
+import { Camera } from '@babylonjs/core/Cameras/camera';
 
 import bridgeSphere_vertexDefinitions from './shaders/bridgeSphere/vertexDefinitions.glsl';
 import bridgeSphere_vertexBeforePositionUpdated from './shaders/bridgeSphere/vertexBeforePositionUpdated.glsl';
@@ -26,17 +22,8 @@ import capSphere_vertexBeforePositionUpdated from './shaders/capSphere/vertexBef
 import capSphere_fragmentDefinitions from './shaders/capSphere/fragmentDefinitions.glsl';
 import capSphere_fragmentCustomDiffuse from './shaders/capSphere/fragmentCustomDiffuse.glsl';
 
-import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
-
-import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
-import { EffectWrapper, EffectRenderer } from '@babylonjs/core/Materials/effectRenderer';
-import { Layer } from '@babylonjs/core/Layers/layer';
-
-import * as BABYLON from '@babylonjs/core/Legacy/legacy'
-
-import {DebugLayer} from "@babylonjs/core/Debug/debugLayer"; // TODO Remove!
-import "@babylonjs/inspector"; // TODO Remove!
+import backgroundFragment from './shaders/background/fragment.glsl';
+import backgroundVertex from './shaders/background/vertex.glsl';
 
 const settings = {
   animate: true,
@@ -47,7 +34,7 @@ const sketch = async ({ canvas, width, height }) => {
   const engine = new Engine(canvas, true);
 
   //
-  // Settings
+  // Settings ===============================
   //
 
   const bridgeSphereDiameter = 0.5;
@@ -55,36 +42,83 @@ const sketch = async ({ canvas, width, height }) => {
   const bridgesDistance = 3;
   const capSphereDiameter = 0.5;
   const rowSize = 24;
-  const rowsCount = 32;
+  const rowsCount = 48;
   const rowRotationFactor = 0.3;
   const baseSphereRadius = 1.125;
   const baseSphereSubdivisions = 2.0;
 
+  const initTime = +new Date();
+
   //
-  // Main
+  // Background scene ===============================
+  //
+
+  Effect.ShadersStore.backgroundVertexShader = backgroundVertex;
+  Effect.ShadersStore.backgroundFragmentShader = backgroundFragment;
+
+  const bScene = new Scene(engine);
+  const bCamera = new ArcRotateCamera('camera1', 0, 0, 2, Vector3.Zero(), bScene);
+  bCamera.mode = Camera.ORTHOGRAPHIC_CAMERA;
+
+  bCamera.orthoTop = 1;
+  bCamera.orthoBottom = -1;
+  bCamera.orthoLeft = -1;
+  bCamera.orthoRight = 1;
+
+  const shader = new ShaderMaterial(
+    'shader',
+    bScene,
+    {
+      vertex: 'background',
+      fragment: 'background',
+    },
+    {
+      attributes: ['position', 'normal', 'uv'],
+      uniforms: ['world', 'worldView', 'worldViewProjection', 'view', 'iTime', 'iResolution'],
+    },
+  );
+
+  shader.setVector2('iResolution', new Vector2(1, 1));
+
+  const ground = MeshBuilder.CreateGround(
+    'ground',
+    {
+      width: 2,
+      height: 2,
+      subdivisions: 1,
+    },
+    bScene,
+  );
+  ground.material = shader;
+  ground.material.backFaceCulling = false;
+  ground.rotation.y = -Math.PI / 2;
+
+  bScene.registerBeforeRender(() => {
+    const time = (+new Date() - initTime) * 0.001;
+    shader.setFloat('iTime', time);
+    const aRatio = bScene.getEngine().getAspectRatio(bCamera);
+    shader.setVector2('iResolution', new Vector2(aRatio, 1));
+  });
+
+  //
+  // Main scene ===============================
   //
 
   const scene = new Scene(engine);
-  // scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
-  scene.clearColor = new Color3(245 / 255, 248 / 255, 250 / 255);
   scene.autoClear = false;
 
-  scene.debugLayer.show({
-    globalRoot: document.querySelector('#debugger')
-  });
-
   const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 2, 60.0, new Vector3(0, 0, 0), scene);
-  camera.lowerBetaLimit = null;
-  camera.upperBetaLimit = null;
-  camera.lowerAlphaLimit = null;
-  camera.upperAlphaLimit = null;
+  // camera.lowerBetaLimit = -1;
+  // camera.upperBetaLimit = 1.75;
+  // camera.lowerAlphaLimit = 1;
+  // camera.upperAlphaLimit = 2;
   camera.allowUpsideDown = true;
+  camera.lowerRadiusLimit = rowSize * bridgeSphereDiameter;
   camera.attachControl(canvas, true);
   camera.fov = 1.0;
   camera.minZ = 0.1;
-  // camera.wheelPrecision = 150.0;
-  // camera.useAutoRotationBehavior = true;
-  // camera.autoRotationBehavior.idleRotationSpeed = 0.19;
+  camera.useAutoRotationBehavior = true;
+  camera.autoRotationBehavior.idleRotationSpeed = 0.19;
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.intensity = 1;
@@ -173,10 +207,6 @@ const sketch = async ({ canvas, width, height }) => {
       transition.y = (rowIdx - rowsCount / 2) * bridgesDistance;
       transition.x = (inRowIdx - rowSize / 2) * bridgeSphereDiameter * bridgeSphereOverlapFactor;
       transition.rotateByQuaternionToRef(rowRotation, transition);
-
-      // const rx = (Math.random() * 0.5 - 0.5) * 0.5;
-      // const ry = (Math.random() * 0.5 - 0.5) * 0.5;
-      // const rz = (Math.random() * 0.5 - 0.5) * 0.5;
 
       const resultMatrix = Matrix.Compose(scaling, baseRotation, transition);
       resultMatrix.copyToArray(bridgeSphereBufferMatrices, 16 * bridgeSphereIdx);
@@ -283,8 +313,6 @@ const sketch = async ({ canvas, width, height }) => {
   // Attributes
   //
 
-  const initTime = +new Date();
-
   bridgeSphereMaterial.AddUniform('iTime', 'float');
   bridgeSphereMaterial.onBind = () => {
     const time = (+new Date() - initTime) * 0.001;
@@ -297,90 +325,9 @@ const sketch = async ({ canvas, width, height }) => {
     capSphereMaterial.getEffect().setFloat('iTime', time);
   };
 
-  //
-  // Postprocess
-  //
-
-  // const pipeline = new DefaultRenderingPipeline(
-  //   "defaultPipeline", // The name of the pipeline
-  //   true, // Do you want the pipeline to use HDR texture?
-  //   scene, // The game.scene instance
-  //   [camera] // The list of cameras to be attached to
-  // );
-  // pipeline.samples = 4;
-  // //
-  // pipeline.imageProcessing.vignetteEnabled = true;
-
-
-  // var colorPostProcess = new BABYLON.ImageProcessingPostProcess("processing", 1.0, camera, 10);
-  //Didn't know how to apply some color with the postProcesses so
-  //I used vignette as a cheat to achieve that, there is probably better way
-
-  // colorPostProcess.vignetteWeight = 100;
-  // colorPostProcess.vignetteStretch = 50;
-  // colorPostProcess.vignetteColor = new BABYLON.Color4(0.1, 0.1, 1, 0);
-  // colorPostProcess.vignetteEnabled = true;
-  // colorPostProcess.vignetteCentreX = -100;
-  // colorPostProcess.contrast = 0.7;
-
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-  // =======================
-
-
-  // var background = new BABYLON.Layer("back", "https://upload.wikimedia.org/wikipedia/commons/5/59/Kilauea_Volcano_Eruption_Newspaper_Page.jpg", scene);
-  // background.isBackground = true;
-  // background.texture.level = 0;
-  // background.texture.wAng = .2;
-
-
-  // Create a render target.
-  var rtt = new RenderTargetTexture("", 200, scene)
-
-  // Create the background from it
-  var background = new Layer("back", null, scene);
-  background.isBackground = true;
-  background.texture = rtt;
-
-  // Create the background effect.
-  var renderImage = new EffectWrapper({
-    engine: engine,
-    fragmentShader: `
-            void main(void) {
-                gl_FragColor = vec4(1., 0., 0., 1.0);
-            }
-        `
-  });
-
-  // When the effect has been ready,
-  // Create the effect render and change which effects will be renderered
-  renderImage.effect.executeWhenCompiled(() => {
-    // Render the effect in the RTT.
-    var renderer = new EffectRenderer(engine);
-    renderer.render(renderImage, rtt);
-  });
-
-  // // When the effect has been ready,
-  // // Create the effect render and change which effects will be renderered
-  // renderImage.effect.executeWhenCompiled(() => {
-  //   // Render the effect in the RTT.
-  //   var renderer = new EffectRenderer(engine);
-  //   renderer.render(renderImage, rtt);
-  //   console.log('FIRE');
-  //
-
-  // });
-
-
   return {
     render({ time, width, height }) {
+      bScene.render();
       scene.render();
     },
     resize({ pixelRatio, width, height }) {
