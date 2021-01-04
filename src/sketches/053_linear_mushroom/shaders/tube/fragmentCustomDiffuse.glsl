@@ -4,10 +4,10 @@ vec2 fUV = vec2(vDiffuseUV.x, 0.);
 
 vec2 coord = fract(fUV * size);
 
-vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord) / 2.0;
+vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord) / 1.75;
 float line = min(grid.x, grid.y);
 
-line = smoothstep(.9, .2, line);
+line = smoothstep(1.0, .0, line);
 
 diffuseColor = vec3(1.);
 
