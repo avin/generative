@@ -24,3 +24,7 @@ setTimeout(function() {
   });
 }, 500);
 ```
+
+## Babylon: Thin instances and shadow
+
+https://www.babylonjs-playground.com/#RLQ5JX#9
