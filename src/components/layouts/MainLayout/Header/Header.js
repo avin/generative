@@ -8,7 +8,7 @@ const Header = () => {
     <div className={styles.header}>
       <Link to="/" className={styles.headerTitle}>
         <LogoIcon className={styles.logo} /> <span className={styles.title}>Creative experiments</span>{' '}
-        <span className={styles.name}>by Avin Grape</span>
+        <span className={styles.name}>by Avin Lambrero</span>
       </Link>
 
       <div className={styles.contacts}>
