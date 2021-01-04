@@ -98,7 +98,7 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.autoClear = false;
 
-  const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 2, 60.0, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 2 + 0.4, 60.0, new Vector3(0, 0, 0), scene);
 
   camera.lowerBetaLimit = Math.PI / 8;
   camera.upperBetaLimit = Math.PI - Math.PI / 8;
