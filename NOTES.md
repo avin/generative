@@ -28,3 +28,6 @@ setTimeout(function() {
 ## Babylon: Thin instances and shadow
 
 https://www.babylonjs-playground.com/#RLQ5JX#9
+https://www.babylonjs-playground.com/#RLQ5JX#10
+https://www.babylonjs-playground.com/#RLQ5JX#11
+https://www.babylonjs-playground.com/#RLQ5JX#12
