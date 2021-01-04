@@ -14,13 +14,13 @@ scene.debugLayer.show({
 ## Babylon: Use 2 scenes in playground
 
 ```js
-  // runRenderLoop inside a setTimeout is neccesary in the Playground
-  // to stop the PG's runRenderLoop.
-  setTimeout(function() {
-    engine.stopRenderLoop();
-    engine.runRenderLoop(function () {
-      firstScene.render();
-      secondScene.render();
-    });
-  }, 500);
+// runRenderLoop inside a setTimeout is neccesary in the Playground
+// to stop the PG's runRenderLoop.
+setTimeout(function() {
+  engine.stopRenderLoop();
+  engine.runRenderLoop(function () {
+    firstScene.render();
+    secondScene.render();
+  });
+}, 500);
 ```

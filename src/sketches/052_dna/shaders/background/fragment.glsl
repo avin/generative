@@ -4,8 +4,6 @@ uniform vec2 iResolution;
 varying vec3 vPosition;
 varying vec2 vUV;
 
-// --------- START-SHADER-TOY-CODE-HERE ------------
-
 #define COL vec3(245, 248, 250) / 255.
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
@@ -20,7 +18,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   fragColor = vec4(col, 1.);
 }
-
-// --------- END-SHADER-TOY-CODE-HERE ------------
 
 void main() { mainImage(gl_FragColor, vUV * iResolution.xy); }

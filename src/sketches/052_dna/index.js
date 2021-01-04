@@ -108,10 +108,6 @@ const sketch = async ({ canvas, width, height }) => {
   scene.autoClear = false;
 
   const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 2, 60.0, new Vector3(0, 0, 0), scene);
-  // camera.lowerBetaLimit = -1;
-  // camera.upperBetaLimit = 1.75;
-  // camera.lowerAlphaLimit = 1;
-  // camera.upperAlphaLimit = 2;
   camera.allowUpsideDown = true;
   camera.lowerRadiusLimit = rowSize * bridgeSphereDiameter;
   camera.attachControl(canvas, true);
@@ -125,7 +121,6 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.specular = new Color3(0.25, 0.25, 0.25);
   baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
-  // baseLight.groundColor = new Color3(1, 1, 1);
 
   const bridgeSphereMaterial = new CustomMaterial('bridgeSphereMaterial', scene);
   bridgeSphereMaterial.diffuseColor = new Color3(138 / 255, 155 / 255, 168 / 255);
