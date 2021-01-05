@@ -11,7 +11,7 @@ import { PointLight, VolumetricLightScatteringPostProcess } from '@babylonjs/cor
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-import {VertexBuffer} from "@babylonjs/core/Meshes/buffer";
+import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 
 import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
@@ -60,7 +60,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const tubeMaterial = new CustomMaterial('tubeMaterial', scene);
   tubeMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
-  tubeMaterial.emissiveColor = new Color3(.1, .1, .1);
+  tubeMaterial.emissiveColor = new Color3(0.1, 0.1, 0.1);
   tubeMaterial.freeze();
 
   //
@@ -74,7 +74,7 @@ const sketch = async ({ canvas, width, height }) => {
   const sunMaterial = new StandardMaterial('sunMaterial', scene);
   sunMaterial.diffuseColor = new Color3(0.13, 0.13, 0.13);
   sunMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
-  sunMaterial.emissiveColor = new Color3(0.00, 0.01, 0.01);
+  sunMaterial.emissiveColor = new Color3(0.0, 0.01, 0.01);
   sunMaterial.freeze();
   sun.material = sunMaterial;
 
