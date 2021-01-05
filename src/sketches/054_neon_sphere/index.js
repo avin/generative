@@ -72,7 +72,7 @@ const sketch = async ({ canvas, width, height }) => {
     segments: 32,
   });
   const sunMaterial = new StandardMaterial('sunMaterial', scene);
-  sunMaterial.diffuseColor = new Color3(0.13, 0.13, 0.13);
+  sunMaterial.diffuseColor = new Color3(24 / 255, 32 / 255, 38 / 255);
   sunMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
   sunMaterial.emissiveColor = new Color3(0.0, 0.01, 0.01);
   sunMaterial.freeze();
