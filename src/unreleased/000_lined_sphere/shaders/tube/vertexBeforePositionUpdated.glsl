@@ -1,1 +1,1 @@
-vFactor = factor;
+vIdx = idx;

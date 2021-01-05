@@ -17,6 +17,8 @@ import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
 import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.glsl';
+import {MotionBlurPostProcess} from "@babylonjs/core/PostProcesses/motionBlurPostProcess";
+import {DepthOfFieldEffectBlurLevel} from "@babylonjs/core/PostProcesses/depthOfFieldEffect";
 
 const settings = {
   animate: true,
@@ -60,6 +62,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const tubeMaterial = new CustomMaterial('tubeMaterial', scene);
   tubeMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
+  tubeMaterial.emissiveColor = new Color3(.1, .1, .1);
   tubeMaterial.freeze();
 
   //
@@ -71,9 +74,9 @@ const sketch = async ({ canvas, width, height }) => {
     segments: 32,
   });
   const sunMaterial = new StandardMaterial('sunMaterial', scene);
-  sunMaterial.diffuseColor = new Color3(0.5, 0.5, 0.5);
+  sunMaterial.diffuseColor = new Color3(0.13, 0.13, 0.13);
   sunMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
-  sunMaterial.emissiveColor = new Color3(0.1, 0.1, 0.1);
+  sunMaterial.emissiveColor = new Color3(0.00, 0.01, 0.01);
   sunMaterial.freeze();
   sun.material = sunMaterial;
 
@@ -128,7 +131,7 @@ const sketch = async ({ canvas, width, height }) => {
       const data = new Float32Array(1);
       data[0] = i;
 
-      const buffer = new VertexBuffer(engine, data, 'factor', false, false, 1, true);
+      const buffer = new VertexBuffer(engine, data, 'idx', false, false, 1, true);
       mesh.setVerticesBuffer(buffer);
 
       meshes.push(mesh);
@@ -139,7 +142,7 @@ const sketch = async ({ canvas, width, height }) => {
   // Shaders
   //
 
-  tubeMaterial.AddAttribute('factor');
+  tubeMaterial.AddAttribute('idx');
 
   tubeMaterial.Vertex_Definitions(tube_vertexDefinitions);
   tubeMaterial.Vertex_Before_PositionUpdated(tube_vertexBeforePositionUpdated);
@@ -158,7 +161,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const vls = new VolumetricLightScatteringPostProcess(
     'godrays',
-    { postProcessRatio: 1.0, passRatio: 0.5 },
+    { postProcessRatio: 1.0, passRatio: 1.0 },
     camera,
     sun,
     100,
@@ -186,11 +189,11 @@ const sketch = async ({ canvas, width, height }) => {
   pipeline.chromaticAberrationEnabled = true;
   pipeline.chromaticAberration.aberrationAmount = 10;
 
-  // pipeline.bloomEnabled = true;
+  pipeline.bloomEnabled = true;
   pipeline.bloomThreshold = 0;
-  pipeline.bloomWeight = 0.1;
-  pipeline.bloomKernel = 1;
-  pipeline.bloomScale = 0.25;
+  pipeline.bloomWeight = 1.0;
+  pipeline.bloomKernel = 70;
+  pipeline.bloomScale = 0.5;
 
   // Grain
   pipeline.grainEnabled = true;

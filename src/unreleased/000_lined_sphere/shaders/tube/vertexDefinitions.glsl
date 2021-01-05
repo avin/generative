@@ -1,2 +1,2 @@
-attribute float factor;
-varying float vFactor;
+attribute float idx;
+varying float vIdx;
