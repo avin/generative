@@ -7,7 +7,16 @@ import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import { PointLight, VolumetricLightScatteringPostProcess } from '@babylonjs/core';
+import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import {VertexBuffer} from "@babylonjs/core/Meshes/buffer";
+
+import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
+import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
+import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
+import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
@@ -23,39 +32,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   const rowsCount = 100;
   const tubeTessellation = 10;
-  const sphereRadius = 20;
 
   const initTime = +new Date();
-
-  //
-  // Helpers ===============================
-  //
-
-  function hslToRgb(h, s, l) {
-    var r, g, b;
-
-    if (s == 0) {
-      r = g = b = l; // achromatic
-    } else {
-      function hue2rgb(p, q, t) {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 2) return q;
-        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      }
-
-      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      var p = 2 * l - q;
-
-      r = hue2rgb(p, q, h + 1 / 3);
-      g = hue2rgb(p, q, h);
-      b = hue2rgb(p, q, h - 1 / 3);
-    }
-
-    return [r, g, b];
-  }
 
   //
   // Main scene ===============================
@@ -63,39 +41,41 @@ const sketch = async ({ canvas, width, height }) => {
 
   const scene = new Scene(engine);
   scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
-  // scene.autoClear = false;
+  scene.autoClear = false; // Color buffer
+  scene.autoClearDepthAndStencil = false; // Depth and stencil, obviously
 
-  const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 3, 160.0, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', Math.PI / 1.5, Math.PI / 3, 200.0, new Vector3(0, 0, 0), scene);
   camera.attachControl(canvas, true);
 
-  // camera.lowerBetaLimit = Math.PI / 8;
-  // camera.upperBetaLimit = Math.PI - Math.PI / 8;
-  // camera.lowerRadiusLimit = 30;
-  // camera.upperRadiusLimit = 100;
-  // camera.lowerAlphaLimit = null;
-  // camera.upperAlphaLimit = null;
-  // camera.allowUpsideDown = true;
-  //
-  // camera.fov = 1.0;
-  // camera.minZ = 0.1;
-  // camera.useAutoRotationBehavior = true;
-  // camera.autoRotationBehavior.idleRotationSpeed = 0.02;
+  camera.lowerRadiusLimit = 100;
+  camera.fov = 0.8;
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
-  baseLight.intensity = 1.0;
+  baseLight.intensity = 0.5;
   baseLight.diffuse = new Color3(1, 1, 1);
-  // baseLight.specular = new Color3(0.25, 1.25, 1.25);
-  baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
+  baseLight.groundColor = new Color3(1, 1, 1);
+
+  const pointLight = new PointLight('pointLight', new Vector3(0, 0, 0), scene);
+  pointLight.intensity = 5;
 
   const tubeMaterial = new CustomMaterial('tubeMaterial', scene);
-  // tubeMaterial.diffuseTexture = new Texture('NONE', scene); // to appear UV attributes
-  tubeMaterial.diffuseColor = new Color3(19 / 255, 124 / 255, 189 / 255);
   tubeMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
   tubeMaterial.freeze();
 
   //
   // Meshes
   //
+
+  const sun = MeshBuilder.CreateSphere('sun', {
+    diameter: rowsCount - 1,
+    segments: 32,
+  });
+  const sunMaterial = new StandardMaterial('sunMaterial', scene);
+  sunMaterial.diffuseColor = new Color3(0.5, 0.5, 0.5);
+  sunMaterial.specularColor = new Color3(0.0, 0.0, 0.0);
+  sunMaterial.emissiveColor = new Color3(0.1, 0.1, 0.1);
+  sunMaterial.freeze();
+  sun.material = sunMaterial;
 
   const segmentStep = 0.01;
 
@@ -130,18 +110,23 @@ const sketch = async ({ canvas, width, height }) => {
 
     if (rowRadius) {
       const path = tubePathFunction(rowRadius);
-      const mesh = MeshBuilder.CreateTube('tube', {
-        path,
-        radiusFunction: getRadiusFunction(path.length),
-        tessellation: tubeTessellation,
-        updatable: false,
-      });
-
-      mesh.position.y = i;
+      const mesh = MeshBuilder.CreateTube(
+        'tube',
+        {
+          path,
+          radiusFunction: getRadiusFunction(path.length),
+          tessellation: tubeTessellation,
+          updatable: false,
+        },
+        scene,
+      );
+      mesh.doNotSyncBoundingInfo = true;
       mesh.material = tubeMaterial;
 
+      mesh.position.y = i;
+
       const data = new Float32Array(1);
-      data[0] = Math.random();
+      data[0] = i;
 
       const buffer = new VertexBuffer(engine, data, 'factor', false, false, 1, true);
       mesh.setVerticesBuffer(buffer);
@@ -156,34 +141,65 @@ const sketch = async ({ canvas, width, height }) => {
 
   tubeMaterial.AddAttribute('factor');
 
-  tubeMaterial.Vertex_Definitions(`
-    attribute float factor;
-    varying float vFactor;
-  `);
-  
-  tubeMaterial.Vertex_Before_PositionUpdated(`
-    vFactor = factor;
-  `);
+  tubeMaterial.Vertex_Definitions(tube_vertexDefinitions);
+  tubeMaterial.Vertex_Before_PositionUpdated(tube_vertexBeforePositionUpdated);
+  tubeMaterial.Fragment_Definitions(tube_fragmentDefinitions);
+  tubeMaterial.Fragment_Custom_Diffuse(tube_fragmentCustomDiffuse);
 
-  tubeMaterial.Fragment_Definitions(`
-    varying float vFactor;
-    #define hue(h) clamp( abs( fract(h + vec4(3,2,1,0)/3.) * 6. - 3.) -1. , 0., 1.)
-  `);
-
-  tubeMaterial.Fragment_Custom_Diffuse(`
-    vec3 hueCol = hue(vFactor).rgb;
-    diffuseColor = hueCol;
-  `);
+  tubeMaterial.AddUniform('iTime', 'float');
+  tubeMaterial.onBind = () => {
+    const time = (+new Date() - initTime) * 0.001;
+    tubeMaterial.getEffect().setFloat('iTime', time);
+  };
 
   //
-  // Attributes
+  // GodRays
   //
 
-  // tubeMaterial.AddUniform('iTime', 'float');
-  // tubeMaterial.onBind = () => {
-  //   const time = (+new Date() - initTime) * 0.001;
-  //   tubeMaterial.getEffect().setFloat('iTime', time);
-  // };
+  const vls = new VolumetricLightScatteringPostProcess(
+    'godrays',
+    { postProcessRatio: 1.0, passRatio: 0.5 },
+    camera,
+    sun,
+    100,
+    Texture.BILINEAR_SAMPLINGMODE,
+    engine,
+    false,
+  );
+  vls.useDiffuseColor = true;
+
+  // Postprocess
+
+  const pipeline = new DefaultRenderingPipeline(
+    'defaultPipeline', // The name of the pipeline
+    true,
+    scene,
+    [camera],
+  );
+
+  pipeline.imageProcessingEnabled = false;
+
+  pipeline.samples = 4;
+  pipeline.fxaaEnabled = true;
+
+  // Chromatic Aberration
+  pipeline.chromaticAberrationEnabled = true;
+  pipeline.chromaticAberration.aberrationAmount = 10;
+
+  // pipeline.bloomEnabled = true;
+  pipeline.bloomThreshold = 0;
+  pipeline.bloomWeight = 0.1;
+  pipeline.bloomKernel = 1;
+  pipeline.bloomScale = 0.25;
+
+  // Grain
+  pipeline.grainEnabled = true;
+  pipeline.grain.intensity = 32;
+  pipeline.grain.animated = true;
+
+  // =======================
+
+  scene.freezeActiveMeshes();
 
   const rotationAxis = new Vector3(0, 1, 0);
   let prevTime = 0;
@@ -195,7 +211,7 @@ const sketch = async ({ canvas, width, height }) => {
 
         meshes.forEach((mesh, idx) => {
           const direction = idx % 2 ? 1 : -1;
-          mesh.rotate(rotationAxis, timeDiff * direction * 0.1);
+          mesh.rotate(rotationAxis, timeDiff * direction * 1.5);
         });
       }
 
