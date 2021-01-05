@@ -17,8 +17,6 @@ import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
 import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.glsl';
-import {MotionBlurPostProcess} from "@babylonjs/core/PostProcesses/motionBlurPostProcess";
-import {DepthOfFieldEffectBlurLevel} from "@babylonjs/core/PostProcesses/depthOfFieldEffect";
 
 const settings = {
   animate: true,
