@@ -48,9 +48,6 @@ const sketch = async ({ canvas, width, height }) => {
   camera.minZ = 0.1;
   camera.fov = 1.15;
 
-  // camera.lowerRadiusLimit = 100;
-  // camera.fov = 0.8;
-
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.groundColor = new Color3(1, 1, 1);
@@ -107,8 +104,6 @@ const sketch = async ({ canvas, width, height }) => {
   // Shaders
   //
 
-  // mainMaterial.AddAttribute('idx');
-
   contourMaterial.Vertex_Before_PositionUpdated(contour_vertexBeforePositionUpdated);
   fillerMaterial.Vertex_Before_PositionUpdated(filler_vertexBeforePositionUpdated);
 
@@ -118,6 +113,7 @@ const sketch = async ({ canvas, width, height }) => {
     material.AddUniform('speed', 'float');
     material.AddUniform('radius', 'float');
     material.AddUniform('swingSize', 'float');
+
     material.onBind = () => {
       const time = (+new Date() - initTime) * 0.001;
       material.getEffect().setFloat('iTime', time);
@@ -128,7 +124,14 @@ const sketch = async ({ canvas, width, height }) => {
     };
   });
 
-  // =======================
+  // FOV control
+
+  window.addEventListener('mousewheel', (e) => {
+    const sign = Math.sign(e.wheelDelta) * -1;
+
+    camera.fov += sign * 0.05;
+    camera.fov = Math.max(Math.min(camera.fov, 1.2), 0.25);
+  });
 
   return {
     render({ time, width, height }) {
