@@ -42,15 +42,17 @@ const sketch = async ({ canvas, width, height }) => {
 
   const createCapsule = (options) => {
     options = {
-      bevelSize: 0.1,
+      bevelSize: 0.2,
       boxWidth: 5,
       bevelSegments: 20,
       mainSegments: 500,
       k: 1,
+      instance: null,
+      factor: 0,
       ...options,
     };
 
-    const { bevelSize, boxWidth, bevelSegments, mainSegments, k } = options;
+    const { bevelSize, boxWidth, bevelSegments, mainSegments, k, instance, factor } = options;
 
     const path = (() => {
       const path = [];
@@ -75,11 +77,13 @@ const sketch = async ({ canvas, width, height }) => {
 
     let direction = k % 2 ? +1 : -1;
     path.forEach((step) => {
-      step.y = Math.sin(step.x * Math.PI * direction) * 0.5;
-      step.z = Math.cos(step.x * Math.PI * direction) * 0.5;
+      const l = step.x * 0.5 + factor;
 
-      step.y += Math.sin(step.x * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
-      step.z += Math.cos(step.x * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
+      step.y = Math.sin(l * Math.PI * direction) * 0.5;
+      step.z = Math.cos(l * Math.PI * direction) * 0.5;
+
+      step.y += Math.sin(l * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
+      step.z += Math.cos(l * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
     });
 
     const radiusFunction = (i, distance) => {
@@ -98,7 +102,7 @@ const sketch = async ({ canvas, width, height }) => {
 
     const block = new MeshBuilder.CreateTube(
       'sphere',
-      { path, radiusFunction, cap: 0, tessellation: bevelSegments },
+      { path, radiusFunction, cap: 0, tessellation: bevelSegments, instance, updatable: true },
       scene,
     );
 
@@ -108,10 +112,10 @@ const sketch = async ({ canvas, width, height }) => {
   const mat = new StandardMaterial('mat', scene);
   mat.specularColor = new Color3(0.125, 0.125, 0.125);
 
-  const block1 = createCapsule({ k: 0 });
+  let block1 = createCapsule({ k: 0 });
   block1.material = mat;
 
-  const block2 = createCapsule({ k: 1 });
+  let block2 = createCapsule({ k: 1 });
   block2.material = mat;
 
   const total = 4;
@@ -125,19 +129,23 @@ const sketch = async ({ canvas, width, height }) => {
 
   // -----------------------------
 
-  const ssao = new SSAO2RenderingPipeline('ssao', scene, {
-    ssaoRatio: 0.5,
-    blurRatio: 1,
-  });
-  ssao.radius = 8;
-  ssao.totalStrength = 0.9;
-  ssao.expensiveBlur = true;
-  ssao.samples = 16;
-  ssao.maxZ = 100;
-  scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
+  // const ssao = new SSAO2RenderingPipeline('ssao', scene, {
+  //   ssaoRatio: 0.5,
+  //   blurRatio: 1,
+  // });
+  // ssao.radius = 8;
+  // ssao.totalStrength = 0.9;
+  // ssao.expensiveBlur = true;
+  // ssao.samples = 16;
+  // ssao.maxZ = 100;
+  // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
 
   return {
     render({ time, width, height }) {
+      // ribbon update
+      block1 = createCapsule({ k: 0, instance: block1, factor: time });
+      block2 = createCapsule({ k: 1, instance: block2, factor: time });
+
       scene.render();
     },
     resize({ pixelRatio, width, height }) {
