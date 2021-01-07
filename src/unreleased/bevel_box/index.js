@@ -42,7 +42,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const createCapsule = (options) => {
     options = {
-      bevelSize: 0.1,
+      bevelSize: 0.025,
       boxWidth: 5,
       bevelSegments: 20,
       mainSegments: 500,
@@ -82,8 +82,8 @@ const sketch = async ({ canvas, width, height }) => {
       step.y = Math.sin(l * Math.PI * direction) * 0.5;
       step.z = Math.cos(l * Math.PI * direction) * 0.5;
 
-      step.y += Math.sin(l * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
-      step.z += Math.cos(l * Math.PI * direction * 3 + Math.PI * k) * bevelSize;
+      step.y += Math.sin(l * Math.PI * direction*9  + Math.PI * k) * bevelSize*1.1;
+      step.z += Math.cos(l * Math.PI * direction*9  + Math.PI * k) * bevelSize*1.1;
     });
 
     const radiusFunction = (i, distance) => {
@@ -118,13 +118,13 @@ const sketch = async ({ canvas, width, height }) => {
   let block2 = createCapsule({ k: 1 });
   block2.material = mat;
 
-  const total = 4;
+  const total = 8;
   for (let i = 0; i < total; i += 1) {
     const i1 = block1.createInstance(`i1-${i}`);
-    i1.rotate(new Vector3(1, 0, 0), i * ((Math.PI * 4) / total) * 1);
+    i1.rotate(new Vector3(1, 0, 0), i * ((Math.PI * 2) / total) * 1);
 
     const i2 = block2.createInstance(`i2-${i}`);
-    i2.rotate(new Vector3(1, 0, 0), i * ((Math.PI * 4) / total) * -1);
+    i2.rotate(new Vector3(1, 0, 0), i * ((Math.PI * 2) / total) * -1);
   }
 
   // -----------------------------
