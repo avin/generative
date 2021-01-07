@@ -1,22 +1,19 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import '@babylonjs/core/Meshes/thinInstanceMesh';
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { Plane, Vector3 } from '@babylonjs/core/Maths/math';
+import { Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { MirrorTexture, PBRMaterial } from '@babylonjs/core';
-import { Texture } from '@babylonjs/core/Materials/Textures/texture';
+import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
-
 
 const sketch = async ({ canvas, width, height }) => {
   const engine = new Engine(canvas, true, {
@@ -29,11 +26,11 @@ const sketch = async ({ canvas, width, height }) => {
   //
 
   const scene = new Scene(engine);
-  scene.clearColor = Color4.FromColor3(Color3.White());
+  scene.clearColor = Color4.FromColor3(new Color3(245 / 255, 248 / 255, 250 / 255));
 
   const cAlpha = Math.PI / 4;
   const cBeta = Math.PI / 3;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 5.0, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 3.0, new Vector3(0, 0, 0), scene);
   camera.wheelPrecision = 50;
   camera.minZ = 0.2;
   camera.attachControl(canvas, true);
@@ -43,26 +40,12 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
   baseLight.specular = new Color3(0.25, 0.25, 0.25);
 
-  // Mirror
-  var mirror = Mesh.CreateBox('Mirror', 1.0, scene);
-  mirror.setEnabled(false);
-  mirror.scaling = new Vector3(100.0, 0.01, 100.0);
-  mirror.material = new StandardMaterial('mirror', scene);
-  mirror.material.diffuseTexture = new Texture('static/assets/textures/amiga.jpg', scene);
-  mirror.material.diffuseTexture.uScale = 10;
-  mirror.material.diffuseTexture.vScale = 10;
-  mirror.material.reflectionTexture = new MirrorTexture('mirror', 1024, scene, true);
-  mirror.material.reflectionTexture.mirrorPlane = new Plane(0, -1.0, 0, -2.0);
-  // mirror.material.reflectionTexture.renderList = [greenSphere, yellowSphere, blueSphere, knot];
-  mirror.material.reflectionTexture.level = 0.5;
-  mirror.position = new Vector3(0, -2, 0);
-
   const createCapsule = (options) => {
     options = {
       bevelSize: 0.05,
-      boxWidth: 3,
-      bevelSegments: 20,
-      mainSegments: 500,
+      boxWidth: 2,
+      bevelSegments: 30,
+      mainSegments: 200,
       k: 1,
       instance: null,
       time: 0,
@@ -134,9 +117,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   const mat = new PBRMaterial('plastic', scene);
   mat.baseColor = new Color3(1.0, 0.766, 0.336);
-  mat.metallic = 0.1; // set to 1 to only use it from the metallicRoughnessTexture
-  mat.roughness = 0.1; // set to 1 to only use it from the metallicRoughnessTexture
-  // mat.environmentTexture = CubeTexture.CreateFromPrefilteredData('static/assets/env/e1.dds', scene);
+  mat.metallic = 0.1;
+  mat.roughness = 0.1;
 
   block1.material = mat;
   block2.material = mat;
@@ -167,6 +149,39 @@ const sketch = async ({ canvas, width, height }) => {
   });
 
   // -----------------------------
+
+  const ssao = new SSAO2RenderingPipeline('ssao', scene, {
+    ssaoRatio: 1.5, // Ratio of the SSAO post-process, in a lower resolution
+    blurRatio: 1, // Ratio of the combine post-process (combines the SSAO and the scene)
+  });
+  ssao.radius = 1;
+  ssao.totalStrength = 1.3;
+  ssao.expensiveBlur = true;
+  ssao.samples = 16;
+  ssao.maxZ = 100;
+
+  scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
+
+  // -----------------------------
+
+  const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
+  defaultPipeline.fxaaEnabled = true;
+  defaultPipeline.samples = 8;
+
+  defaultPipeline.MotionBlurEnabled = true;
+  defaultPipeline.motionStrength = 0.5;
+  defaultPipeline.motionBlurSamples = 32;
+
+  defaultPipeline.bloomEnabled = true;
+  defaultPipeline.bloomThreshold = 0.17;
+  defaultPipeline.bloomWeight = 0.2;
+  defaultPipeline.bloomKernel = 100;
+  defaultPipeline.bloomScale = 0.9;
+
+  defaultPipeline.imageProcessing.vignetteEnabled = true;
+  defaultPipeline.imageProcessing.vignetteColor = new Color3(24 / 255, 32 / 255, 38 / 255);
+  defaultPipeline.imageProcessing.vignetteCameraFov = 0.2;
+  defaultPipeline.imageProcessing.vignetteWeight = 10.0;
 
   return {
     render({ time, width, height }) {
