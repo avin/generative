@@ -3,24 +3,13 @@ import { Scene } from '@babylonjs/core/scene';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { Axis, Plane, Quaternion, Space, Vector3 } from '@babylonjs/core/Maths/math';
+import { Plane, Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { color } from 'canvas-sketch-util';
-import {
-  CubeTexture,
-  EquiRectangularCubeTexture,
-  FresnelParameters,
-  MirrorTexture,
-  PBRMaterial,
-  PBRMetallicRoughnessMaterial,
-  ReflectionProbe,
-  SSAO2RenderingPipeline,
-} from '@babylonjs/core';
+import { MirrorTexture, PBRMaterial } from '@babylonjs/core';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
 const settings = {
@@ -28,8 +17,12 @@ const settings = {
   context: 'webgl',
 };
 
+
 const sketch = async ({ canvas, width, height }) => {
-  const engine = new Engine(canvas, true);
+  const engine = new Engine(canvas, true, {
+    preserveDrawingBuffer: true,
+    stencil: true,
+  });
 
   //
   // Main scene ===============================
@@ -39,8 +32,8 @@ const sketch = async ({ canvas, width, height }) => {
   scene.clearColor = Color4.FromColor3(Color3.White());
 
   const cAlpha = Math.PI / 4;
-  const cBeta = Math.PI / 4;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 10.0, new Vector3(0, 0, 0), scene);
+  const cBeta = Math.PI / 3;
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 5.0, new Vector3(0, 0, 0), scene);
   camera.wheelPrecision = 50;
   camera.minZ = 0.2;
   camera.attachControl(canvas, true);
@@ -139,11 +132,11 @@ const sketch = async ({ canvas, width, height }) => {
   let block2 = createCapsule({ k: 1 });
   block2.setEnabled(false);
 
-  const mat = new PBRMetallicRoughnessMaterial('plastic', scene);
+  const mat = new PBRMaterial('plastic', scene);
   mat.baseColor = new Color3(1.0, 0.766, 0.336);
-  mat.metallic = 1.0; // set to 1 to only use it from the metallicRoughnessTexture
-  mat.roughness = 0.4; // set to 1 to only use it from the metallicRoughnessTexture
-  mat.environmentTexture = CubeTexture.CreateFromPrefilteredData('static/assets/env/e1.dds', scene);
+  mat.metallic = 0.1; // set to 1 to only use it from the metallicRoughnessTexture
+  mat.roughness = 0.1; // set to 1 to only use it from the metallicRoughnessTexture
+  // mat.environmentTexture = CubeTexture.CreateFromPrefilteredData('static/assets/env/e1.dds', scene);
 
   block1.material = mat;
   block2.material = mat;
