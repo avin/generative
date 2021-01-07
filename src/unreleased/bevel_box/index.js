@@ -42,7 +42,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const createCapsule = (options) => {
     options = {
-      bevelSize: 0.2,
+      bevelSize: 0.1,
       boxWidth: 5,
       bevelSegments: 20,
       mainSegments: 500,
@@ -75,9 +75,9 @@ const sketch = async ({ canvas, width, height }) => {
       return path;
     })();
 
-    let direction = k % 2 ? +1 : -1;
+    const direction = k % 2 ? +1 : -1;
     path.forEach((step) => {
-      const l = step.x * 0.5 + factor;
+      const l = step.x + factor*Math.PI/2;
 
       step.y = Math.sin(l * Math.PI * direction) * 0.5;
       step.z = Math.cos(l * Math.PI * direction) * 0.5;
@@ -129,22 +129,12 @@ const sketch = async ({ canvas, width, height }) => {
 
   // -----------------------------
 
-  // const ssao = new SSAO2RenderingPipeline('ssao', scene, {
-  //   ssaoRatio: 0.5,
-  //   blurRatio: 1,
-  // });
-  // ssao.radius = 8;
-  // ssao.totalStrength = 0.9;
-  // ssao.expensiveBlur = true;
-  // ssao.samples = 16;
-  // ssao.maxZ = 100;
-  // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
-
   return {
     render({ time, width, height }) {
-      // ribbon update
-      block1 = createCapsule({ k: 0, instance: block1, factor: time });
-      block2 = createCapsule({ k: 1, instance: block2, factor: time });
+      const t = time*.2;
+
+      block1 = createCapsule({ k: 0, instance: block1, factor: t });
+      block2 = createCapsule({ k: 1, instance: block2, factor: t });
 
       scene.render();
     },
