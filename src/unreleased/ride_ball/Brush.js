@@ -34,12 +34,14 @@ export class Brush {
   }
 
   init() {
+    this.instance.isPickable = false;
+
     // Направляющая для кисти,
     // хранит в себе данные полученные при рейкасте
     this.generalNode = new BABYLON.TransformNode('general-node');
 
-    const a = Math.PI*2 * Math.random();
-    this.generalNode.position = new BABYLON.Vector3(Math.sin(a)*5, Math.cos(a)*5, 0);
+    const a = Math.PI * 2 * Math.random();
+    this.generalNode.position = new BABYLON.Vector3(Math.sin(a) * 5, Math.cos(a) * 5, 0);
     this.generalNode.prevPosition = BABYLON.Vector3.Zero();
     this.generalNode.prevPrevPosition = BABYLON.Vector3.Zero();
     this.generalNode.rotationQuaternion = new BABYLON.Quaternion();
@@ -64,32 +66,6 @@ export class Brush {
 
     // Инициализируем вспомогательные значения для перемещения
     this.reset();
-
-    // Включаем частицы
-    this.initParticles();
-  }
-
-  initParticles() {
-    return;
-    // Create a particle system
-    const particleSystem = new BABYLON.ParticleSystem('particles', 1000, this.scene);
-    this.particleSystem = particleSystem;
-
-    particleSystem.particleTexture = new BABYLON.Texture('static/assets/textures/flare.png', this.scene);
-
-    particleSystem.emitter = this.generalNode; // the starting object, the emitter
-
-    particleSystem.color1 = this.color;
-    particleSystem.color2 = new BABYLON.Color4(0.92, 0.15, 0.0, 1.0);
-    particleSystem.colorDead = new BABYLON.Color4(0, 0, 0.0, 1);
-
-    particleSystem.emitRate = 0;
-
-    // Выставляем зависимые значения
-    this.tuneParticlesSystem();
-
-    // Start the particle system
-    particleSystem.start();
   }
 
   reset() {
@@ -99,66 +75,8 @@ export class Brush {
     this.isFreeModeActiveDrawing = false;
   }
 
-  speedUp() {
-    if (this.speed === this.maxSpeed) {
-      return;
-    }
-
-    const speedDiff = (this.maxSpeed - this.minSpeed) / 100;
-
-    this.speed += speedDiff;
-    this.speed = Math.min(this.speed, this.maxSpeed);
-    this.speed = Math.max(this.speed, this.minSpeed);
-
-    this.tuneParticlesSystem();
-  }
-
-  speedDown() {
-    if (this.speed === this.minSpeed) {
-      return;
-    }
-
-    const speedDiff = (this.maxSpeed - this.minSpeed) / 100;
-
-    this.speed -= speedDiff;
-    this.speed = Math.min(this.speed, this.maxSpeed);
-    this.speed = Math.max(this.speed, this.minSpeed);
-
-    this.tuneParticlesSystem();
-  }
-
-  /**
-   * Выставить зависимые от скорости значения для системы частиц
-   */
-  tuneParticlesSystem() {
-    return;
-    const { particleSystem } = this;
-
-
-    particleSystem.emitRate = 5500;
-    particleSystem.particleEmitterType = new BABYLON.BoxParticleEmitter(1);
-
-    particleSystem.minLifeTime = 0.01;
-    particleSystem.maxLifeTime = 0.05;
-
-    particleSystem.maxEmitPower = 2 * 5;
-
-    particleSystem.minSize = 0.05;
-    particleSystem.maxSize = 0.1;
-
-    particleSystem.direction1 = new BABYLON.Vector3(-1, -1, -1);
-    particleSystem.direction2 = new BABYLON.Vector3(1, 1, 1);
-
-
-
-    particleSystem.minEmitBox = new BABYLON.Vector3.Zero();
-    particleSystem.maxEmitBox = new BABYLON.Vector3.Zero();
-  }
-
   update() {
     const timeDiffXSpeed = this.scene.deltaTime * this.speed;
-
-    this.tuneParticlesSystem();
 
     BABYLON.Quaternion.SlerpToRef(
       this.instance.rotationQuaternion,
@@ -176,10 +94,7 @@ export class Brush {
   updateInDriveMode(retry = 0) {
     const angleDiff = 0.02 + 0.3 / (this.speed * 3);
 
-    this.angle += angleDiff * perlin2(this.idx * 100, this.scene.time)*2.0;
-
-    // Режим змеи, движения туда-сюда ползем как змея
-    // this.angle += Math.sin(time * 20) * 0.08;
+    this.angle += angleDiff * perlin2(this.idx * 100, this.scene.time) * 2.0;
 
     // ----------------------------------------------------
 
@@ -216,7 +131,7 @@ export class Brush {
     ray.direction = rayTo;
 
     const pickInfo = this.scene.pickWithRay(ray, (pickMesh) => {
-      return pickMesh === this.earthMesh;
+      return pickMesh === this.earthMeshPicking;
     });
 
     if (pickInfo.hit) {
