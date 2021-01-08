@@ -7,7 +7,7 @@ export class Brush {
   scene = null;
 
   // Минимальная скорость
-  speed = 2.25;
+  _speed = 0.025;
 
   instance = null;
 
@@ -31,6 +31,14 @@ export class Brush {
     Object.assign(this, options);
 
     this.init();
+  }
+
+  get speed() {
+    let speed = this._speed / this.scene.deltaTime;
+    if (this.scene.time < .1) {
+      speed = 0.01;
+    }
+    return speed;
   }
 
   init() {
@@ -76,14 +84,7 @@ export class Brush {
   }
 
   update() {
-    const timeDiffXSpeed = this.scene.deltaTime * this.speed;
-
-    BABYLON.Quaternion.SlerpToRef(
-      this.instance.rotationQuaternion,
-      this.generalNode.directedRotationQuaternion,
-      timeDiffXSpeed * 6,
-      this.instance.rotationQuaternion,
-    );
+    this.instance.rotationQuaternion = this.generalNode.directedRotationQuaternion
 
     this.updateInDriveMode();
   }
@@ -92,7 +93,8 @@ export class Brush {
    * Обновление кисти в режиме DRIVE
    */
   updateInDriveMode(retry = 0) {
-    const angleDiff = 0.02 + 0.3 / (this.speed * 3);
+    const speed = this.speed;
+    const angleDiff = 0.02 + 0.3 / (speed * 3);
 
     this.angle += angleDiff * perlin2(this.idx * 100, this.scene.time) * 2.0;
 
@@ -103,8 +105,8 @@ export class Brush {
     this.rayPilot.position.z = Math.cos(this.angle + retry * 0.3);
 
     // Определяющие для положения стреляющего луча
-    const s1 = this.speed * this.scene.deltaTime * (2 + retry * 0.25); // высота точки выстрела луча над поверхностью
-    const s2 = this.speed * this.scene.deltaTime; // шаг/отдаление от текущей позиции
+    const s1 = speed * this.scene.deltaTime * (2 + retry * 0.25); // высота точки выстрела луча над поверхностью
+    const s2 = speed * this.scene.deltaTime; // шаг/отдаление от текущей позиции
 
     if (!this.nextNormal) {
       this.nextNormal = new BABYLON.Vector3(0, 1, 0);

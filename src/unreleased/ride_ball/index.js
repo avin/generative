@@ -1,19 +1,17 @@
-import Stats from 'stats.js';
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Matrix, Vector3 } from '@babylonjs/core/Maths/math';
-import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
+import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
-import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { DynamicTexture } from '@babylonjs/core';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { colorPalette } from './colorPalette';
 import { Brush } from './Brush';
+import {DefaultRenderingPipeline} from "@babylonjs/core/PostProcesses/RenderPipeline";
 
 const settings = {
   animate: true,
@@ -21,10 +19,6 @@ const settings = {
 };
 
 const sketch = async ({ canvas, width, height }) => {
-  var stats = new Stats();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild(stats.dom);
-
   const engine = new Engine(canvas, true, {
     preserveDrawingBuffer: true,
     stencil: true,
@@ -34,14 +28,16 @@ const sketch = async ({ canvas, width, height }) => {
   // Settings
   //
 
-  const earthTextureSize = 1024;
+  const earthTextureSize = 2048;
 
   //
   // Main scene ===============================
   //
 
   const scene = new Scene(engine);
-  scene.clearColor = Color3.FromHexString('#182026');
+  scene.clearColor = Color3.FromHexString('#10161A');
+  // scene.autoClear = false; // Color buffer
+  // scene.autoClearDepthAndStencil = false;
 
   const cAlpha = Math.PI / 4;
   const cBeta = Math.PI / 3;
@@ -49,36 +45,36 @@ const sketch = async ({ canvas, width, height }) => {
   camera.wheelPrecision = 20;
   camera.minZ = 0.2;
   camera.attachControl(canvas, true);
-  camera.layerMask = 0x10000000;
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
-  baseLight.groundColor = new Color3(1.0, 1.0, 1.0);
+  baseLight.groundColor = new Color3(0.75, 0.75, 0.75);
   baseLight.specular = new Color3(0.125, 0.125, 0.125);
 
   // ----------------------------------
 
-  const earthMesh = MeshBuilder.CreateIcoSphere(
-    'sphere',
-    {
-      radius: 5,
-      subdivisions: 12,
-      flat: false,
-    },
-    scene,
-  );
-  earthMesh.layerMask = 0x10000000
+  const [earthMesh, earthMeshPicking] = (() => {
+    const result = [];
+    for (let i = 0; i < 2; i += 1) {
+      const earthMesh = MeshBuilder.CreateIcoSphere(
+        'sphere',
+        {
+          radius: 5,
+          subdivisions: 12,
+          flat: false,
+        },
+        scene,
+      );
+      earthMesh.alwaysSelectAsActiveMesh = true;
+      earthMesh.convertToUnIndexedMesh();
 
-  const earthMeshPicking = MeshBuilder.CreateIcoSphere(
-    'sphere',
-    {
-      radius: 5,
-      subdivisions: 12,
-      flat: false,
-    },
-    scene,
-  );
+      result.push(earthMesh);
+    }
+
+    return result;
+  })();
+  earthMeshPicking.setEnabled(false);
 
   const earthMaterial = new StandardMaterial('earthMaterial', scene);
   // earthMaterial.emissiveColor = new Color3(0.35, 0.4, 0.4);
@@ -94,11 +90,10 @@ const sketch = async ({ canvas, width, height }) => {
   earthMaterial.diffuseTexture = earthTexture;
   // earthMaterial.bumpTexture = earthTexture;
   // earthMaterial.bumpTexture = earthTexture;
-  earthMaterial.freeze();
 
   // Заливаем текстуру почти белым цветом
   const earthTextureContext = earthTexture.getContext();
-  earthTextureContext.fillStyle = 'hsl(0, 0%, 98%)';
+  earthTextureContext.fillStyle = '#F5F8FA';
   earthTextureContext.fillRect(0, 0, earthTextureSize, earthTextureSize);
 
   earthTexture.update(false);
@@ -119,6 +114,7 @@ const sketch = async ({ canvas, width, height }) => {
     // Радиус (подгоняется под размер кисти)
     const radius = earthTextureSize / 300;
 
+    const earthTextureContext = earthTexture.getContext();
     earthTextureContext.fillStyle = color.colorString;
     earthTextureContext.beginPath();
     earthTextureContext.arc(x, y, radius, 0, 2 * Math.PI);
@@ -129,40 +125,29 @@ const sketch = async ({ canvas, width, height }) => {
 
   const brushes = [];
 
-  // Зготовка для кисти
+  // Заготовка для кисти
   const brushMesh = MeshBuilder.CreateBox('brush', { size: 0.25 }, scene);
   brushMesh.bakeTransformIntoVertices(Matrix.Translation(0, 0.125, 0));
   brushMesh.bakeTransformIntoVertices(Matrix.Scaling(1, 0.5, 1));
   brushMesh.setEnabled(false);
   const brushMeshMaterial = new StandardMaterial('brushMeshMaterial', scene);
   brushMesh.material = brushMeshMaterial;
-  brushMesh.layerMask = 0x10000000
-
-  // const colors = [
-  //   colorPalette[8],
-  //   colorPalette[9],
-  //   colorPalette[11],
-  //   colorPalette[12],
-  //   colorPalette[13],
-  //   colorPalette[14],
-  //   colorPalette[15],
-  // ];
 
   const colors = [
     ...colorPalette,
     ...colorPalette,
     ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
-    ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
+    // ...colorPalette,
   ];
 
   const colorData = new Float32Array(4 * colors.length);
@@ -170,7 +155,7 @@ const sketch = async ({ canvas, width, height }) => {
   colors.forEach((colorHex, idx) => {
     const id = `brush-${idx}`;
     const instance = brushMesh.createInstance(id);
-    instance.layerMask = 0x10000000
+    instance.alwaysSelectAsActiveMesh = true;
 
     const color = Color3.FromHexString(colorHex);
     colorData[idx * 4] = color.r;
@@ -196,36 +181,59 @@ const sketch = async ({ canvas, width, height }) => {
   brushMesh.setVerticesBuffer(colorBuffer);
   brushMesh.isPickable = false;
 
-  // -------------------------------
+  // SSAO -------------------------------
 
-  const ssao = new SSAO2RenderingPipeline('ssao', scene, {
-    ssaoRatio: 1.0, // Ratio of the SSAO post-process, in a lower resolution
-    blurRatio: 1.0, // Ratio of the combine post-process (combines the SSAO and the scene)
-  });
-  ssao.radius = 0.05;
-  ssao.totalStrength = 2.3;
-  ssao.expensiveBlur = true;
-  ssao.samples = 32;
-  ssao.maxZ = 100;
+  if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    const ssao = new SSAO2RenderingPipeline('ssao', scene, {
+      ssaoRatio: 1.0, // Ratio of the SSAO post-process, in a lower resolution
+      blurRatio: 1.0, // Ratio of the combine post-process (combines the SSAO and the scene)
+    });
+    ssao.radius = 0.05;
+    ssao.totalStrength = 2.3;
+    ssao.expensiveBlur = false;
+    ssao.samples = 16;
+    ssao.maxZ = 100;
 
-  scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
+    scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
+  }
 
-  // ---------- Оптимизация ----------
-
-  // const octree = scene.createOrUpdateSelectionOctree(64, 2)
-  // octree.dynamicContent.push(earthMesh)
+  // Оптимизация --------------------------
 
   // Делаем дерево для ускорения просчета рейкаста
-  earthMeshPicking.subdivide(64);
+  earthMeshPicking.subdivide(80);
   earthMeshPicking.createOrUpdateSubmeshesOctree(64, 2);
   earthMeshPicking.useOctreeForPicking = true;
 
   earthMeshPicking.freezeWorldMatrix();
   earthMeshPicking.doNotSyncBoundingInfo = true;
 
+  // scene.freezeActiveMeshes(true);
+
+  // -----------------------------
+
+  const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
+  defaultPipeline.fxaaEnabled = true;
+  defaultPipeline.samples = 8;
+
+  defaultPipeline.MotionBlurEnabled = true;
+  defaultPipeline.motionStrength = 0.5;
+  defaultPipeline.motionBlurSamples = 32;
+
+  defaultPipeline.bloomEnabled = true;
+  defaultPipeline.bloomThreshold = 0.17;
+  defaultPipeline.bloomWeight = .2;
+  defaultPipeline.bloomKernel = 50;
+  defaultPipeline.bloomScale = 0.9;
+
+  defaultPipeline.imageProcessing.vignetteEnabled = true;
+  defaultPipeline.imageProcessing.vignetteColor = new Color3(24 / 255, 32 / 255, 38 / 255);
+  defaultPipeline.imageProcessing.vignetteCameraFov = 0.2;
+  defaultPipeline.imageProcessing.vignetteWeight = 10.0;
+
   return {
-    render({ time, deltaTime, frame }) {
-      stats.begin();
+    render(props) {
+      const { time, deltaTime } = props;
+
       scene.time = time;
       scene.deltaTime = deltaTime;
 
@@ -233,15 +241,13 @@ const sketch = async ({ canvas, width, height }) => {
         brushes[i].update();
       }
 
-      // earthTextureContext.fillStyle = `hsla(0, 0%, 98%, .01)`;
-      // earthTextureContext.fillRect(0, 0, earthTextureSize, earthTextureSize);
+      earthTextureContext.fillStyle = `hsla(0, 0%, 98%, ${deltaTime*5})`;
+      earthTextureContext.fillRect(0, 0, earthTextureSize, earthTextureSize);
 
       // Грузим обновления по текстурке в видяху
       earthTexture.update(false);
 
       scene.render();
-
-      stats.end();
     },
     resize({ pixelRatio, width, height }) {
       engine.resize();

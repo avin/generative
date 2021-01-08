@@ -1,22 +1,34 @@
+## Show FPS-metr
+
+```js
+var stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.querySelector('#debugger').appendChild(stats.dom);
+
+//...
+
+stats.begin();
+// logic here
+stats.end();
+```
+
 ## Babylon: Use Inspector
 
 ```js
-import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
+import '@babylonjs/core/Debug/debugLayer';
+import '@babylonjs/inspector';
 
 scene.debugLayer.show({
-  globalRoot: document.querySelector('#debugger')
+  globalRoot: document.querySelector('#debugger'),
 });
-
 ```
-
 
 ## Babylon: Use 2 scenes in playground
 
 ```js
 // runRenderLoop inside a setTimeout is neccesary in the Playground
 // to stop the PG's runRenderLoop.
-setTimeout(function() {
+setTimeout(function () {
   engine.stopRenderLoop();
   engine.runRenderLoop(function () {
     firstScene.render();
@@ -35,6 +47,7 @@ https://www.babylonjs-playground.com/#RLQ5JX#12
 ## Problems
 
 ### SSAO with thin instances
+
 https://forum.babylonjs.com/t/ssao-with-thin-instances-not-works/17153
 
 https://playground.babylonjs.com/#N96NXC#24 (thin instances not work)
