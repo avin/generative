@@ -215,10 +215,6 @@ const sketch = async ({ canvas, width, height }) => {
   defaultPipeline.fxaaEnabled = true;
   defaultPipeline.samples = 8;
 
-  defaultPipeline.MotionBlurEnabled = true;
-  defaultPipeline.motionStrength = 0.5;
-  defaultPipeline.motionBlurSamples = 32;
-
   defaultPipeline.bloomEnabled = true;
   defaultPipeline.bloomThreshold = 0.17;
   defaultPipeline.bloomWeight = .2;
