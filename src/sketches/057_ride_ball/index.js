@@ -35,9 +35,7 @@ const sketch = async ({ canvas, width, height }) => {
   //
 
   const scene = new Scene(engine);
-  scene.clearColor = Color3.FromHexString('#10161A');
-  // scene.autoClear = false; // Color buffer
-  // scene.autoClearDepthAndStencil = false;
+  scene.clearColor = Color3.FromHexString('#394B59');
 
   const cAlpha = Math.PI / 4;
   const cBeta = Math.PI / 3;
@@ -49,7 +47,7 @@ const sketch = async ({ canvas, width, height }) => {
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
-  baseLight.groundColor = new Color3(0.75, 0.75, 0.75);
+  baseLight.groundColor = new Color3(1, 1, 1);
   baseLight.specular = new Color3(0.125, 0.125, 0.125);
 
   // ----------------------------------
@@ -219,8 +217,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   defaultPipeline.imageProcessing.vignetteEnabled = true;
   defaultPipeline.imageProcessing.vignetteColor = new Color3(24 / 255, 32 / 255, 38 / 255);
-  defaultPipeline.imageProcessing.vignetteCameraFov = 0.2;
-  defaultPipeline.imageProcessing.vignetteWeight = 10.0;
+  defaultPipeline.imageProcessing.vignetteCameraFov = .13;
+  defaultPipeline.imageProcessing.vignetteWeight = 100.0;
 
   return {
     render(props) {
