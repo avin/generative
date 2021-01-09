@@ -88,8 +88,6 @@ const sketch = async ({ canvas, width, height }) => {
     scene,
   );
   earthMaterial.diffuseTexture = earthTexture;
-  // earthMaterial.bumpTexture = earthTexture;
-  // earthMaterial.bumpTexture = earthTexture;
 
   // Заливаем текстуру почти белым цветом
   const earthTextureContext = earthTexture.getContext();
