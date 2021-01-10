@@ -44,6 +44,12 @@ https://www.babylonjs-playground.com/#RLQ5JX#10
 https://www.babylonjs-playground.com/#RLQ5JX#11
 https://www.babylonjs-playground.com/#RLQ5JX#12
 
+## Babylon: depthOfField
+https://playground.babylonjs.com/#17DP89#78
+https://playground.babylonjs.com/#199KHL#51
+https://playground.babylonjs.com/#2FPT1A#445
+https://playground.babylonjs.com/#4YBB22#0
+
 ## Problems
 
 ### SSAO with thin instances
