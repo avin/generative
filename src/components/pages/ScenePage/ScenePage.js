@@ -44,7 +44,10 @@ class ScenePage extends React.Component {
     };
 
     if (!sketchSettings.dimensions) {
-      sketchSettings.scaleToFit = true;
+      sketchSettings.scaleToFit = false;
+      sketchSettings.scaleToView = false;
+      sketchSettings.resizeCanvas = false;
+      sketchSettings.styleCanvas = false;
     }
 
     this.sketchManagerRef.current = await canvasSketch(sketch, sketchSettings);
@@ -78,7 +81,7 @@ class ScenePage extends React.Component {
 
     return (
       <div className={styles.container} ref={this.containerRef}>
-        <canvas ref={this.canvasRef} className={styles.canvas} />
+        <canvas ref={this.canvasRef} className={styles.canvas}/>
         {!isReady && (
           <div className={styles.loadingContainer}>
             <LoadingPage />
