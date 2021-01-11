@@ -29,12 +29,11 @@ class ScenePage extends React.Component {
     } = this.props;
 
     let sketchModule;
-    if(unreleased){
+    if (unreleased) {
       sketchModule = await import(`../../../unreleased/${id}`);
     } else {
       sketchModule = await import(`../../../sketches/${id}`);
     }
-
 
     const { sketch, settings } = sketchModule.default;
 
@@ -44,9 +43,9 @@ class ScenePage extends React.Component {
     };
 
     if (!sketchSettings.dimensions) {
-      sketchSettings.scaleToFit = false;
-      sketchSettings.scaleToView = false;
-      sketchSettings.resizeCanvas = false;
+      sketchSettings.canvasWidth = this.containerRef.current.scrollWidth;
+      sketchSettings.canvasHeight = this.containerRef.current.scrollHeight;
+
       sketchSettings.styleCanvas = false;
     }
 
@@ -81,13 +80,13 @@ class ScenePage extends React.Component {
 
     return (
       <div className={styles.container} ref={this.containerRef}>
-        <canvas ref={this.canvasRef} className={styles.canvas}/>
+        <canvas ref={this.canvasRef} className={styles.canvas} />
         {!isReady && (
           <div className={styles.loadingContainer}>
             <LoadingPage />
           </div>
         )}
-        <div id="debugger" className={styles.debugger}/>
+        <div id="debugger" className={styles.debugger} />
       </div>
     );
   }
