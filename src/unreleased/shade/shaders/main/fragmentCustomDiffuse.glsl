@@ -1,0 +1,3 @@
+//------------
+
+diffuseColor += vNormal;
