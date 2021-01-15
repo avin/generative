@@ -5,18 +5,13 @@ import { Vector3, Viewport } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { CubeTexture, PointerEventTypes, VertexData } from '@babylonjs/core';
+import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
-import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
-
-import groundMaterial_vertexDefinitions from './shaders/groundMaterial/vertexDefinitions.glsl';
-import groundMaterial_vertexBeforePositionUpdated from './shaders/groundMaterial/vertexBeforePositionUpdated.glsl';
-import groundMaterial_fragmentDefinitions from './shaders/groundMaterial/fragmentDefinitions.glsl';
-import groundMaterial_fragmentCustomDiffuse from './shaders/groundMaterial/fragmentCustomDiffuse.glsl';
+import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
+import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
 
 const distance = (x1, y1, x2, y2) => {
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
@@ -37,13 +32,20 @@ const sketch = async ({ canvas, width, height }) => {
   // Main scene ===============================
   //
 
+  const sandsColor = Color3.FromHexString('#FFB366');
+  const ballColor = Color3.FromHexString('#F5F8FA');
+
+  //
+  // Main scene ===============================
+  //
+
   const scene = new Scene(engine);
-  scene.clearColor = Color3.FromHexString('#D1B685');
+  scene.clearColor = sandsColor;
   scene.fogMode = Scene.FOGMODE_EXP2;
   scene.fogDensity = 0.05;
-  scene.fogColor = Color3.FromHexString('#D1B685');
+  scene.fogColor = sandsColor;
 
-  const camera1 = new ArcRotateCamera('camera1', -Math.PI / 2, Math.PI / 4, 7.0, new Vector3(0, 0, 0), scene);
+  const camera1 = new ArcRotateCamera('camera1', -2.19, 1.2, 3.9, new Vector3(0, 0, 0), scene);
   camera1.attachControl(canvas, true);
   camera1.layerMask = 0x10000000;
 
@@ -52,8 +54,10 @@ const sketch = async ({ canvas, width, height }) => {
   camera2.layerMask = 0x20000000;
 
   const camParams = {
-    lowerRadiusLimit: 5,
-    upperRadiusLimit: 20,
+    fov: 1,
+    minZ: 0.1,
+    lowerRadiusLimit: 3,
+    upperRadiusLimit: 15,
     wheelDeltaPercentage: 0.01,
     pinchDeltaPercentage: 0.01,
     lowerBetaLimit: 0,
@@ -73,32 +77,34 @@ const sketch = async ({ canvas, width, height }) => {
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.groundColor = new Color3(0.0, 0.0, 0.0);
-  // baseLight.specular = new Color3(0.25, 0.25, 0.25);
   baseLight.specular = new Color3(0.0, 0.0, 0.0);
-  // baseLight.intensity = 0.25;
+  baseLight.intensity = 0.4;
 
-  // const dirLight = new DirectionalLight('dirLight', new Vector3(-1, -2, 1), scene);
-  // dirLight.position = new Vector3(20, 40, -20);
-  // dirLight.intensity = 0.5;
+  // light1
+  const light = new DirectionalLight('dir01', new Vector3(-1, -1.5, -1), scene);
+  light.position = new Vector3(20, 20, 20);
+  light.intensity = 0.5;
+  const shadowGenerator = new ShadowGenerator(1024, light);
+  shadowGenerator.usePercentageCloserFiltering = true;
+  shadowGenerator.filteringQuality = ShadowGenerator.QUALITY_HIGH;
 
   // -----------------------------
 
-  const planeSize = 5;
-  const subdivisions = 150;
-
-  // const hdrTexture = CubeTexture.CreateFromPrefilteredData('/static/assets/env/e1.dds', scene);
+  const groundMaterial = new CustomMaterial('groundMaterial', scene);
+  groundMaterial.diffuseColor = sandsColor;
+  groundMaterial.specularColor = new Color3(-0.1, -0.1, -0.1);
+  groundMaterial.emissiveColor = Color3.Black();
 
   const ground = MeshBuilder.CreateGround('ground', {
     width: 7,
     height: 4,
-    subdivisions,
+    subdivisions: 150,
     updatable: true,
   });
   ground.isPickable = false;
-  const groundMaterial = new CustomMaterial('groundMaterial', scene);
-  groundMaterial.diffuseColor = Color3.FromHexString('#D1B685');
-
   ground.layerMask = 0x20000000;
+  ground.material = groundMaterial;
+  ground.receiveShadows = true;
 
   const baseGround = MeshBuilder.CreateGround('ground', {
     width: 200,
@@ -109,21 +115,25 @@ const sketch = async ({ canvas, width, height }) => {
   baseGround.layerMask = 0x10000000;
   baseGround.material = groundMaterial;
 
-  ground.material = groundMaterial;
-  // groundMaterial.wireframe = true;
-
   const radius = 0.5;
-  const depthSize = .125;
+  const depthSize = 0.075;
 
-  const sphere = MeshBuilder.CreateSphere('sphere', { diameter: radius * 2, segments: 64 }, scene);
-  sphere.position.y = depthSize;
-  sphere.position.x = Math.sin(0);
-  sphere.position.z = Math.cos(0);
-  sphere.layerMask = 0x20000000;
+  const ball = MeshBuilder.CreateSphere('ball', { diameter: radius * 2, segments: 64 }, scene);
+  ball.position.y = depthSize;
+  ball.layerMask = 0x20000000;
+  shadowGenerator.addShadowCaster(ball);
+
+  const ballMaterial = new StandardMaterial('material', scene);
+  ballMaterial.diffuseColor = ballColor;
+  ballMaterial.specularColor = new Color3(0.75, 0.75, 0.75);
+  ballMaterial.emissiveColor = new Color3(0.1, 0.1, 0.1);
+  ball.material = ballMaterial;
+
+  ballMaterial.specularPower = 16;
 
   function riseMesh(force) {
-    const px = sphere.position.x;
-    const pz = sphere.position.z;
+    const px = ball.position.x;
+    const pz = ball.position.z;
 
     const groundPositions = ground.getVerticesData(VertexBuffer.PositionKind);
 
@@ -133,12 +143,12 @@ const sketch = async ({ canvas, width, height }) => {
 
       const d = distance(x, z, px, pz);
 
-      const size = .5-depthSize;
+      const size = 0.5 - depthSize;
 
-      groundPositions[i * 3 + 1] = Math.min(-(size - 1 * d ** 2) * Math.exp(-1 * d ** 2), groundPositions[i * 3 + 1]);
+      groundPositions[i * 3 + 1] = Math.min(-(size - 1 * d ** 2) * Math.exp(-5 * d ** 2), groundPositions[i * 3 + 1]);
 
       groundPositions[i * 3 + 1] +=
-        -Math.sign(groundPositions[i * 3 + 1]) * (Math.abs(groundPositions[i * 3 + 1]) * force * 0.5);
+        -Math.sign(groundPositions[i * 3 + 1]) * (Math.abs(0.1 - groundPositions[i * 3 + 1]) * force * 0.5);
     }
 
     ground.updateVerticesData(VertexBuffer.PositionKind, groundPositions);
@@ -151,43 +161,23 @@ const sketch = async ({ canvas, width, height }) => {
     ground.updateVerticesData(VertexBuffer.NormalKind, normals);
   }
 
-  // --------------------------------------
-
-  // groundMaterial.Vertex_Definitions(groundMaterial_vertexDefinitions);
-  // groundMaterial.Vertex_Before_PositionUpdated(groundMaterial_vertexBeforePositionUpdated);
-  // groundMaterial.Fragment_Definitions(groundMaterial_fragmentDefinitions);
-  // groundMaterial.Fragment_Custom_Diffuse(groundMaterial_fragmentCustomDiffuse);
-
-  // --------------------------------------
-
-  // const ssao = new SSAO2RenderingPipeline('ssao', scene, {
-  //   ssaoRatio: 1.5, // Ratio of the SSAO post-process, in a lower resolution
-  //   blurRatio: 1, // Ratio of the combine post-process (combines the SSAO and the scene)
-  // });
-  // ssao.radius = 0.5;
-  // ssao.totalStrength = 5.0;
-  // ssao.expensiveBlur = true;
-  // ssao.samples = 32;
-  // ssao.maxZ = 100;
-  //
-  // scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera2);
-
+  let rt = 0;
   return {
-    render({ time, width, height, deltaTime }) {
+    render({ time, deltaTime }) {
+      const delta = Math.min(deltaTime, 0.1);
+      rt += delta;
 
-      console.log(camera1.alpha, camera1.beta)
-
-      const t = time;
+      const t = rt;
       const f = 2;
 
       const scale = 2 / (3 - Math.cos(2 * t));
       const x = scale * Math.cos(t) * f;
       const y = ((scale * Math.sin(2 * t)) / 2) * f;
 
-      sphere.position.x = x;
-      sphere.position.z = y;
+      ball.position.x = x;
+      ball.position.z = y;
 
-      riseMesh(deltaTime);
+      riseMesh(delta);
 
       scene.render();
     },

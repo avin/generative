@@ -1,1 +1,0 @@
-vPos = positionUpdated;
