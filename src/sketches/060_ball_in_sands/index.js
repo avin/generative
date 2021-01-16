@@ -11,7 +11,10 @@ import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
+import '@babylonjs/core/Rendering/geometryBufferRendererSceneComponent';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
+import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 
 const distance = (x1, y1, x2, y2) => {
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
@@ -45,34 +48,17 @@ const sketch = async ({ canvas, width, height }) => {
   scene.fogDensity = 0.05;
   scene.fogColor = sandsColor;
 
-  const camera1 = new ArcRotateCamera('camera1', -2.19, 1.2, 3.9, new Vector3(0, 0, 0), scene);
-  camera1.attachControl(canvas, true);
-  camera1.layerMask = 0x10000000;
+  const camera = new ArcRotateCamera('camera', -2.19, 1.2, 3.9, new Vector3(0, 0, 0), scene);
+  camera.fov = 1;
+  camera.minZ = 0.1;
+  camera.lowerRadiusLimit = 3;
+  camera.upperRadiusLimit = 15;
+  camera.wheelDeltaPercentage = 0.01;
+  camera.pinchDeltaPercentage = 0.01;
+  camera.lowerBetaLimit = 0;
+  camera.upperBetaLimit = 1.2;
 
-  const camera2 = camera1.clone();
-  camera2.attachControl(canvas, true);
-  camera2.layerMask = 0x20000000;
-
-  const camParams = {
-    fov: 1,
-    minZ: 0.1,
-    lowerRadiusLimit: 3,
-    upperRadiusLimit: 15,
-    wheelDeltaPercentage: 0.01,
-    pinchDeltaPercentage: 0.01,
-    lowerBetaLimit: 0,
-    upperBetaLimit: 1.2,
-  };
-  Object.keys(camParams).forEach((key) => {
-    camera1[key] = camParams[key];
-    camera2[key] = camParams[key];
-  });
-
-  camera1.viewport = new Viewport(0, 0, 1, 1);
-  camera2.viewport = new Viewport(0, 0, 1, 1);
-
-  scene.activeCameras.push(camera1);
-  scene.activeCameras.push(camera2);
+  camera.attachControl(canvas, true);
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
@@ -80,7 +66,6 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.specular = new Color3(0.0, 0.0, 0.0);
   baseLight.intensity = 0.4;
 
-  // light1
   const light = new DirectionalLight('dir01', new Vector3(-1, -1.5, -1), scene);
   light.position = new Vector3(20, 20, 20);
   light.intensity = 0.5;
@@ -101,8 +86,8 @@ const sketch = async ({ canvas, width, height }) => {
     subdivisions: 150,
     updatable: true,
   });
+  ground.renderingGroupId = 1;
   ground.isPickable = false;
-  ground.layerMask = 0x20000000;
   ground.material = groundMaterial;
   ground.receiveShadows = true;
 
@@ -112,20 +97,19 @@ const sketch = async ({ canvas, width, height }) => {
     subdivisions: 1,
     updatable: false,
   });
-  baseGround.layerMask = 0x10000000;
   baseGround.material = groundMaterial;
 
   const radius = 0.5;
   const depthSize = 0.075;
 
   const ball = MeshBuilder.CreateSphere('ball', { diameter: radius * 2, segments: 64 }, scene);
+  ball.renderingGroupId = 1;
   ball.position.y = depthSize;
-  ball.layerMask = 0x20000000;
   shadowGenerator.addShadowCaster(ball);
 
   const ballMaterial = new StandardMaterial('material', scene);
   ballMaterial.diffuseColor = ballColor;
-  ballMaterial.specularColor = new Color3(0.75, 0.75, 0.75);
+  ballMaterial.specularColor = new Color3(0.1, 0.1, 0.1);
   ballMaterial.emissiveColor = new Color3(0.1, 0.1, 0.1);
   ball.material = ballMaterial;
 
@@ -160,6 +144,35 @@ const sketch = async ({ canvas, width, height }) => {
 
     ground.updateVerticesData(VertexBuffer.NormalKind, normals);
   }
+
+  // ---------------------------------------
+
+  const ssao = new SSAO2RenderingPipeline('ssao', scene, {
+    ssaoRatio: 1.5, // Ratio of the SSAO post-process, in a lower resolution
+    blurRatio: 1, // Ratio of the combine post-process (combines the SSAO and the scene)
+  });
+  ssao.radius = 0.25;
+  ssao.totalStrength = 0.75;
+  ssao.expensiveBlur = true;
+  ssao.samples = 16;
+  ssao.maxZ = 100;
+
+  scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', camera);
+
+  // ---------------------------------------
+
+  const defaultPipeline = new DefaultRenderingPipeline('default', false, scene, [camera]);
+  defaultPipeline.fxaaEnabled = true;
+  defaultPipeline.samples = 8;
+
+  //
+  defaultPipeline.bloomEnabled = true;
+  defaultPipeline.bloomThreshold = 0.17;
+  defaultPipeline.bloomWeight = 0.2;
+  defaultPipeline.bloomKernel = 100;
+  defaultPipeline.bloomScale = 0.9;
+
+  // ---------------------------------------
 
   let rt = 0;
   return {
