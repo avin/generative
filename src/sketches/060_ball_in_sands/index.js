@@ -1,7 +1,7 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { Vector3, Viewport } from '@babylonjs/core/Maths/math';
+import { Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -32,7 +32,7 @@ const sketch = async ({ canvas, width, height }) => {
   });
 
   //
-  // Main scene ===============================
+  // Settings ===============================
   //
 
   const sandsColor = Color3.FromHexString('#FFB366');
