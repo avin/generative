@@ -48,11 +48,15 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.clearColor = Color3.FromHexString('#182026');
 
-  const camera = new ArcRotateCamera('camera', -2, 0, 20, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', -0.1, 0, 20, new Vector3(0, 0, 0), scene);
   camera.fov = 1.0;
   camera.minZ = 0.1;
+  camera.lowerRadiusLimit = 1;
+  camera.upperRadiusLimit = 50;
   camera.wheelDeltaPercentage = 0.01;
   camera.pinchDeltaPercentage = 0.01;
+  camera.lowerBetaLimit = 0;
+  camera.upperBetaLimit = Math.PI / 2 - 0.001;
 
   camera.attachControl(canvas, true);
 
