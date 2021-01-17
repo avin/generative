@@ -40,7 +40,7 @@ const sketch = async ({ canvas, width, height }) => {
   //
 
   const rowSize = 200;
-  const density = 0.5;
+  const density = 0.25;
   const rainHeight = 50;
   const speedFactor = 0.25;
 
@@ -83,8 +83,8 @@ const sketch = async ({ canvas, width, height }) => {
   const ground = MeshBuilder.CreateGround(
     'ground',
     {
-      width: rowSize * density,
-      height: rowSize * density,
+      width: rowSize * density + 1,
+      height: rowSize * density + 1,
     },
     scene,
   );
@@ -99,12 +99,21 @@ const sketch = async ({ canvas, width, height }) => {
   roundMeshMaterial.alpha = 0.9;
 
   const roundMesh = (() => {
-    const mesh = MeshBuilder.CreateTorus(
+    const mesh = MeshBuilder.CreateTube(
       'torus',
       {
-        diameter: 1,
-        thickness: 0.0125,
-        tessellation: 16,
+        path: (() => {
+          const path = [];
+          const size = 0.5;
+          const segments = 16;
+          const step = (Math.PI * 2) / segments;
+          for (let i = 0; i <= Math.PI * 2 + 0.001; i += step) {
+            path.push(new Vector3(Math.cos(i) * size, 0, Math.sin(i) * size));
+          }
+          return path;
+        })(),
+        radius: 0.01,
+        tessellation: 3,
       },
       scene,
     );
