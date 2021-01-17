@@ -55,7 +55,7 @@ const sketch = async ({ canvas, width, height }) => {
   camera.upperRadiusLimit = 50;
   camera.wheelDeltaPercentage = 0.01;
   camera.pinchDeltaPercentage = 0.01;
-  camera.lowerBetaLimit = 0;
+  camera.lowerBetaLimit = .1;
   camera.upperBetaLimit = Math.PI / 2 - 0.001;
 
   camera.attachControl(canvas, true);
