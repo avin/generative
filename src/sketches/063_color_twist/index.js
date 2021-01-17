@@ -58,6 +58,9 @@ const sketch = async ({ canvas, width, height }) => {
   camera.lowerBetaLimit = .1;
   camera.upperBetaLimit = Math.PI / 2 - 0.001;
 
+  camera.useAutoRotationBehavior = true;
+  camera.autoRotationBehavior.idleRotationSpeed = 0.2;
+
   camera.attachControl(canvas, true);
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(0, 1, 0), scene);
