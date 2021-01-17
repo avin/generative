@@ -167,11 +167,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   // ---------------------------------------
 
-  // ---------------------------------------
-
   return {
     render({ time, deltaTime }) {
-      console.log(camera.alpha, camera.beta, camera.radius)
       scene.render();
     },
     resize({ pixelRatio, width, height }) {
