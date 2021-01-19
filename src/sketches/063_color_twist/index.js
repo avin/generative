@@ -1,7 +1,7 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
-import { Matrix, Vector3 } from '@babylonjs/core/Maths/math';
+import { Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
@@ -9,20 +9,11 @@ import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-
-import mesh_vertexDefinitions from './shaders/mesh/vertexDefinitions.glsl';
-import mesh_vertexBeforePositionUpdated from './shaders/mesh/vertexBeforePositionUpdated.glsl';
-import mesh_vertexAfterWorldPosComputed from './shaders/mesh/vertexAfterWorldPosComputed.glsl';
-import mesh_fragmentDefinitions from './shaders/mesh/fragmentDefinitions.glsl';
-import mesh_fragmentCustomDiffuse from './shaders/mesh/fragmentCustomDiffuse.glsl';
-import mesh_fragmentBeforeFragColor from './shaders/mesh/fragmentBeforeFragColor.glsl';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
-import star_vertexDefinitions from '@/sketches/062_star_track/shaders/star/vertexDefinitions.glsl';
-import star_vertexBeforePositionUpdated from '@/sketches/062_star_track/shaders/star/vertexBeforePositionUpdated.glsl';
-import star_vertexAfterWorldPosComputed from '@/sketches/062_star_track/shaders/star/vertexAfterWorldPosComputed.glsl';
-import star_fragmentDefinitions from '@/sketches/062_star_track/shaders/star/fragmentDefinitions.glsl';
-import star_fragmentCustomDiffuse from '@/sketches/062_star_track/shaders/star/fragmentCustomDiffuse.glsl';
+
+import mesh_fragmentDefinitions from './shaders/mesh/fragmentDefinitions.glsl';
+import mesh_fragmentCustomDiffuse from './shaders/mesh/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
@@ -90,8 +81,6 @@ const sketch = async ({ canvas, width, height }) => {
           path.push(new Vector3(x, y, z));
 
           sm += (Math.PI * 2) / segments;
-
-          // step += Math.PI*2/segments;
         }
         return path;
       })(),
@@ -118,9 +107,6 @@ const sketch = async ({ canvas, width, height }) => {
 
   // ---------------------------------------
 
-  meshMaterial.Vertex_Definitions(mesh_vertexDefinitions);
-  meshMaterial.Vertex_Before_PositionUpdated(mesh_vertexBeforePositionUpdated);
-  meshMaterial.Vertex_After_WorldPosComputed(mesh_vertexAfterWorldPosComputed);
   meshMaterial.Fragment_Definitions(mesh_fragmentDefinitions);
   meshMaterial.Fragment_Custom_Diffuse(mesh_fragmentCustomDiffuse);
 
@@ -134,8 +120,8 @@ const sketch = async ({ canvas, width, height }) => {
   // ---------------------------------------
 
   const ssao = new SSAO2RenderingPipeline('ssao', scene, {
-    ssaoRatio: 1.5, // Ratio of the SSAO post-process, in a lower resolution
-    blurRatio: 1, // Ratio of the combine post-process (combines the SSAO and the scene)
+    ssaoRatio: 1.5,
+    blurRatio: 1,
   });
   ssao.radius = 0.5;
   ssao.totalStrength = 0.75;
@@ -150,13 +136,6 @@ const sketch = async ({ canvas, width, height }) => {
   const defaultPipeline = new DefaultRenderingPipeline('default', false, scene, [camera]);
   defaultPipeline.fxaaEnabled = true;
   defaultPipeline.samples = 8;
-
-  // //
-  // defaultPipeline.bloomEnabled = true;
-  // defaultPipeline.bloomThreshold = 0.17;
-  // defaultPipeline.bloomWeight = 0.5;
-  // defaultPipeline.bloomKernel = 100;
-  // defaultPipeline.bloomScale = 0.9;
 
   // -------------------------------
 
