@@ -5,17 +5,14 @@ import { Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
-import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import '@babylonjs/core/Loading/Plugins/babylonFileLoader';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
-import { VertexData } from '@babylonjs/core';
+import '@babylonjs/core';
 
 const settings = {
   animate: true,
@@ -28,11 +25,6 @@ const sketch = async ({ canvas, width, height }) => {
     stencil: true,
   });
 
-  //
-  // Settings ===============================
-  //
-
-  const initTime = +new Date();
 
   //
   // Main scene ===============================
@@ -44,17 +36,6 @@ const sketch = async ({ canvas, width, height }) => {
   const camera = new ArcRotateCamera('camera', -Math.PI / 2, 1.53, 95, new Vector3(0, 0, 0), scene);
   camera.fov = 1.0;
   camera.minZ = 0.1;
-  camera.lowerRadiusLimit = 50;
-  camera.upperRadiusLimit = 100;
-  camera.wheelDeltaPercentage = 0.01;
-  camera.pinchDeltaPercentage = 0.01;
-  // camera.lowerBetaLimit = .1;
-  // camera.upperBetaLimit = Math.PI / 2 - 0.001;
-
-  // camera.useAutoRotationBehavior = true;
-  // camera.autoRotationBehavior.idleRotationSpeed = 0.2;
-
-  // camera.attachControl(canvas, true);
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(0, 1, 0), scene);
   baseLight.diffuse = new Color3(1.0, 1.0, 1.0);
