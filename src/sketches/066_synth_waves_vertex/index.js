@@ -73,11 +73,9 @@ const sketch = async ({ canvas, width, height }) => {
   const bufferUseColor = new Float32Array(meshesCount * 3);
   const bufferRFactor1 = new Float32Array(meshesCount * 3);
 
-  const color = new Color3();
   let idx = 0;
   for (let n = 0; n < meshesCount; n += 1) {
     const rFactor1 = Math.random();
-    Color3.HSVtoRGBToRef(Math.random() * 360, 0.75, 1, color, color);
 
     for (let i = 0; i < 3; i += 1) {
       const step = i === 1 ? 0.01 : 0.009;
