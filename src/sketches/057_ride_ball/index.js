@@ -9,7 +9,7 @@ import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
 import { DynamicTexture } from '@babylonjs/core';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
-import {DefaultRenderingPipeline} from "@babylonjs/core/PostProcesses/RenderPipeline";
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { colorPalette } from './colorPalette';
 import { Brush } from './Brush';
 
@@ -182,8 +182,8 @@ const sketch = async ({ canvas, width, height }) => {
       ssaoRatio: 1.0, // Ratio of the SSAO post-process, in a lower resolution
       blurRatio: 1.0, // Ratio of the combine post-process (combines the SSAO and the scene)
     });
-    ssao.radius = 0.05;
-    ssao.totalStrength = 2.3;
+    ssao.radius = 0.5;
+    ssao.totalStrength = 1.3;
     ssao.expensiveBlur = false;
     ssao.samples = 16;
     ssao.maxZ = 100;
@@ -211,13 +211,13 @@ const sketch = async ({ canvas, width, height }) => {
 
   defaultPipeline.bloomEnabled = true;
   defaultPipeline.bloomThreshold = 0.17;
-  defaultPipeline.bloomWeight = .2;
+  defaultPipeline.bloomWeight = 0.2;
   defaultPipeline.bloomKernel = 50;
   defaultPipeline.bloomScale = 0.9;
 
   defaultPipeline.imageProcessing.vignetteEnabled = true;
   defaultPipeline.imageProcessing.vignetteColor = new Color3(24 / 255, 32 / 255, 38 / 255);
-  defaultPipeline.imageProcessing.vignetteCameraFov = .13;
+  defaultPipeline.imageProcessing.vignetteCameraFov = 0.13;
   defaultPipeline.imageProcessing.vignetteWeight = 100.0;
 
   return {
@@ -231,7 +231,7 @@ const sketch = async ({ canvas, width, height }) => {
         brushes[i].update();
       }
 
-      earthTextureContext.fillStyle = `hsla(0, 0%, 98%, ${deltaTime*5})`;
+      earthTextureContext.fillStyle = `hsla(0, 0%, 98%, ${deltaTime * 5})`;
       earthTextureContext.fillRect(0, 0, earthTextureSize, earthTextureSize);
 
       // Грузим обновления по текстурке в видяху
