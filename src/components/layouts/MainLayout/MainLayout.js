@@ -5,8 +5,7 @@ import Header from '@/components/layouts/MainLayout/Header/Header';
 import styles from './styles.module.scss';
 
 const MainLayout = ({ children }) => {
-  let noHeader = window.location.href.includes('noheader');
-  console.log(noHeader);
+  const noHeader = window.location.href.includes('noheader');
 
   return (
     <div className={styles.layout}>
