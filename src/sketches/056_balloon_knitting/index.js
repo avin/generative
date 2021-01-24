@@ -9,6 +9,7 @@ import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 
 const settings = {
   animate: true,
