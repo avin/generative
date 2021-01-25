@@ -13,6 +13,9 @@ import { CubeTexture } from '@babylonjs/core/Materials/Textures/cubeTexture';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
+import { ProceduralTexture } from '@babylonjs/core';
+import { Effect } from '@babylonjs/core/Materials/effect';
+import noisePixelShader from './shaders/noisePixelShader.glsl';
 
 const settings = {
   animate: true,
@@ -44,14 +47,13 @@ const sketch = async ({ canvas, width, height }) => {
   camera.fov = 0.8;
   camera.minZ = 0.1;
 
-  // camera.attachControl(canvas, true);
+  camera.attachControl(canvas, true);
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(0, 1, 0), scene);
   baseLight.diffuse = new Color3(1.0, 1.0, 1.0);
   baseLight.groundColor = new Color3(0.75, 0.75, 0.75);
-  baseLight.specular = new Color3(0.50, 0.50, 0.50);
+  baseLight.specular = new Color3(0.5, 0.5, 0.5);
   baseLight.intensity = 1.0;
-
 
   const light = new DirectionalLight('dir01', new Vector3(-1, -1.5, -1), scene);
   light.position = new Vector3(20, 20, 20);
@@ -85,28 +87,46 @@ const sketch = async ({ canvas, width, height }) => {
 
       boxes.push({
         pos: new Vector3(x - rowSize / 2, 0, z - rowSize / 2),
+        rPos: [x, z],
       });
     }
   }
 
   boxMesh.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
 
+  Effect.ShadersStore.noisePixelShader = noisePixelShader;
+  const noiseTexture = new ProceduralTexture('flowNrm', rowSize, 'noise', scene, null, false, false);
+
+  function decodeUInt32(rgba){
+    return rgba[0] + rgba[1]/255.0 + rgba[2]/65025.0 + rgba[3]/16581375.0;
+  }
+
   function updateBoxesScale(time) {
-    for (let i = 0; i < boxes.length; i += 1) {
-      const { pos } = boxes[i];
+    noiseTexture.readPixels(0, 0, null, true).then(data => {
+      for (let i = 0; i < boxes.length; i += 1) {
+        const { pos, rPos } = boxes[i];
 
-      const { x, z } = pos;
+        const { x, z } = pos;
+        const [rx, rz] = rPos;
 
-      const scaleY = random.noise3D(x * 0.1, z * 0.1, time, 2.0, 2) + 5;
+        const sf = decodeUInt32([
+          data[rx * rowSize * 4 + rz * 4]/255,
+          data[rx * rowSize * 4 + rz * 4+1]/255,
+          data[rx * rowSize * 4 + rz * 4+1]/255,
+          data[rx * rowSize * 4 + rz * 4+1]/255,
+        ]);
 
-      const scaling = new Vector3(0.75, scaleY, 0.75);
-      const transition = new Vector3(x, +scaleY / 2, z);
-      const baseRotation = new Quaternion();
+        const scaleY = sf * 15. + 0;
 
-      const matrix = Matrix.Compose(scaling, baseRotation, transition);
+        const scaling = new Vector3(0.75, scaleY, 0.75);
+        const transition = new Vector3(x, +scaleY / 2, z);
+        const baseRotation = new Quaternion();
 
-      matrix.copyToArray(bufferMatrices, i * 16);
-    }
+        const matrix = Matrix.Compose(scaling, baseRotation, transition);
+
+        matrix.copyToArray(bufferMatrices, i * 16);
+      }
+    });
 
     boxMesh.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
   }
@@ -152,11 +172,13 @@ const sketch = async ({ canvas, width, height }) => {
 
   return {
     render({ time, deltaTime }) {
+      noiseTexture.setFloat('iTime', time);
+
       updateBoxesScale(time * 0.25);
 
-      camera.alpha += deltaTime*.25;
+      camera.alpha += deltaTime * 0.25;
 
-      camera.fov = 1. - (Math.sin(time*.5)*.5+.5)*.25
+      camera.fov = 1 - (Math.sin(time * 0.5) * 0.5 + 0.5) * 0.25;
 
       scene.render();
     },
