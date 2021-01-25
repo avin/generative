@@ -39,6 +39,10 @@ setTimeout(function () {
 }, 500);
 ```
 
+## Ideas 
+
+setTextureFromPostProcess
+
 ## Babylon: Thin instances and shadow
 
 https://www.babylonjs-playground.com/#RLQ5JX#9
