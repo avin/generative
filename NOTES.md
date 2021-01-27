@@ -39,9 +39,33 @@ setTimeout(function () {
 }, 500);
 ```
 
+## Babylon: Render loop
+
+```js
+const initTime = +new Date();
+let prevTime = initTime;
+let renderTime = 0;
+scene.registerBeforeRender(() => {
+
+  const time = (+new Date() - initTime) * 0.001;
+
+  const deltaTime = time - prevTime;
+  prevTime = time;
+
+  const delta = Math.min(deltaTime, 1/60);
+  renderTime += delta;
+  
+  // use renderTime in shaders
+
+  // ......
+
+});
+```
+
 ## Ideas 
 
 setTextureFromPostProcess
+texture.refreshRate = 0
 
 ## Babylon: Thin instances and shadow
 
