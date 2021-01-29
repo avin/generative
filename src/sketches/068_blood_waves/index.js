@@ -120,12 +120,7 @@ const sketch = async ({ canvas, width, height }) => {
   // ------------------------------
 
   Effect.ShadersStore.customFragmentShader = postprocessFragment;
-
-  const postProcess = new PostProcess('shade-sides', 'custom', ['screenSize', 'threshold'], null, 1.0, camera);
-  postProcess.onApply = effect => {
-    effect.setFloat2('screenSize', postProcess.width, postProcess.height);
-    effect.setFloat('threshold', 0.3);
-  };
+  new PostProcess('shade-sides', 'custom', null, null, 1.0, camera);
 
   // ------------------------------
 
