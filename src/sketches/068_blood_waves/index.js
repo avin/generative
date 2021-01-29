@@ -14,8 +14,6 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import main_vertexDefinitions from './shaders/main/vertexDefinitions.glsl';
 import main_vertexBeforePositionUpdated from './shaders/main/vertexBeforePositionUpdated.glsl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
-import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-
 
 const settings = {
   animate: true,
@@ -123,14 +121,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   Effect.ShadersStore.customFragmentShader = postprocessFragment;
 
-  const postProcess = new PostProcess(
-    'shade-sides',
-    'custom',
-    ['screenSize', 'threshold'],
-    null,
-    1.0,
-    camera,
-  );
+  const postProcess = new PostProcess('shade-sides', 'custom', ['screenSize', 'threshold'], null, 1.0, camera);
   postProcess.onApply = effect => {
     effect.setFloat2('screenSize', postProcess.width, postProcess.height);
     effect.setFloat('threshold', 0.3);
