@@ -8,10 +8,14 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
+import { ImageProcessingConfiguration, PostProcess } from '@babylonjs/core';
+import { Effect } from '@babylonjs/core/Materials/effect';
 
 import main_vertexDefinitions from './shaders/main/vertexDefinitions.glsl';
 import main_vertexBeforePositionUpdated from './shaders/main/vertexBeforePositionUpdated.glsl';
-import { ImageProcessingConfiguration } from '@babylonjs/core';
+import postprocessFragment from './shaders/postprocess/fragment.glsl';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+
 
 const settings = {
   animate: true,
@@ -31,7 +35,8 @@ const sketch = async ({ canvas, width, height }) => {
   //
 
   const scene = new Scene(engine);
-  scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
+  // scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
+  scene.clearColor = new Color3(255 / 255, 22 / 255, 26 / 255);
 
   scene.imageProcessingConfiguration.toneMappingEnabled = true;
   scene.imageProcessingConfiguration.toneMappingType = ImageProcessingConfiguration.TONEMAPPING_ACES;
@@ -112,6 +117,23 @@ const sketch = async ({ canvas, width, height }) => {
   mainMaterial.onBind = () => {
     const time = (+new Date() - initTime) * 0.001;
     mainMaterial.getEffect().setFloat('iTime', time);
+  };
+
+  // ------------------------------
+
+  Effect.ShadersStore.customFragmentShader = postprocessFragment;
+
+  const postProcess = new PostProcess(
+    'shade-sides',
+    'custom',
+    ['screenSize', 'threshold'],
+    null,
+    1.0,
+    camera,
+  );
+  postProcess.onApply = effect => {
+    effect.setFloat2('screenSize', postProcess.width, postProcess.height);
+    effect.setFloat('threshold', 0.3);
   };
 
   // ------------------------------
