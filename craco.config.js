@@ -1,5 +1,6 @@
 const path = require('path');
-const { loaderByName, addBeforeLoader } = require('@craco/craco');
+const { loaderByName, addBeforeLoader, addPlugins } = require('@craco/craco');
+const CompressionPlugin = require('compression-webpack-plugin');
 const _ = require('lodash');
 
 module.exports = {
@@ -8,7 +9,7 @@ module.exports = {
   },
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
-      // console.log(webpackConfig.module.rules);
+      // console.log(webpackConfig);
       // process.exit(0);
 
       //
@@ -25,6 +26,13 @@ module.exports = {
       // Alias
       //
       _.set(webpackConfig, ['resolve', 'alias', '@'], path.resolve(__dirname, `${paths.appSrc}/`));
+
+      //
+      // Gz static
+      //
+      if (env === 'production') {
+        addPlugins(webpackConfig, [new CompressionPlugin()]);
+      }
 
       return webpackConfig;
     },

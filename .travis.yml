@@ -10,7 +10,7 @@ before_script:
   - yarn
 
 script:
-  - yarn run build
+  - NODE_OPTIONS=--max_old_space_size=8172 yarn run build
 
 deploy:
   provider: pages
