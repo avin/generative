@@ -16,7 +16,6 @@ import star_vertexAfterWorldPosComputed from './shaders/star/vertexAfterWorldPos
 import star_fragmentDefinitions from './shaders/star/fragmentDefinitions.glsl';
 import star_fragmentCustomDiffuse from './shaders/star/fragmentCustomDiffuse.glsl';
 
-
 const settings = {
   animate: true,
   context: 'webgl2',
@@ -37,8 +36,8 @@ const sketch = async ({ canvas, width, height }) => {
   const rainHeight = 50;
   const speedFactor = 0.25;
 
-  const spaceColor = Color3.FromHexString('#10161A')
-  const starColor = Color3.FromHexString('#F5F8FA')
+  const spaceColor = Color3.FromHexString('#10161A');
+  const starColor = Color3.FromHexString('#F5F8FA');
 
   const initTime = +new Date();
 
@@ -52,10 +51,9 @@ const sketch = async ({ canvas, width, height }) => {
   scene.fogDensity = 0.0225;
   scene.fogColor = spaceColor;
 
-  const camera = new ArcRotateCamera('camera', -2., 0, 50, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', -2, 0, 50, new Vector3(0, 0, 0), scene);
   camera.fov = 1.0;
   camera.minZ = 0.1;
-
 
   // camera.attachControl(canvas, true);
 
@@ -66,7 +64,6 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.intensity = 1.0;
 
   // -----------------------------
-
 
   // star material
 
@@ -89,7 +86,7 @@ const sketch = async ({ canvas, width, height }) => {
     const mesh = MeshBuilder.CreateTube('tube', {
       path,
       tessellation: 5,
-      radiusFunction: (i) => {
+      radiusFunction: i => {
         const maxRadius = 0.0125;
         const f = 1 - (i + 1) / segments;
         return maxRadius * f;
@@ -137,7 +134,6 @@ const sketch = async ({ canvas, width, height }) => {
   starMaterial.Fragment_Definitions(star_fragmentDefinitions);
   starMaterial.Fragment_Custom_Diffuse(star_fragmentCustomDiffuse);
 
-
   starMaterial.AddAttribute('rFactor1');
   starMaterial.AddAttribute('idx');
 
@@ -177,6 +173,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

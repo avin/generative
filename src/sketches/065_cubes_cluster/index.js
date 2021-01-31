@@ -97,8 +97,8 @@ const sketch = async ({ canvas, width, height }) => {
   Effect.ShadersStore.noisePixelShader = noisePixelShader;
   const noiseTexture = new ProceduralTexture('flowNrm', rowSize, 'noise', scene, null, false, false);
 
-  function decodeUInt32(rgba){
-    return rgba[0] + rgba[1]/255.0 + rgba[2]/65025.0 + rgba[3]/16581375.0;
+  function decodeUInt32(rgba) {
+    return rgba[0] + rgba[1] / 255.0 + rgba[2] / 65025.0 + rgba[3] / 16581375.0;
   }
 
   function updateBoxesScale(time) {
@@ -110,13 +110,13 @@ const sketch = async ({ canvas, width, height }) => {
         const [rx, rz] = rPos;
 
         const sf = decodeUInt32([
-          data[rx * rowSize * 4 + rz * 4]/255,
-          data[rx * rowSize * 4 + rz * 4+1]/255,
-          data[rx * rowSize * 4 + rz * 4+1]/255,
-          data[rx * rowSize * 4 + rz * 4+1]/255,
+          data[rx * rowSize * 4 + rz * 4] / 255,
+          data[rx * rowSize * 4 + rz * 4 + 1] / 255,
+          data[rx * rowSize * 4 + rz * 4 + 1] / 255,
+          data[rx * rowSize * 4 + rz * 4 + 1] / 255,
         ]);
 
-        const scaleY = sf * 15. + 0;
+        const scaleY = sf * 15 + 0;
 
         const scaling = new Vector3(0.75, scaleY, 0.75);
         const transition = new Vector3(x, +scaleY / 2, z);
@@ -188,6 +188,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

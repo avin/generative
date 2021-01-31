@@ -46,7 +46,7 @@ const sketch = async ({ canvas, width, height }) => {
   camera.upperRadiusLimit = 50;
   camera.wheelDeltaPercentage = 0.01;
   camera.pinchDeltaPercentage = 0.01;
-  camera.lowerBetaLimit = .1;
+  camera.lowerBetaLimit = 0.1;
   camera.upperBetaLimit = Math.PI / 2 - 0.001;
 
   camera.useAutoRotationBehavior = true;
@@ -73,7 +73,7 @@ const sketch = async ({ canvas, width, height }) => {
         const length = Math.PI * 2 * 2;
         const step = length / segments;
         let sm = 0;
-        for (let i = 0; i < length + step*2; i += step) {
+        for (let i = 0; i < length + step * 2; i += step) {
           const iPhase = i * 3 + sm;
           const x = Math.cos(i) * (size + Math.sin(iPhase) * radius);
           const y = Math.cos(iPhase);
@@ -97,7 +97,7 @@ const sketch = async ({ canvas, width, height }) => {
     scene,
   );
 
-  mesh.rotate(new Vector3(1,0,0), Math.PI);
+  mesh.rotate(new Vector3(1, 0, 0), Math.PI);
 
   const meshMaterial = new CustomMaterial('meshMaterial', scene);
   meshMaterial.emissiveColor = Color3.Black();
@@ -149,6 +149,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

@@ -71,7 +71,7 @@ const sketch = async ({ canvas, width, height }) => {
   let time = 0;
   return {
     render({ deltaTime, frame }) {
-      const delta = Math.min(deltaTime, 1/60);
+      const delta = Math.min(deltaTime, 1 / 60);
       time += delta;
 
       effectTexture.setFloat('iTime', time);
@@ -86,6 +86,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

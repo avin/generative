@@ -61,7 +61,11 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.specular = new Color3(0.0, 0.0, 0.0);
   baseLight.intensity = 1.0;
 
-  const plane = MeshBuilder.CreateGround('plane', { subdivisionsX: 1, subdivisionsY: 512, width: meshesCount/40, height: 2 }, scene);
+  const plane = MeshBuilder.CreateGround(
+    'plane',
+    { subdivisionsX: 1, subdivisionsY: 512, width: meshesCount / 40, height: 2 },
+    scene,
+  );
 
   const planeMaterial = new CustomMaterial('planeMaterial', scene);
   // planeMaterial.wireframe = true;
@@ -120,7 +124,7 @@ const sketch = async ({ canvas, width, height }) => {
     const time = (+new Date() - initTime) * 0.001;
     planeMaterial.getEffect().setFloat('iTime', time);
     planeMaterial.getEffect().setFloat('count', meshesCount);
-    planeMaterial.getEffect().setFloat('sizeFactor', engine.getRenderWidth()/engine.getRenderHeight());
+    planeMaterial.getEffect().setFloat('sizeFactor', engine.getRenderWidth() / engine.getRenderHeight());
   };
 
   // --------------------------------------
@@ -135,6 +139,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

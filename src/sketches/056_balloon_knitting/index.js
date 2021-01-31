@@ -41,7 +41,7 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.groundColor = new Color3(0.5, 0.5, 0.5);
   baseLight.specular = new Color3(0.25, 0.25, 0.25);
 
-  const createCapsule = (options) => {
+  const createCapsule = options => {
     options = {
       bevelSize: 0.05,
       boxWidth: 2,
@@ -77,7 +77,7 @@ const sketch = async ({ canvas, width, height }) => {
     })();
 
     const direction = k % 2 ? +1 : -1;
-    path.forEach((step) => {
+    path.forEach(step => {
       const l = step.x + time;
 
       step.y = Math.sin(l * Math.PI * direction) * 0.5;
@@ -133,7 +133,7 @@ const sketch = async ({ canvas, width, height }) => {
     i2.rotate(new Vector3(1, 0, 0), i * ((Math.PI * 2) / total) * -1);
   }
 
-  [block1, block2].forEach((block) => {
+  [block1, block2].forEach(block => {
     const instanceCount = total;
     const colorData = new Float32Array(4 * instanceCount);
     for (let index = 0; index < instanceCount; index += 1) {
@@ -199,6 +199,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 

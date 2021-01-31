@@ -41,10 +41,10 @@ const sketch = async ({ canvas, width, height }) => {
   const light = new HemisphericLight('hemiLight', new Vector3(-1, 1, 0), scene);
   light.diffuse = new Color3(1, 1, 1);
   light.specular = new Color3(0, 0, 0);
-  light.groundColor = new Color3(.5, .5, .5);
+  light.groundColor = new Color3(0.5, 0.5, 0.5);
 
   const mat = new CustomMaterial('s', scene);
-  mat.specularColor = new Color3(0,0,0);
+  mat.specularColor = new Color3(0, 0, 0);
 
   const meshesCount = 10000;
 
@@ -94,11 +94,11 @@ const sketch = async ({ canvas, width, height }) => {
 
   const sphere = MeshBuilder.CreateSphere('sphere', { diameter: 0.5775, segments: 16 }, scene);
   const sphereMaterial = new StandardMaterial('texture1', scene);
-  sphere.sideOrientation = Mesh.DOUBLESIDE
-  sphereMaterial.diffuseColor = new Color3(72./255., 175./255., 240./255.);
-  sphereMaterial.specularColor = new Color3(0,0,0);
+  sphere.sideOrientation = Mesh.DOUBLESIDE;
+  sphereMaterial.diffuseColor = new Color3(72 / 255, 175 / 255, 240 / 255);
+  sphereMaterial.specularColor = new Color3(0, 0, 0);
   sphere.material = sphereMaterial;
-  sphere.visibility = .5
+  sphere.visibility = 0.5;
 
   //
   // PostProcess
@@ -134,6 +134,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
+    babylonScene: scene,
   };
 };
 
