@@ -55,7 +55,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const displaypass = new DisplayPassPostProcess('displaypass', 1, textureCamera);
   displaypass.enablePixelPerfectMode = true;
-  displaypass.onApply = effect => {
+  displaypass.onApply = (effect) => {
     effect.setTexture('passSampler', effectTexture);
   };
 
@@ -86,7 +86,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 

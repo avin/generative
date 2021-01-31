@@ -143,7 +143,7 @@ const sketch = async ({ canvas, width, height }) => {
     const mesh = MeshBuilder.CreateTube('tube', {
       path,
       tessellation: 3,
-      radiusFunction: i => {
+      radiusFunction: (i) => {
         const maxRadius = 0.0125;
         const f = 1 - (i + 1) / segments;
         return maxRadius * f;
@@ -202,7 +202,7 @@ const sketch = async ({ canvas, width, height }) => {
   roundMeshMaterial.Fragment_Custom_Diffuse(round_fragmentCustomDiffuse);
   roundMeshMaterial.Fragment_Before_FragColor(round_fragmentBeforeFragColor);
 
-  [blobMaterial, roundMeshMaterial].forEach(material => {
+  [blobMaterial, roundMeshMaterial].forEach((material) => {
     material.AddAttribute('rFactor1');
     material.AddAttribute('idx');
 
@@ -245,7 +245,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 

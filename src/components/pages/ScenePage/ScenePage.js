@@ -57,7 +57,7 @@ class ScenePage extends React.Component {
     this.sketchManagerRef.current = await canvasSketch(sketch, sketchSettings);
 
     const origRender = this.sketchManagerRef.current.sketch.render;
-    this.sketchManagerRef.current.sketch.render = params => {
+    this.sketchManagerRef.current.sketch.render = (params) => {
       stats.begin();
 
       origRender(params);
@@ -89,17 +89,7 @@ class ScenePage extends React.Component {
       document.querySelector('#debugger').appendChild(stats.dom);
     }
 
-    const sketch = await this.loadSketch();
-
-    const inspector = window.location.href.includes('inspector');
-    if (inspector && sketch.babylonScene) {
-      await import('@babylonjs/core/Debug/debugLayer');
-      await import('@babylonjs/inspector');
-
-      sketch.babylonScene.debugLayer.show({
-        globalRoot: document.querySelector('#debugger'),
-      });
-    }
+    await this.loadSketch();
   }
 
   componentWillUnmount() {

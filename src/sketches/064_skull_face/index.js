@@ -99,7 +99,7 @@ const sketch = async ({ canvas, width, height }) => {
   // ---------------------------------------
 
   function moveEyes() {
-    const pickInfo = scene.pick(scene.pointerX, scene.pointerY, mesh => mesh === pickPlane);
+    const pickInfo = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === pickPlane);
     let pickPoint;
     if (pickInfo.hit) {
       pickPoint = pickInfo.pickedPoint;
@@ -145,7 +145,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 

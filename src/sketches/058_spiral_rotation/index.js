@@ -66,7 +66,7 @@ const sketch = async ({ canvas, width, height }) => {
     'tube',
     {
       path,
-      radiusFunction: i => {
+      radiusFunction: (i) => {
         if (i === 0 || i === path.length - 1) {
           return 0;
         }
@@ -108,7 +108,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 

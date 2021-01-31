@@ -58,7 +58,7 @@
     "canvas-sketch-util": "1.10.0",
     "chaikin-smooth": "1.0.4",
     "clsx": "1.1.1",
-    "compression-webpack-plugin": "7.1.2",
+    "compression-webpack-plugin": "6.1.1",
     "customize-cra": "1.0.0",
     "d3-array": "2.11.0",
     "gl-matrix": "3.3.0",

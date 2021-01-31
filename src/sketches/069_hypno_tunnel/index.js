@@ -15,7 +15,6 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import main_fragmentCustomAlbedo from './shaders/main/fragmentCustomAlbedo.glsl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 
-
 const settings = {
   animate: true,
   context: 'webgl2',
@@ -73,7 +72,7 @@ const sketch = async ({ canvas, width, height }) => {
 
     const mesh = MeshBuilder.CreateTube('sphere', {
       path,
-      radiusFunction: i => {
+      radiusFunction: (i) => {
         const xf = (i + time * 5) * 0.01 * 5;
         const fr = random.noise3D(xf, 0, 200) * 0.112;
 
@@ -155,7 +154,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 

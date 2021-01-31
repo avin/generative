@@ -86,7 +86,7 @@ const sketch = async ({ canvas, width, height }) => {
     const mesh = MeshBuilder.CreateTube('tube', {
       path,
       tessellation: 5,
-      radiusFunction: i => {
+      radiusFunction: (i) => {
         const maxRadius = 0.0125;
         const f = 1 - (i + 1) / segments;
         return maxRadius * f;
@@ -173,7 +173,6 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene,
   };
 };
 
