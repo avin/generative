@@ -30,5 +30,6 @@ customize-cra.log*
 .vscode
 .cache
 .tmp
+.eslintcache
 
 __REMOVE

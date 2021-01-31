@@ -17,7 +17,7 @@ import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const tmpVector1 = Vector3.Zero();
@@ -127,7 +127,7 @@ const sketch = async ({ canvas, width, height }) => {
     transition.y = spherePositions[i * 3 + 1];
     transition.z = spherePositions[i * 3 + 2];
 
-    scaling.y = 1 + (Math.random() * 0.5 - 0.5) * .5;
+    scaling.y = 1 + (Math.random() * 0.5 - 0.5) * 0.5;
 
     const rx = (Math.random() * 0.5 - 0.5) * 0.5;
     const ry = (Math.random() * 0.5 - 0.5) * 0.5;
@@ -186,7 +186,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene
+    babylonScene: scene,
   };
 };
 

@@ -2,7 +2,7 @@ import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { Vector3, Vector2 } from '@babylonjs/core/Maths/math';
-import { Effect } from "@babylonjs/core/Materials/effect";
+import { Effect } from '@babylonjs/core/Materials/effect';
 import { PointsCloudSystem } from '@babylonjs/core/Particles/pointsCloudSystem';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -13,7 +13,7 @@ import particlesFragShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -57,7 +57,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   for (let i = 0; i < stackSize; i += 1) {
     wormPositions.forEach(([x, y]) => {
-      pcs.addPoints(1, particle => {
+      pcs.addPoints(1, (particle) => {
         particle.position = new Vector3(x, i, y);
       });
     });

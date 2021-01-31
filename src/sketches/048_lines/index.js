@@ -6,6 +6,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { Vector3, Matrix } from '@babylonjs/core/Maths/math';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import '@babylonjs/core/Rendering/depthRendererSceneComponent';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
 import { MotionBlurPostProcess } from '@babylonjs/core/PostProcesses/motionBlurPostProcess';
@@ -17,7 +18,7 @@ import customFragmentShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {

@@ -11,7 +11,7 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 const settings = {
   dimensions: [1280, 1280],
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = ({ canvas, width, height }) => {

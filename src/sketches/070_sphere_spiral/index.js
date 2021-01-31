@@ -14,7 +14,7 @@ import mesh_fragmentCustomAlbedo from './shaders/mesh/fragmentCustomAlbedo.glsl'
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -121,7 +121,7 @@ const sketch = async ({ canvas, width, height }) => {
     unload() {
       engine.dispose();
     },
-    babylonScene: scene
+    babylonScene: scene,
   };
 };
 

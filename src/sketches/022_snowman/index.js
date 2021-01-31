@@ -1,5 +1,4 @@
 import SoundCloudAudio from 'soundcloud-audio';
-import { spring } from 'popmotion';
 
 import floorFragmentShader from './shaders/floor/frag.glsl';
 import glassFragmentShader from './shaders/glass/frag.glsl';
@@ -118,8 +117,6 @@ const scPlayer = new SoundCloudAudio('b95f61a90da961736c03f659c03cb0cc');
 const sketch = ({ context, canvas }) => {
   let ready = false;
 
-  let target = 20;
-
   const el = document.createElement('div');
   el.innerHTML = 'Click to let it snow!';
   el.style.cssText = 'position: absolute; font-size: 100px; font-weight: bold; cursor:pointer; font-family: cursive;';
@@ -130,13 +127,10 @@ const sketch = ({ context, canvas }) => {
       return;
     }
 
-    const targetAnimation = spring({ from: 20, to: 2, stiffness: 10 });
-    targetAnimation.start(v => (target = v));
-
     canvas.parentNode.removeChild(el);
     ready = true;
 
-    scPlayer.resolve('https://soundcloud.com/trap-seacrest/let-it-snow-trap-remix', data => {
+    scPlayer.resolve('https://soundcloud.com/trap-seacrest/let-it-snow-trap-remix', (data) => {
       scPlayer.play();
 
       const audio = scPlayer.audio;
@@ -179,7 +173,7 @@ const sketch = ({ context, canvas }) => {
   lightDir1.castShadow = true;
   scene.add(lightDir1);
 
-  [lightDir1].forEach(light => {
+  [lightDir1].forEach((light) => {
     // Set up shadow properties for the light
     light.shadow.mapSize.width = 1024; // default
     light.shadow.mapSize.height = 1024; // default
@@ -229,7 +223,7 @@ const sketch = ({ context, canvas }) => {
     for (let i = 0; i < 3; i += 1) {
       const radius = 1 - i * 0.22;
       const geometry = new THREE.DodecahedronGeometry(radius, 3);
-      geometry.vertices.forEach(v => {
+      geometry.vertices.forEach((v) => {
         v.x += randomInstance.range(-0.01, 0.01);
         v.y += randomInstance.range(-0.01, 0.01);
         v.z += randomInstance.range(-0.01, 0.01);
@@ -257,7 +251,7 @@ const sketch = ({ context, canvas }) => {
     for (let i = 0; i < 3; i += 1) {
       const radius = 0.075;
       const geometry = new THREE.DodecahedronGeometry(radius, 1);
-      geometry.vertices.forEach(v => {
+      geometry.vertices.forEach((v) => {
         const rStep = radius * 0.05;
         v.x += randomInstance.range(-rStep, rStep);
         v.y += randomInstance.range(-rStep, rStep);
@@ -281,7 +275,7 @@ const sketch = ({ context, canvas }) => {
     for (let i = -1; i <= 1; i += 2) {
       const radius = 0.075;
       const geometry = new THREE.DodecahedronGeometry(radius, 1);
-      geometry.vertices.forEach(v => {
+      geometry.vertices.forEach((v) => {
         const rStep = radius * 0.05;
         v.x += randomInstance.range(-rStep, rStep);
         v.y += randomInstance.range(-rStep, rStep);
@@ -333,7 +327,7 @@ const sketch = ({ context, canvas }) => {
   {
     const width = 0.51;
     const geometry = new THREE.CylinderGeometry(0, width * 0.125, width, 16, 10);
-    geometry.vertices.forEach(v => {
+    geometry.vertices.forEach((v) => {
       const rStep = width * 0.015;
       v.x += randomInstance.range(-rStep, rStep);
       v.y += randomInstance.range(-rStep, rStep);
@@ -357,7 +351,7 @@ const sketch = ({ context, canvas }) => {
     const material = createMouthMaterial();
     const smileWidth = 0.51;
     const geometry = new THREE.CylinderGeometry(smileWidth * 0.035, smileWidth * 0.035, smileWidth, 16, 10);
-    geometry.vertices.forEach(v => {
+    geometry.vertices.forEach((v) => {
       v.x -= v.y * v.y * 1.5;
       v.z += v.y * v.y * 0.25 - v.x * v.x * 5.25;
     });
@@ -397,7 +391,7 @@ const sketch = ({ context, canvas }) => {
     const material = createHatMaterial();
     const width = snowBalls[2].radius;
     const geometry = new THREE.CylinderGeometry(width * 0.55, width * 0.5, width, 16, 10);
-    geometry.vertices.forEach(v => {
+    geometry.vertices.forEach((v) => {
       const rStep = width * 0.025;
       if (v.y > -width / 2) {
         v.x += randomInstance.range(-rStep, rStep);
@@ -434,7 +428,7 @@ const sketch = ({ context, canvas }) => {
     const width = 0.8;
     for (let i = -1; i <= 1; i += 2) {
       const geometry = new THREE.CylinderGeometry(0.02, 0.075, width, 16, 10);
-      geometry.vertices.forEach(v => {
+      geometry.vertices.forEach((v) => {
         const rs = 0.1 * v.y;
 
         v.y += width / 2 + randomInstance.range(-rs, rs);
@@ -466,7 +460,7 @@ const sketch = ({ context, canvas }) => {
   // -------------------------
 
   const particles = new THREE.Geometry(40, 40, 50, 50);
-  particles.vertices = particles.vertices.map(v => {
+  particles.vertices = particles.vertices.map((v) => {
     v.x += (randomInstance.value() - 0.5) * 0.05;
     v.y += (randomInstance.value() - 0.5) * 4 + 6;
     v.z += (randomInstance.value() - 0.5) * 0.05;
@@ -502,11 +496,9 @@ const sketch = ({ context, canvas }) => {
         return;
       }
 
-      hands.forEach(mesh => {
+      hands.forEach((mesh) => {
         mesh.rotation.x = mesh.originalRotationX + Math.sin(time * 7) * 0.3;
       });
-
-      controls.target.set(0, target, 0);
 
       floorMaterial.uniforms.iTime.value = time;
       glassMaterial.uniforms.iTime.value = time;

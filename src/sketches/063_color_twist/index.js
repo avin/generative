@@ -7,6 +7,7 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
@@ -85,7 +86,7 @@ const sketch = async ({ canvas, width, height }) => {
         return path;
       })(),
 
-      radiusFunction: i => {
+      radiusFunction: (i) => {
         if (i === 0) {
           return radius * 0.98;
         }

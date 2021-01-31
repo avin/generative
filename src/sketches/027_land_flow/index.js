@@ -1,10 +1,10 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3, Vector2 } from '@babylonjs/core/Maths/math';
-import { Effect } from "@babylonjs/core/Materials/effect";
-import { DefaultRenderingPipeline } from "@babylonjs/core/PostProcesses/RenderPipeline";
-import "@babylonjs/core/Meshes/meshBuilder";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { Effect } from '@babylonjs/core/Materials/effect';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import '@babylonjs/core/Meshes/meshBuilder';
+import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
@@ -14,7 +14,7 @@ import customFragmentShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -90,7 +90,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   groundMaterial.setFloat('iResolution', new Vector2(1, 1));
 
-  groundMaterial.onBind = mesh => {
+  groundMaterial.onBind = (mesh) => {
     const effect = groundMaterial.getEffect();
     effect.setFloat4('vFogInfos', scene.fogMode, scene.fogStart, scene.fogEnd, scene.fogDensity);
     effect.setColor3('vFogColor', scene.fogColor);

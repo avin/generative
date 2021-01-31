@@ -27,7 +27,7 @@ import backgroundVertex from './shaders/background/vertex.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {

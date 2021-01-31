@@ -1,6 +1,5 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-// import { hot } from 'react-hot-loader';
 import App from '@/components/app/App/App';
 
 const Root = ({ store }) => {
@@ -11,5 +10,4 @@ const Root = ({ store }) => {
   );
 };
 
-// export default hot(module)(Root);
 export default Root;

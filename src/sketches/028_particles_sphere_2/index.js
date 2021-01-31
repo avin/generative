@@ -1,7 +1,7 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import { Vector3, Vector2 } from '@babylonjs/core/Maths/math';
-import { Effect } from "@babylonjs/core/Materials/effect";
+import { Effect } from '@babylonjs/core/Materials/effect';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { PointsCloudSystem } from '@babylonjs/core/Particles/pointsCloudSystem';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
@@ -13,7 +13,7 @@ import customFragmentShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -34,8 +34,6 @@ const sketch = async ({ canvas, width, height }) => {
 
   camera.lowerRadiusLimit = 2.25;
   camera.upperRadiusLimit = 2.25;
-
-
 
   Effect.ShadersStore.customVertexShader = customVertexShader;
   Effect.ShadersStore.customFragmentShader = customFragmentShader;
@@ -66,7 +64,7 @@ const sketch = async ({ canvas, width, height }) => {
   pMaterial.setFloat('iResolution', new Vector2(1, 1));
   pMaterial.setFloat('pSize', 5);
 
-  pcs.buildMeshAsync().then(mesh => {
+  pcs.buildMeshAsync().then((mesh) => {
     pcs.mesh.material = pMaterial;
     sphere.dispose();
   });

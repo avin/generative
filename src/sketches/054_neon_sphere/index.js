@@ -20,7 +20,7 @@ import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.gls
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -80,7 +80,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const segmentStep = 0.01;
 
-  const tubePathFunction = rowRadius => {
+  const tubePathFunction = (rowRadius) => {
     const path = [];
     const maxLength = Math.PI * 2;
     const randomStart = Math.random() * maxLength;
@@ -91,7 +91,7 @@ const sketch = async ({ canvas, width, height }) => {
     return path;
   };
 
-  const getRadiusFunction = total => (i, distance, d) => {
+  const getRadiusFunction = (total) => (i, distance, d) => {
     if (i === 0) {
       return 0.0;
     }

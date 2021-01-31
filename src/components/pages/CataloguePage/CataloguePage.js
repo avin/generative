@@ -9,13 +9,19 @@ const scenes = config.scenes.reverse();
 
 const CataloguePage = () => {
   const dispatch = useDispatch();
-  const catalogueScrollPosition = useSelector(state => state.uiSettings.catalogueScrollPosition);
+  const catalogueScrollPosition = useSelector((state) => state.uiSettings.catalogueScrollPosition);
 
   useEffect(() => {
     document.documentElement.scrollTop = catalogueScrollPosition;
 
-    return () => {
+    const scrollHandler = () => {
       dispatch(setUiSettingsValues({ catalogueScrollPosition: document.documentElement.scrollTop }));
+    };
+
+    window.addEventListener('scroll', scrollHandler);
+
+    return () => {
+      window.removeEventListener('scroll', scrollHandler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

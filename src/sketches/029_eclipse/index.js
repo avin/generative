@@ -2,7 +2,7 @@ import createShader from 'canvas-sketch-util/shader';
 import fragmentShader from './shaders/frag.glsl';
 
 const settings = {
-  context: 'webgl',
+  context: 'webgl2',
   animate: true,
 };
 

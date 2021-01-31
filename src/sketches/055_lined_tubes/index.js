@@ -14,7 +14,7 @@ import filler_vertexBeforePositionUpdated from './shaders/filler/vertexBeforePos
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -107,7 +107,7 @@ const sketch = async ({ canvas, width, height }) => {
   contourMaterial.Vertex_Before_PositionUpdated(contour_vertexBeforePositionUpdated);
   fillerMaterial.Vertex_Before_PositionUpdated(filler_vertexBeforePositionUpdated);
 
-  [fillerMaterial, contourMaterial].forEach(material => {
+  [fillerMaterial, contourMaterial].forEach((material) => {
     material.AddUniform('iTime', 'float');
     material.AddUniform('factor', 'float');
     material.AddUniform('speed', 'float');
@@ -126,7 +126,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   // FOV control
 
-  window.addEventListener('mousewheel', e => {
+  window.addEventListener('mousewheel', (e) => {
     const sign = Math.sign(e.wheelDelta) * -1;
 
     camera.fov += sign * 0.05;
