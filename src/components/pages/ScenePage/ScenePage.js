@@ -1,7 +1,12 @@
 import React from 'react';
 import canvasSketch from 'canvas-sketch';
+import Stats from 'stats.js';
 import LoadingPage from '@/components/common/LoadingPage/LoadingPage';
 import styles from './styles.module.scss';
+
+const stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+stats.dom.style.position = 'initial';
 
 class ScenePage extends React.Component {
   state = {
@@ -51,7 +56,18 @@ class ScenePage extends React.Component {
 
     this.sketchManagerRef.current = await canvasSketch(sketch, sketchSettings);
 
+    const origRender = this.sketchManagerRef.current.sketch.render;
+    this.sketchManagerRef.current.sketch.render = params => {
+      stats.begin();
+
+      origRender(params);
+
+      stats.end();
+    };
+
     this.setState({ isReady: true });
+
+    return this.sketchManagerRef.current.sketch;
   }
 
   unloadSketch() {
@@ -67,8 +83,23 @@ class ScenePage extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.loadSketch();
+  async componentDidMount() {
+    const fps = window.location.href.includes('fps');
+    if (fps) {
+      document.querySelector('#debugger').appendChild(stats.dom);
+    }
+
+    const sketch = await this.loadSketch();
+
+    const inspector = window.location.href.includes('inspector');
+    if (inspector && sketch.babylonScene) {
+      await import('@babylonjs/core/Debug/debugLayer');
+      await import('@babylonjs/inspector');
+
+      sketch.babylonScene.debugLayer.show({
+        globalRoot: document.querySelector('#debugger'),
+      });
+    }
   }
 
   componentWillUnmount() {
