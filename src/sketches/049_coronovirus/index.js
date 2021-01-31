@@ -4,6 +4,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import { Vector3, Matrix } from '@babylonjs/core/Maths/math';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -17,7 +18,7 @@ import fragmentBeforeFragColor from './shaders/fragmentBeforeFragColor.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -106,11 +107,11 @@ const sketch = async ({ canvas, width, height }) => {
   pipeline.chromaticAberrationEnabled = true;
   pipeline.chromaticAberration.aberrationAmount = 10;
 
-  pipeline.bloomEnabled = true;
-  pipeline.bloomThreshold = 0.5;
-  pipeline.bloomWeight = 1.0;
-  pipeline.bloomKernel = 70;
-  pipeline.bloomScale = 0.5;
+  // pipeline.bloomEnabled = true;
+  // pipeline.bloomThreshold = 0.5;
+  // pipeline.bloomWeight = 1.0;
+  // pipeline.bloomKernel = 70;
+  // pipeline.bloomScale = 0.5;
 
   pipeline.grainEnabled = true;
   pipeline.grain.intensity = 50;

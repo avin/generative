@@ -3,6 +3,7 @@ import { Scene } from '@babylonjs/core/scene';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import { Vector3, Matrix } from '@babylonjs/core/Maths/math';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
@@ -18,7 +19,7 @@ import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {
