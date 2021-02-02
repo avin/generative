@@ -12,6 +12,8 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/core/Loading/loadingScreen';
 import '@babylonjs/loaders/glTF/2.0/glTFLoader';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_draco_mesh_compression';
+import { PointLight } from '@babylonjs/core';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 
 const settings = {
   animate: true,
@@ -38,12 +40,19 @@ const sketch = async ({ canvas, width, height }) => {
   camera.minZ = 0.9;
   camera.attachControl(canvas, true);
 
-  const baseLight = new HemisphericLight('hemiLight', new Vector3(-2, 2, 0), scene);
+  const baseLight = new HemisphericLight('hemiLight', new Vector3(-2, 2, -1), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
-  baseLight.specular = new Color3(0.0, 0.0, 0.0);
+  baseLight.specular = new Color3(1, 1, 1);
 
+  const pLight = new PointLight('pLight', new Vector3(0, -5, 0), scene);
+  pLight.intensity = 10;
+
+  const pLight2 = new PointLight('pLight', new Vector3(0, -5, 0), scene);
+  pLight2.intensity = 5;
+  pLight2.position = camera.position;
+
+  // SceneLoader.ShowLoadingScreen = false;
   await SceneLoader.AppendAsync('./', 'static/assets/models/bevel-box.glb', scene);
-
   const mesh = scene.meshes[1];
 
   mesh.markVerticesDataAsUpdatable(VertexBuffer.PositionKind, true);
@@ -81,13 +90,13 @@ const sketch = async ({ canvas, width, height }) => {
       positions[i * 3 + 2] = vec.z;
     }
 
-    pl.chromaticAberration.aberrationAmount = (Math.sin((t % 1) * Math.PI) * 70000) / engine.getRenderWidth();
+    pl.chromaticAberration.aberrationAmount = (Math.sin((t % 1) * Math.PI) * 50000) / engine.getRenderWidth();
 
     mesh.updateVerticesData(VertexBuffer.PositionKind, positions);
 
     const indices = mesh.getIndices();
     const normals = [];
-    VertexData.ComputeNormals(positions, indices, normals);
+    VertexData.ComputeNormals(positions, indices, normals, { useRightHandedSystem: true });
 
     mesh.updateVerticesData(VertexBuffer.NormalKind, normals);
   };
@@ -95,7 +104,7 @@ const sketch = async ({ canvas, width, height }) => {
   const mat = new PBRCustomMaterial('plastic', scene);
   // mat.wireframe = true;
   mat.metallic = 0.0;
-  mat.roughness = 0.2;
+  mat.roughness = 0.24;
   mat.albedoColor = new Color3(1, 1, 1);
   mesh.material = mat;
 

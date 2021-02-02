@@ -14,6 +14,7 @@ import '@babylonjs/core/Loading/loadingScreen';
 // import '@babylonjs/loaders/glTF';
 import '@babylonjs/loaders/glTF/2.0/glTFLoader';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_draco_mesh_compression';
+import anime from 'animejs';
 
 const settings = {
   animate: true,
@@ -35,7 +36,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const cAlpha = Math.PI / 4;
   const cBeta = Math.PI / 3;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 5.0, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 10.0, new Vector3(0, 0, 0), scene);
   camera.wheelPrecision = 50;
   camera.minZ = 0.9;
   camera.attachControl(canvas, true);
@@ -44,55 +45,13 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.diffuse = new Color3(1, 1, 1);
   baseLight.specular = new Color3(0.0, 0.0, 0.0);
 
+  SceneLoader.ShowLoadingScreen = false;
   await SceneLoader.AppendAsync('./', 'static/assets/models/bevel-box.glb', scene);
 
   const mesh = scene.meshes[1];
 
   mesh.markVerticesDataAsUpdatable(VertexBuffer.PositionKind, true);
   mesh.markVerticesDataAsUpdatable(VertexBuffer.NormalKind, true);
-
-  const basePositions = new Float32Array(mesh.getVerticesData(VertexBuffer.PositionKind));
-
-  const updatePositions = (time, mesh, pl) => {
-    const positions = mesh.getVerticesData(VertexBuffer.PositionKind);
-
-    const t = time;
-    const pm = t | 0;
-    const dF = 0.2;
-    const pf = (t % 1) * (1 + dF);
-
-    for (let i = 0; i < positions.length / 3; i += 1) {
-      const x = basePositions[i * 3 + 0];
-      const y = basePositions[i * 3 + 1];
-      const z = basePositions[i * 3 + 2];
-
-      const vec = new Vector3(x, y, z);
-
-      if (pm % 2 !== 0) {
-        const rpf = Math.max(Math.min(pf + (z - 0.5) * 0.1, 1), 0);
-        const q = Quaternion.RotationAxis(new Vector3(0, 0, 1), (Math.cos(rpf * Math.PI) * Math.PI * 2) / 2);
-        vec.rotateByQuaternionAroundPointToRef(q, new Vector3(0, 0, z), vec);
-      } else {
-        const rpf = Math.max(Math.min(pf + (y - 0.5) * 0.1, 1), 0);
-        const q = Quaternion.RotationAxis(new Vector3(0, 1, 0), (Math.cos(rpf * Math.PI) * Math.PI * 2) / 2);
-        vec.rotateByQuaternionAroundPointToRef(q, new Vector3(0, y, 0), vec);
-      }
-
-      positions[i * 3 + 0] = vec.x;
-      positions[i * 3 + 1] = vec.y;
-      positions[i * 3 + 2] = vec.z;
-    }
-
-    pl.chromaticAberration.aberrationAmount = (Math.sin((t % 1) * Math.PI) * 70000) / engine.getRenderWidth();
-
-    mesh.updateVerticesData(VertexBuffer.PositionKind, positions);
-
-    const indices = mesh.getIndices();
-    const normals = [];
-    VertexData.ComputeNormals(positions, indices, normals);
-
-    mesh.updateVerticesData(VertexBuffer.NormalKind, normals);
-  };
 
   const mat = new PBRCustomMaterial('plastic', scene);
   // mat.wireframe = true;
@@ -114,9 +73,52 @@ const sketch = async ({ canvas, width, height }) => {
 
   // ------------------------------
 
+  // animate({
+  //   from: 1,
+  //   // duration: 1000,
+  //   to: 1.5,
+  //   // repeat: Infinity,
+  //   // repeatType: "mirror",
+  //   type: 'spring',
+  //   mass: 5.1,
+  //   stiffness: 5000,
+  //   damping: 20,
+  //   // driver: driver.updateFunc,
+  //
+  //   onUpdate: (v) => {
+  //     mesh.scaling = new Vector3(v, v, v);
+  //   },
+  // });
+
+  const obj = {
+    v: 1,
+  };
+  const animation = anime({
+    targets: mesh.scaling,
+    x: 1.5,
+    y: 1.5,
+    z: 1.5,
+    // duration: 8000,
+    // loop: true,
+    // direction: 'alternate',
+    // easing: 'spring(10, 100, 10, 5)',
+    // easing: 'easeOutElastic(1, .3)',
+    // easing: 'cubicBezier(0.585, -0.335, 0.600, 1.330)',
+    easing: 'steps(5)',
+
+    // easing: 'easeOutElastic',
+    // update: () => {
+    //   const v = obj.v;
+    //   mesh.scaling = new Vector3(v, v, v);
+    // },
+    // autoplay: false
+  });
+
+  // ------------------------------
+
   return {
-    render({ time, width, height }) {
-      updatePositions(time * 0.5, mesh, defaultPipeline);
+    render({ time, width, height, frame, deltaTime }) {
+      // animation.tick(time*1000);
 
       scene.render();
     },
