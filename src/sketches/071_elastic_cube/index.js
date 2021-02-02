@@ -51,7 +51,7 @@ const sketch = async ({ canvas, width, height }) => {
   pLight2.intensity = 5;
   pLight2.position = camera.position;
 
-  // SceneLoader.ShowLoadingScreen = false;
+  SceneLoader.ShowLoadingScreen = false;
   await SceneLoader.AppendAsync('./', 'static/assets/models/bevel-box.glb', scene);
   const mesh = scene.meshes[1];
 
