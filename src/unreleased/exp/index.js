@@ -4,12 +4,14 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Quaternion, Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import '@babylonjs/core/Loading/loadingScreen';
+// import '@babylonjs/loaders/glTF';
 import '@babylonjs/loaders/glTF/2.0/glTFLoader';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_draco_mesh_compression';
 
