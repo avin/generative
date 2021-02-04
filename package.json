@@ -71,6 +71,7 @@
     "i18next": "19.8.5",
     "immer": "8.0.1",
     "lodash": "4.17.20",
+    "nice-color-palettes": "^3.0.0",
     "node-sass": "4.13.1",
     "point-in-polygon": "1.0.1",
     "popmotion": "^9.1.0",
