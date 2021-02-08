@@ -16,8 +16,6 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 import sphere_vertexDefinitions from './shaders/sphere/vertexDefinitions.glsl';
 import sphere_vertexBeforePositionUpdated from './shaders/sphere/vertexBeforePositionUpdated.glsl';
-import sphere_fragmentDefinitions from './shaders/sphere/fragmentDefinitions.glsl';
-import sphere_fragmentCustomAlpha from './shaders/sphere/fragmentCustomAlpha.glsl';
 
 const settings = {
   animate: true,
@@ -147,8 +145,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   mat.Vertex_Definitions(sphere_vertexDefinitions);
   mat.Vertex_Before_PositionUpdated(sphere_vertexBeforePositionUpdated);
-  mat.Fragment_Definitions(sphere_fragmentDefinitions);
-  mat.Fragment_Custom_Alpha(sphere_fragmentCustomAlpha);
+  // mat.Fragment_Definitions(sphere_fragmentDefinitions);
+  // mat.Fragment_Custom_Alpha(sphere_fragmentCustomAlpha);
 
   const scannerBall = MeshBuilder.CreateSphere('scanBall', { diameter: 15 }, scene);
   scannerBall.rotate(new Vector3(1, 0, 0), Math.PI / 2);
