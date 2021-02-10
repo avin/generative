@@ -49,7 +49,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const radius = 10;
   const knees = 16;
-  const segments = 1000;
+  const segments = 400;
 
   const pathBuildFunc = (phase) => {
     const path = [];
@@ -71,7 +71,7 @@ const sketch = async ({ canvas, width, height }) => {
   };
 
   const tube1 = MeshBuilder.CreateTube(
-    'tube',
+    'tube1',
     {
       path: pathBuildFunc(0),
       radiusFunction: radiusFunc,
@@ -80,7 +80,7 @@ const sketch = async ({ canvas, width, height }) => {
     scene,
   );
   const tube2 = MeshBuilder.CreateTube(
-    'tube',
+    'tube2',
     {
       path: pathBuildFunc(1),
       radiusFunction: radiusFunc,
@@ -89,21 +89,34 @@ const sketch = async ({ canvas, width, height }) => {
     scene,
   );
 
+  const tubeMaterial = new StandardMaterial('mat', scene);
+  tube1.material = tubeMaterial;
+  tube2.material = tubeMaterial;
+  tubeMaterial.diffuseColor = Color3.FromHexString('#FFC940');
+  tubeMaterial.emissiveColor = Color3.Black();
+  tubeMaterial.specularColor = new Color3(0.25, 0.25, 0.25);
+
+  const tubes = [];
   const totalLines = 64;
   for (let i = 0; i < totalLines; i += 1) {
     const iS = i / totalLines;
 
-    const transition = new Vector3.Zero();
     const rotation = new Quaternion.RotationAxis(new Vector3(0, 1, 0), iS * Math.PI * 2);
-    const scaling = new Vector3(1, 1, 1);
 
-    const matrix = Matrix.Compose(scaling, rotation, transition);
+    let newTube;
     if (i % 2) {
-      tube1.thinInstanceAdd(matrix);
+      newTube = tube1.clone('');
     } else {
-      tube2.thinInstanceAdd(matrix);
+      newTube = tube2.clone('');
     }
+
+    newTube.rotationQuaternion = rotation;
+    tubes.push(newTube);
   }
+
+  tube1.dispose();
+  tube2.dispose();
+  Mesh.MergeMeshes(tubes, true, true);
 
   const torusThickness = 1.5;
   const toruses = [];
@@ -120,7 +133,7 @@ const sketch = async ({ canvas, width, height }) => {
       {
         diameter: r * 2,
         thickness: torusThickness,
-        tessellation: 64,
+        tessellation: 32,
       },
       scene,
     );
@@ -130,13 +143,6 @@ const sketch = async ({ canvas, width, height }) => {
   }
 
   const torus = Mesh.MergeMeshes(toruses, true);
-
-  const tubeMaterial = new StandardMaterial('mat', scene);
-  tube1.material = tubeMaterial;
-  tube2.material = tubeMaterial;
-  tubeMaterial.diffuseColor = Color3.FromHexString('#FFC940');
-  tubeMaterial.emissiveColor = Color3.Black();
-  tubeMaterial.specularColor = new Color3(0.25, 0.25, 0.25);
 
   const torusMaterial = new StandardMaterial('mat', scene);
   torus.material = torusMaterial;
