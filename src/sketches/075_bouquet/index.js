@@ -37,10 +37,11 @@ const sketch = async ({ canvas, width, height }) => {
 
   const scene = new Scene(engine);
   scene.clearColor = Color3.FromHexString('#10161A');
+  scene.freezeActiveMeshes();
 
   const cAlpha = -Math.PI / 3;
-  const cBeta = Math.PI / 2.5;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 5.5, 0), scene);
+  const cBeta = Math.PI / 2.1;
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 5.25, 0), scene);
   camera.minZ = 0.1;
   camera.fov = 1.5;
   camera.wheelPrecision = 20;
@@ -69,6 +70,8 @@ const sketch = async ({ canvas, width, height }) => {
     },
     scene,
   );
+  sphere.freezeWorldMatrix();
+  sphere.doNotSyncBoundingInfo = true;
 
   // ----------------------------
 
@@ -214,15 +217,15 @@ const sketch = async ({ canvas, width, height }) => {
   defaultPipeline.grain.intensity = 5;
   defaultPipeline.grain.animated = true;
 
-  let prevCTime1 = 0;
-  let prevCTime2 = 0;
+  let prevCTime1 = -1;
+  let prevCTime2 = -1;
   return {
     render({ time, width, height, frame, deltaTime }) {
       if (objects.length < totalSpheres) {
         const cTime2 = Math.floor(time * 100);
 
         if (cTime2 !== prevCTime2) {
-          for (let i = 0; i < 200; i += 1) {
+          for (let i = 0; i < 500; i += 1) {
             const startPos = [(Math.random() - 0.5) * area, totalSpheres, (Math.random() - 0.5) * area];
             addItem(startPos, time + Math.random() * 0.5);
           }
