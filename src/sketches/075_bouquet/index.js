@@ -41,7 +41,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const cAlpha = -Math.PI / 3;
   const cBeta = Math.PI / 2.1;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 5.25, 0), scene);
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 5.5, 0), scene);
   camera.minZ = 0.1;
   camera.fov = 1.5;
   camera.wheelPrecision = 20;
