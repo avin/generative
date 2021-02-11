@@ -1,7 +1,7 @@
 ## Show FPS-metr
 
 ```js
-import Stats from 'stats.js'
+import Stats from 'stats.js';
 
 const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -46,23 +46,21 @@ const initTime = +new Date();
 let prevTime = initTime;
 let renderTime = 0;
 scene.registerBeforeRender(() => {
-
   const time = (+new Date() - initTime) * 0.001;
 
   const deltaTime = time - prevTime;
   prevTime = time;
 
-  const delta = Math.min(deltaTime, 1/60);
+  const delta = Math.min(deltaTime, 1 / 60);
   renderTime += delta;
-  
+
   // use renderTime in shaders
 
   // ......
-
 });
 ```
 
-## Ideas 
+## Ideas
 
 setTextureFromPostProcess
 texture.refreshRate = 0
@@ -75,16 +73,12 @@ https://www.babylonjs-playground.com/#RLQ5JX#11
 https://www.babylonjs-playground.com/#RLQ5JX#12
 
 ## Babylon: depthOfField
+
 https://playground.babylonjs.com/#17DP89#78
 https://playground.babylonjs.com/#199KHL#51
 https://playground.babylonjs.com/#2FPT1A#445
 https://playground.babylonjs.com/#4YBB22#0
 
-## Problems
+### Bevel box
 
-### SSAO with thin instances
-
-https://forum.babylonjs.com/t/ssao-with-thin-instances-not-works/17153
-
-https://playground.babylonjs.com/#N96NXC#24 (thin instances not work)
-https://playground.babylonjs.com/#N96NXC#25 (instances work)
+https://playground.babylonjs.com/#AY7B23#1
