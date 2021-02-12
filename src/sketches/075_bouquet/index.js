@@ -40,8 +40,8 @@ const sketch = async ({ canvas, width, height }) => {
   scene.freezeActiveMeshes();
 
   const cAlpha = -Math.PI / 3;
-  const cBeta = Math.PI / 2.1;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 5.5, 0), scene);
+  const cBeta = Math.PI / 2;
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 7.0, new Vector3(0, 4.0, 0), scene);
   camera.minZ = 0.1;
   camera.fov = 1.5;
   camera.wheelPrecision = 20;
@@ -87,7 +87,7 @@ const sketch = async ({ canvas, width, height }) => {
     return [Math.round(x / clusterSize), Math.round(y / clusterSize)];
   };
 
-  const totalSpheres = 50000;
+  const totalSpheres = 30000;
   const bufferMatrices = new Float32Array(16 * totalSpheres);
   const bufferColors = new Float32Array(4 * totalSpheres);
   const bufferBornTimes = new Float32Array(totalSpheres);
