@@ -163,11 +163,23 @@ const sketch = async ({ canvas, width, height }) => {
     }
   };
 
+  const addItems = (count, time) => {
+    for (let i = 0; i < count; i += 1) {
+      const startPos = [(Math.random() - 0.5) * area, totalSpheres, (Math.random() - 0.5) * area];
+      addItem(startPos, time + Math.random() * 0.5);
+    }
+
+    sphere.thinInstanceBufferUpdated('matrix');
+    sphere.thinInstanceBufferUpdated('color');
+    sphere.thinInstanceBufferUpdated('bornTime');
+  };
+
   // ---------------------------------------
 
   const mat = new PBRCustomMaterial('plastic', scene);
   mat.metallic = 0.0;
   mat.roughness = 0.3;
+  mat.freeze();
   sphere.material = mat;
 
   mat.AddAttribute('bornTime');
@@ -217,28 +229,21 @@ const sketch = async ({ canvas, width, height }) => {
   defaultPipeline.grain.intensity = 5;
   defaultPipeline.grain.animated = true;
 
-  let prevCTime1 = -1;
-  let prevCTime2 = -1;
+  let prevCTime = -1;
+
+  sphere.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
+  sphere.thinInstanceSetBuffer('color', bufferColors, 4);
+  sphere.thinInstanceSetBuffer('bornTime', bufferBornTimes, 1);
+
   return {
     render({ time, width, height, frame, deltaTime }) {
       if (objects.length < totalSpheres) {
-        const cTime2 = Math.floor(time * 100);
+        const cTime = Math.floor(time * 100);
 
-        if (cTime2 !== prevCTime2) {
-          for (let i = 0; i < 500; i += 1) {
-            const startPos = [(Math.random() - 0.5) * area, totalSpheres, (Math.random() - 0.5) * area];
-            addItem(startPos, time + Math.random() * 0.5);
-          }
-          prevCTime2 = cTime2;
-        }
+        if (cTime !== prevCTime) {
+          addItems(500, time);
 
-        const cTime1 = Math.floor(time * 10);
-        if (cTime1 !== prevCTime1) {
-          sphere.thinInstanceSetBuffer('matrix', bufferMatrices, 16);
-          sphere.thinInstanceSetBuffer('color', bufferColors, 4);
-          sphere.thinInstanceSetBuffer('bornTime', bufferBornTimes, 1);
-
-          prevCTime1 = cTime1;
+          prevCTime = cTime;
         }
       }
 
