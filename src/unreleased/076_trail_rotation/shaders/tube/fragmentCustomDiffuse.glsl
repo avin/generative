@@ -1,7 +1,3 @@
-// ~~~~~~
-
-float l = (length(vPos) - 1.)*.1;
-
-l=l;
+float l = (length(vPos) - 1.) / tubeLength;
 
 diffuseColor *= l;

@@ -7,12 +7,7 @@ module.exports = {
   },
   rules: {
     'no-unused-vars': [1, { args: 'none', ignoreRestSiblings: true }],
-    'no-underscore-dangle': [
-      1,
-      {
-        allow: ['__REDUX_DEVTOOLS_EXTENSION__'],
-      },
-    ],
+    'no-underscore-dangle': 0,
     'prefer-destructuring': 0,
     'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
     'no-shadow': 0,

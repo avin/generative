@@ -9,7 +9,7 @@ import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
-import { VertexData } from '@babylonjs/core';
+import { Constants, RawTexture, VertexData } from '@babylonjs/core';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 
@@ -62,7 +62,7 @@ const sketch = async ({ canvas, width, height }) => {
   baseMesh.dispose();
 
   const segments = 10;
-  const tubeLength = 10;
+  const tubeLength = 15;
   const tubes = [];
   const baseTube = MeshBuilder.CreateTube(
     'tube',
@@ -78,7 +78,7 @@ const sketch = async ({ canvas, width, height }) => {
       })(),
       radiusFunction: (i) => {
         const iS = (i + 1) / segments;
-        return (1 - iS) * 1.0;
+        return Math.sqrt(1 - iS) ** 1.25;
       },
       tessellation: 12,
     },
@@ -87,7 +87,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   for (let i = 0; i < facetPositions.length; i += 1) {
     const tube = baseTube.clone();
-    tube.position = facetPositions[i];
+    // tube.position = facetPositions[i];
 
     const q = new Quaternion();
     Quaternion.FromUnitVectorsToRef(Vector3.Up(), facetNormals[i], q);
@@ -121,6 +121,16 @@ const sketch = async ({ canvas, width, height }) => {
 
   const rMatrix = Matrix.Identity();
 
+  const rotArr = [];
+
+  for (let i = 0; i < rotationMatrices.length; i += 1) {
+    const m = Matrix.Identity()._m;
+
+    for (let j = 0; j < m.length; j += 1) {
+      rotArr.push(m[j]);
+    }
+  }
+
   function rotationBehaviour(speed = 0.005) {
     let isDragging = false;
 
@@ -130,13 +140,14 @@ const sketch = async ({ canvas, width, height }) => {
     function rotateAroundWorldAxis(axis, radians) {
       const rotationMatrix = Matrix.RotationAxis(axis.normalize(), radians);
       rMatrix.multiplyToRef(rotationMatrix, rMatrix);
-      // object.rotationQuaternion = Quaternion.FromRotationMatrix(object.rMatrix);
-
-      // for (let i = rotationMatrices.length - 1; i > 0; i -= 1) {
-      //   rotationMatrices[i] = rotationMatrices[i - 1];
-      // }
 
       rotationMatrices[0] = rMatrix;
+
+      const m = rMatrix._m;
+
+      for (let i = 0; i < m.length; i += 1) {
+        rotArr[i] = m[i];
+      }
     }
 
     const handlePointerDown = (e) => {
@@ -178,47 +189,37 @@ const sketch = async ({ canvas, width, height }) => {
     };
   }
 
-  rotationBehaviour(0.0025);
+  const rb = rotationBehaviour(0.003);
 
   // ----------------------------
 
-  mat.AddUniform('rotMatrixI', 'mat4');
+  mat.AddUniform('tubeLength', 'float');
+  mat.AddUniform('segments', 'float');
 
-  mat.AddUniform('rotMatrix0', 'mat4');
-  mat.AddUniform('rotMatrix1', 'mat4');
-  mat.AddUniform('rotMatrix2', 'mat4');
-  mat.AddUniform('rotMatrix3', 'mat4');
-  mat.AddUniform('rotMatrix4', 'mat4');
-  mat.AddUniform('rotMatrix5', 'mat4');
-  mat.AddUniform('rotMatrix6', 'mat4');
-  mat.AddUniform('rotMatrix7', 'mat4');
-  mat.AddUniform('rotMatrix8', 'mat4');
-  mat.AddUniform('rotMatrix9', 'mat4');
+  mat._customUniform.push(`uniform  vec4 rotMatrixArr[${rotationMatrices.length * 4}];`);
+  mat._newUniforms.push('rotMatrixArr');
 
   mat.onBind = () => {
-    mat.getEffect().setMatrix('rotMatrixI', Matrix.Identity());
-
-    mat.getEffect().setMatrix('rotMatrix0', rotationMatrices[0]);
-    mat.getEffect().setMatrix('rotMatrix1', rotationMatrices[1]);
-    mat.getEffect().setMatrix('rotMatrix2', rotationMatrices[2]);
-    mat.getEffect().setMatrix('rotMatrix3', rotationMatrices[3]);
-    mat.getEffect().setMatrix('rotMatrix4', rotationMatrices[4]);
-    mat.getEffect().setMatrix('rotMatrix5', rotationMatrices[5]);
-    mat.getEffect().setMatrix('rotMatrix6', rotationMatrices[6]);
-    mat.getEffect().setMatrix('rotMatrix7', rotationMatrices[7]);
-    mat.getEffect().setMatrix('rotMatrix8', rotationMatrices[8]);
-    mat.getEffect().setMatrix('rotMatrix9', rotationMatrices[9]);
+    mat.getEffect().setFloat('tubeLength', tubeLength);
+    mat.getEffect().setFloat('segments', segments);
+    mat.getEffect().setArray4('rotMatrixArr', rotArr);
   };
 
   // ----------------------------
 
-  setInterval(() => {
+  const iID = setInterval(() => {
     for (let i = rotationMatrices.length; i > 0; i -= 1) {
       rotationMatrices[i] = rotationMatrices[i - 1].clone();
+
+      const m = rotationMatrices[i - 1]._m;
+      for (let j = 0; j < 4; j += 1) {
+        for (let k = 0; k < 4; k += 1) {
+          rotArr[i * 4 * 4 + j * 4 + k] = m[j * 4 + k];
+        }
+      }
     }
   }, 20);
 
-  const frame = 0;
   return {
     render({ time, width, height, deltaTime }) {
       scene.render();
@@ -227,6 +228,8 @@ const sketch = async ({ canvas, width, height }) => {
       engine.resize();
     },
     unload() {
+      clearInterval(iID);
+      rb.dispose();
       engine.dispose();
     },
   };

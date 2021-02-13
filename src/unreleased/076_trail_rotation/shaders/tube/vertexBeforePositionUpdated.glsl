@@ -2,31 +2,19 @@
 
 vPos = positionUpdated;
 
-int l = 11 - int(floor(length(vPos)));
+int l = int(floor(length(vPos)*segments/tubeLength));
 
-mat4 rotMatrix = rotMatrixI;
+mat4 rotMatrix;
 
-//if (l == 0) rotMatrix = rotMatrix0;
-//if (l == 1) rotMatrix = rotMatrix1;
-//if (l == 2) rotMatrix = rotMatrix2;
-//if (l == 3) rotMatrix = rotMatrix3;
-//if (l == 4) rotMatrix = rotMatrix4;
-//if (l == 5) rotMatrix = rotMatrix5;
-//if (l == 6) rotMatrix = rotMatrix6;
-//if (l == 7) rotMatrix = rotMatrix7;
-//if (l == 8) rotMatrix = rotMatrix8;
-//if (l == 9) rotMatrix = rotMatrix9;
+vec4 v1 = rotMatrixArr[l * 4 + 0];
+vec4 v2 = rotMatrixArr[l * 4 + 1];
+vec4 v3 = rotMatrixArr[l * 4 + 2];
+vec4 v4 = rotMatrixArr[l * 4 + 3];
 
-if (l == 0) rotMatrix = rotMatrix9;
-if (l == 1) rotMatrix = rotMatrix8;
-if (l == 2) rotMatrix = rotMatrix7;
-if (l == 3) rotMatrix = rotMatrix6;
-if (l == 4) rotMatrix = rotMatrix5;
-if (l == 5) rotMatrix = rotMatrix4;
-if (l == 6) rotMatrix = rotMatrix3;
-if (l == 7) rotMatrix = rotMatrix2;
-if (l == 8) rotMatrix = rotMatrix1;
-if (l == 9) rotMatrix = rotMatrix0;
+rotMatrix[0] = v1;
+rotMatrix[1] = v2;
+rotMatrix[2] = v3;
+rotMatrix[3] = v4;
 
 mat4 finalWorld = world * rotMatrix;
 vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);

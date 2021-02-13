@@ -75,12 +75,12 @@ const sketches = [
   '073_color_tornado',
   '074_chandelier',
   '075_bouquet',
-  '076_trail_rotation',
 ];
 /* END SKETCHES */
 
 /* START EXP_SKETCHES */
 const expSketches = [
+  '076_trail_rotation',
   'black_hole',
   'bloom',
   'dots_wave',
