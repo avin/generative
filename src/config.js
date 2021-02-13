@@ -75,6 +75,7 @@ const sketches = [
   '073_color_tornado',
   '074_chandelier',
   '075_bouquet',
+  '076_trail_rotation',
 ];
 /* END SKETCHES */
 
