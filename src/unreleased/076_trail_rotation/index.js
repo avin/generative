@@ -210,14 +210,6 @@ const sketch = async ({ canvas, width, height }) => {
     mat.getEffect().setMatrix('rotMatrix9', rotationMatrices[9]);
   };
 
-  // setInterval(() => {
-  //   for (let i = 1; i < rotationMatrices.length; i += 1) {
-  //     setTimeout(() => {
-  //       rotationMatrices[i] = rotationMatrices[i-1].clone()
-  //     }, i*20)
-  //   }
-  // }, 10*20)
-
   // ----------------------------
 
   setInterval(() => {
@@ -226,13 +218,9 @@ const sketch = async ({ canvas, width, height }) => {
     }
   }, 20);
 
-  let frame = 0;
+  const frame = 0;
   return {
     render({ time, width, height, deltaTime }) {
-      // updateVerticesRotation();
-
-      frame += 1;
-
       scene.render();
     },
     resize({ pixelRatio, width, height }) {
