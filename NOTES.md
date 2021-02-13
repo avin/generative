@@ -82,3 +82,7 @@ https://playground.babylonjs.com/#4YBB22#0
 ### Bevel box
 
 https://playground.babylonjs.com/#AY7B23#1
+
+### Rotate mesh by mouse
+
+https://playground.babylonjs.com/#KUC86F

@@ -87,6 +87,7 @@ const expSketches = [
   'foo2',
   'goldenflower',
   'particles_tornado',
+  'rotate',
   'torus',
   'yellow_snow',
 ];
