@@ -12,12 +12,13 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import { ImageProcessingConfiguration, PointLight, PostProcess } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 
+import { getWebGLContext } from '@/utils/webgl';
 import main_fragmentCustomAlbedo from './shaders/main/fragmentCustomAlbedo.glsl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

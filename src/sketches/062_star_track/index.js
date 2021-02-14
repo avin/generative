@@ -10,6 +10,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 
+import { getWebGLContext } from '@/utils/webgl';
 import star_vertexDefinitions from './shaders/star/vertexDefinitions.glsl';
 import star_vertexBeforePositionUpdated from './shaders/star/vertexBeforePositionUpdated.glsl';
 import star_vertexAfterWorldPosComputed from './shaders/star/vertexAfterWorldPosComputed.glsl';
@@ -18,7 +19,7 @@ import star_fragmentCustomDiffuse from './shaders/star/fragmentCustomDiffuse.gls
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

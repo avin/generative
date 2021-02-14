@@ -13,12 +13,13 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
+import { getWebGLContext } from '@/utils/webgl';
 import mesh_fragmentDefinitions from './shaders/mesh/fragmentDefinitions.glsl';
 import mesh_fragmentCustomDiffuse from './shaders/mesh/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

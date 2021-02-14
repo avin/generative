@@ -10,10 +10,11 @@ import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipe
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

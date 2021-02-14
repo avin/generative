@@ -8,10 +8,11 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { PointLight, ShadowGenerator } from '@babylonjs/core';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

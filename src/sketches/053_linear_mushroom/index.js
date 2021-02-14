@@ -12,6 +12,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
+import { getWebGLContext } from '@/utils/webgl';
 import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
@@ -22,7 +23,7 @@ import backgroundVertex from './shaders/background/vertex.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

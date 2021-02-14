@@ -13,6 +13,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 
+import { getWebGLContext } from '@/utils/webgl';
 import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
@@ -20,7 +21,7 @@ import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.gls
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

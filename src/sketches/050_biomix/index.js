@@ -12,6 +12,7 @@ import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPi
 import { MotionBlurPostProcess } from '@babylonjs/core/PostProcesses/motionBlurPostProcess';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { getWebGLContext } from '@/utils/webgl';
 import vertexDefinitions from './shaders/vertexDefinitions.glsl';
 import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
 import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
@@ -19,7 +20,7 @@ import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

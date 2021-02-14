@@ -15,12 +15,13 @@
 
 import * as BABYLON from '@babylonjs/core/Legacy/legacy';
 
+import { getWebGLContext } from '@/utils/webgl';
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -34,7 +35,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const camera = new BABYLON.ArcRotateCamera(
     'camera',
-    -Math.PI / .5,
+    -Math.PI / 0.5,
     Math.PI / 3.5,
     2,
     new BABYLON.Vector3(0, 0, 0),
@@ -46,7 +47,6 @@ const sketch = async ({ canvas, width, height }) => {
 
   BABYLON.Effect.ShadersStore.particlesVertexShader = particlesVertexShader;
   BABYLON.Effect.ShadersStore.particlesFragmentShader = particlesFragShader;
-
 
   const pcs = new BABYLON.PointsCloudSystem('pcs', 0, scene);
 

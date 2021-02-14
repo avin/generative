@@ -9,6 +9,7 @@ import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 
+import { getWebGLContext } from '@/utils/webgl';
 import plane_vertexDefinitions from './shaders/plane/vertexDefinitions.glsl';
 import plane_vertexBeforePositionUpdated from './shaders/plane/vertexBeforePositionUpdated.glsl';
 import plane_fragmentDefinitions from './shaders/plane/fragmentDefinitions.glsl';
@@ -16,7 +17,7 @@ import plane_fragmentCustomDiffuse from './shaders/plane/fragmentCustomDiffuse.g
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

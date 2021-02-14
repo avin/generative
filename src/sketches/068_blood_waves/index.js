@@ -11,13 +11,14 @@ import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial
 import { ImageProcessingConfiguration, PostProcess } from '@babylonjs/core';
 import { Effect } from '@babylonjs/core/Materials/effect';
 
+import { getWebGLContext } from '@/utils/webgl';
 import main_vertexDefinitions from './shaders/main/vertexDefinitions.glsl';
 import main_vertexBeforePositionUpdated from './shaders/main/vertexBeforePositionUpdated.glsl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

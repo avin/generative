@@ -11,6 +11,7 @@ import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 
+import { getWebGLContext } from '@/utils/webgl';
 import blob_vertexDefinitions from './shaders/blob/vertexDefinitions.glsl';
 import blob_vertexBeforePositionUpdated from './shaders/blob/vertexBeforePositionUpdated.glsl';
 import blob_vertexAfterWorldPosComputed from './shaders/blob/vertexAfterWorldPosComputed.glsl';
@@ -26,7 +27,7 @@ import round_fragmentBeforeFragColor from './shaders/round/fragmentBeforeFragCol
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

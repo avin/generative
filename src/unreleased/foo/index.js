@@ -11,6 +11,7 @@ import { ProceduralTexture, RenderTargetTexture } from '@babylonjs/core';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 
+import { getWebGLContext } from '@/utils/webgl';
 import baseVertex from './shaders/vert.glsl';
 import commonShader from './shaders/common.glsl';
 import imageFragment from './shaders/imageFrag.glsl';
@@ -19,7 +20,7 @@ import bufferBFragment from './shaders/bufferBFrag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 Effect.ShadersStore.bufferAVertexShader = baseVertex;

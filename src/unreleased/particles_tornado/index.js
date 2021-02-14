@@ -1,10 +1,11 @@
 import * as BABYLON from '@babylonjs/core';
+import { getWebGLContext } from '@/utils/webgl';
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

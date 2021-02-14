@@ -9,12 +9,13 @@ import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPi
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
+import { getWebGLContext } from '@/utils/webgl';
 import mesh_fragmentDefinitions from './shaders/mesh/fragmentDefinitions.glsl';
 import mesh_fragmentCustomAlbedo from './shaders/mesh/fragmentCustomAlbedo.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

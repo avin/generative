@@ -10,6 +10,7 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import { getWebGLContext } from '@/utils/webgl';
 import vertexDefinitions from './shaders/vertexDefinitions.glsl';
 import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
 import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
@@ -17,7 +18,7 @@ import fragmentCustomDiffuse from './shaders/fragmentCustomDiffuse.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const tmpVector1 = Vector3.Zero();

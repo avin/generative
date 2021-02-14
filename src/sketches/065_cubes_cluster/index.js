@@ -7,7 +7,6 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
-import random from 'canvas-sketch-util/random';
 import { ProceduralTexture } from '@babylonjs/core';
 import { CubeTexture } from '@babylonjs/core/Materials/Textures/cubeTexture';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
@@ -15,11 +14,12 @@ import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 
 import { Effect } from '@babylonjs/core/Materials/effect';
+import { getWebGLContext } from '@/utils/webgl';
 import noisePixelShader from './shaders/noisePixelShader.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

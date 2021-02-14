@@ -1,3 +1,4 @@
+import { getWebGLContext } from '@/utils/webgl';
 import fragmentShader from './shaders/frag.glsl';
 import vertexShader from './shaders/vert.glsl';
 

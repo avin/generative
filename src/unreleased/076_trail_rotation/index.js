@@ -8,16 +8,8 @@ import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
-import { Constants, RawTexture, VertexData } from '@babylonjs/core';
-import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
+import { getWebGLContext } from '@/utils/webgl';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
-
-import blob_vertexDefinitions from '@/sketches/061_night_rain/shaders/blob/vertexDefinitions.glsl';
-import blob_vertexBeforePositionUpdated from '@/sketches/061_night_rain/shaders/blob/vertexBeforePositionUpdated.glsl';
-import blob_vertexAfterWorldPosComputed from '@/sketches/061_night_rain/shaders/blob/vertexAfterWorldPosComputed.glsl';
-import blob_fragmentDefinitions from '@/sketches/061_night_rain/shaders/blob/fragmentDefinitions.glsl';
-import blob_fragmentCustomDiffuse from '@/sketches/061_night_rain/shaders/blob/fragmentCustomDiffuse.glsl';
 import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_vertexAfterWorldPosComputed from './shaders/tube/vertexAfterWorldPosComputed.glsl';
@@ -26,7 +18,7 @@ import tube_fragmentCustomDiffuse from './shaders/tube/fragmentCustomDiffuse.gls
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -44,7 +36,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const cAlpha = -Math.PI / 2;
   const cBeta = Math.PI / 2;
-  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 30, new Vector3(0, 0.0, 0), scene);
+  const camera = new ArcRotateCamera('camera', cAlpha, cBeta, 20, new Vector3(0, 0.0, 0), scene);
   camera.minZ = 0.1;
   camera.fov = 1.2;
 
@@ -62,7 +54,7 @@ const sketch = async ({ canvas, width, height }) => {
   baseMesh.dispose();
 
   const segments = 10;
-  const tubeLength = 15;
+  const tubeLength = 10;
   const tubes = [];
   const baseTube = MeshBuilder.CreateTube(
     'tube',
@@ -105,8 +97,17 @@ const sketch = async ({ canvas, width, height }) => {
   mat.diffuseColor = new Color3.FromHexString('#48AFF0');
   mesh.material = mat;
 
+  let rotmatrixBlock = '';
+  for (let i = 0; i < segments; i += 1) {
+    rotmatrixBlock += `if(l == ${i}) rotMatrix = rotMatrix${i};\n`;
+  }
+  const vertexBeforePositionUpdated = tube_vertexBeforePositionUpdated.replace(
+    '// -- rotmatrix-here --',
+    rotmatrixBlock,
+  );
+
   mat.Vertex_Definitions(tube_vertexDefinitions);
-  mat.Vertex_Before_PositionUpdated(tube_vertexBeforePositionUpdated);
+  mat.Vertex_Before_PositionUpdated(vertexBeforePositionUpdated);
   mat.Vertex_After_WorldPosComputed(tube_vertexAfterWorldPosComputed);
   mat.Fragment_Definitions(tube_fragmentDefinitions);
   mat.Fragment_Custom_Diffuse(tube_fragmentCustomDiffuse);
@@ -121,15 +122,15 @@ const sketch = async ({ canvas, width, height }) => {
 
   const rMatrix = Matrix.Identity();
 
-  const rotArr = [];
-
-  for (let i = 0; i < rotationMatrices.length; i += 1) {
-    const m = Matrix.Identity()._m;
-
-    for (let j = 0; j < m.length; j += 1) {
-      rotArr.push(m[j]);
-    }
-  }
+  // const rotArr = [];
+  //
+  // for (let i = 0; i < rotationMatrices.length; i += 1) {
+  //   const m = Matrix.Identity()._m;
+  //
+  //   for (let j = 0; j < m.length; j += 1) {
+  //     rotArr.push(m[j]);
+  //   }
+  // }
 
   function rotationBehaviour(speed = 0.005) {
     let isDragging = false;
@@ -143,11 +144,11 @@ const sketch = async ({ canvas, width, height }) => {
 
       rotationMatrices[0] = rMatrix;
 
-      const m = rMatrix._m;
-
-      for (let i = 0; i < m.length; i += 1) {
-        rotArr[i] = m[i];
-      }
+      // const m = rMatrix._m;
+      //
+      // for (let i = 0; i < m.length; i += 1) {
+      //   rotArr[i] = m[i];
+      // }
     }
 
     const handlePointerDown = (e) => {
@@ -196,13 +197,23 @@ const sketch = async ({ canvas, width, height }) => {
   mat.AddUniform('tubeLength', 'float');
   mat.AddUniform('segments', 'float');
 
-  mat._customUniform.push(`uniform  vec4 rotMatrixArr[${rotationMatrices.length * 4}];`);
-  mat._newUniforms.push('rotMatrixArr');
+  for (let i = 0; i < segments; i += 1) {
+    mat.AddUniform(`rotMatrix${i}`, 'mat4');
+  }
+
+  // mat._customUniform.push(`uniform  vec4 rotMatrixArr[${rotationMatrices.length * 4}];`);
+  // mat._newUniforms.push('rotMatrixArr');
 
   mat.onBind = () => {
     mat.getEffect().setFloat('tubeLength', tubeLength);
     mat.getEffect().setFloat('segments', segments);
-    mat.getEffect().setArray4('rotMatrixArr', rotArr);
+
+    for (let i = 0; i < segments; i += 1) {
+      mat.AddUniform(`rotMatrix${i}`, 'float');
+      mat.getEffect().setMatrix(`rotMatrix${i}`, rotationMatrices[i]);
+    }
+
+    // mat.getEffect().setArray4('rotMatrixArr', rotArr);
   };
 
   // ----------------------------
@@ -211,12 +222,12 @@ const sketch = async ({ canvas, width, height }) => {
     for (let i = rotationMatrices.length; i > 0; i -= 1) {
       rotationMatrices[i] = rotationMatrices[i - 1].clone();
 
-      const m = rotationMatrices[i - 1]._m;
-      for (let j = 0; j < 4; j += 1) {
-        for (let k = 0; k < 4; k += 1) {
-          rotArr[i * 4 * 4 + j * 4 + k] = m[j * 4 + k];
-        }
-      }
+      // const m = rotationMatrices[i - 1]._m;
+      // for (let j = 0; j < 4; j += 1) {
+      //   for (let k = 0; k < 4; k += 1) {
+      //     rotArr[i * 4 * 4 + j * 4 + k] = m[j * 4 + k];
+      //   }
+      // }
     }
   }, 20);
 

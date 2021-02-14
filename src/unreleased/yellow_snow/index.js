@@ -9,6 +9,7 @@ import { PointerEventTypes, VertexData } from '@babylonjs/core';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 
+import { getWebGLContext } from '@/utils/webgl';
 import groundMaterial_vertexDefinitions from './shaders/groundMaterial/vertexDefinitions.glsl';
 import groundMaterial_vertexBeforePositionUpdated from './shaders/groundMaterial/vertexBeforePositionUpdated.glsl';
 import groundMaterial_fragmentDefinitions from './shaders/groundMaterial/fragmentDefinitions.glsl';
@@ -20,7 +21,7 @@ const distance = (x1, y1, x2, y2) => {
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

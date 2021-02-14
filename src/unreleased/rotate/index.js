@@ -7,10 +7,11 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

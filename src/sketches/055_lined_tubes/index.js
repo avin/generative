@@ -9,12 +9,13 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 
+import { getWebGLContext } from '@/utils/webgl';
 import contour_vertexBeforePositionUpdated from './shaders/contour/vertexBeforePositionUpdated.glsl';
 import filler_vertexBeforePositionUpdated from './shaders/filler/vertexBeforePositionUpdated.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

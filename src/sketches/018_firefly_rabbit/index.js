@@ -1,3 +1,4 @@
+import { getWebGLContext } from '@/utils/webgl';
 import fragmentShader from './shaders/frag.glsl';
 import vertexShader from './shaders/vert.glsl';
 
@@ -40,7 +41,7 @@ const sketch = ({ context }) => {
   const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1);
   scene.add(light);
 
-  bunny.positions.forEach(i => {
+  bunny.positions.forEach((i) => {
     i[0] *= 5;
     i[1] *= 5;
     i[2] *= 5;
@@ -48,10 +49,10 @@ const sketch = ({ context }) => {
 
   const starsGeometry = new THREE.Geometry();
 
-  bunny.positions.forEach(i => {
+  bunny.positions.forEach((i) => {
     starsGeometry.vertices.push(new THREE.Vector3(i[0], i[1], i[2]));
   });
-  bunny.cells.forEach(i => {
+  bunny.cells.forEach((i) => {
     starsGeometry.vertices.push(
       new THREE.Vector3(
         (bunny.positions[i[0]][0] + bunny.positions[i[1]][0] + bunny.positions[i[2]][0]) / 3,

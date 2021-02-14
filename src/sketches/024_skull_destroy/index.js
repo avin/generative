@@ -10,12 +10,13 @@ import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import { PointsCloudSystem, PointColor } from '@babylonjs/core/Particles/pointsCloudSystem';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 
+import { getWebGLContext } from '@/utils/webgl';
 import particlesVertexShader from './shaders/vert.glsl';
 import particlesFragShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

@@ -7,9 +7,10 @@ import vertexShader from './shaders/main.vert.glsl';
 import bufAShader from './shaders/bufA.glsl';
 import bufBShader from './shaders/bufB.glsl';
 import sceneShader from './shaders/scene.glsl';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
-  context: 'webgl2',
+  context: getWebGLContext(),
   animate: true,
 };
 

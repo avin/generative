@@ -8,12 +8,13 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 
+import { getWebGLContext } from '@/utils/webgl';
 import customVertexShader from './shaders/vert.glsl';
 import customFragmentShader from './shaders/frag.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

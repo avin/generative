@@ -13,10 +13,11 @@ import '@babylonjs/core/Loading/Plugins/babylonFileLoader';
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import '@babylonjs/core';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

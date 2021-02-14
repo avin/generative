@@ -1,9 +1,10 @@
 import createShader from 'canvas-sketch-util/shader';
+import { getWebGLContext } from '@/utils/webgl';
 import fragmentShader from './shaders/frag.glsl';
 import vertexShader from './shaders/vert.glsl';
 
 const settings = {
-  context: 'webgl2',
+  context: getWebGLContext(),
   animate: true,
 };
 
@@ -11,17 +12,17 @@ const sketch = ({ gl, time, canvas }) => {
   let mouseX = 0;
   let mouseY = 0;
   let mouseDown = 0;
-  const handleMoveMouse = e => {
+  const handleMoveMouse = (e) => {
     if (mouseDown) {
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
     }
   };
-  const handleMoveDown = e => {
+  const handleMoveDown = (e) => {
     mouseDown = 1;
   };
-  const handleMoveUp = e => {
+  const handleMoveUp = (e) => {
     mouseDown = 0;
   };
   canvas.addEventListener('mousemove', handleMoveMouse);
@@ -34,7 +35,7 @@ const sketch = ({ gl, time, canvas }) => {
     vert: vertexShader,
     uniforms: {
       iTime: ({ time }) => time,
-      iMouse: params => {
+      iMouse: (params) => {
         return [mouseX, mouseY, mouseDown, mouseDown];
       },
       iResolution: ({ width, height }) => [width, height, 1],

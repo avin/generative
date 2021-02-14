@@ -12,6 +12,7 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 
+import { getWebGLContext } from '@/utils/webgl';
 import bridgeSphere_vertexDefinitions from './shaders/bridgeSphere/vertexDefinitions.glsl';
 import bridgeSphere_vertexBeforePositionUpdated from './shaders/bridgeSphere/vertexBeforePositionUpdated.glsl';
 import bridgeSphere_fragmentDefinitions from './shaders/bridgeSphere/fragmentDefinitions.glsl';
@@ -27,7 +28,7 @@ import backgroundVertex from './shaders/background/vertex.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

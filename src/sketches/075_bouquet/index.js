@@ -16,13 +16,14 @@ import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial
 import get from 'lodash/get';
 import set from 'lodash/set';
 
+import { getWebGLContext } from '@/utils/webgl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 import sphere_vertexDefinitions from './shaders/sphere/vertexDefinitions.glsl';
 import sphere_vertexBeforePositionUpdated from './shaders/sphere/vertexBeforePositionUpdated.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

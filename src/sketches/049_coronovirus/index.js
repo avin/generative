@@ -11,6 +11,7 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { MotionBlurPostProcess } from '@babylonjs/core/PostProcesses/motionBlurPostProcess';
+import { getWebGLContext } from '@/utils/webgl';
 import vertexDefinitions from './shaders/vertexDefinitions.glsl';
 import vertexBeforePositionUpdated from './shaders/vertexBeforePositionUpdated.glsl';
 import fragmentDefinitions from './shaders/fragmentDefinitions.glsl';
@@ -18,7 +19,7 @@ import fragmentBeforeFragColor from './shaders/fragmentBeforeFragColor.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

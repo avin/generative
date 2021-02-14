@@ -1,3 +1,4 @@
+import { getWebGLContext } from '@/utils/webgl';
 import vertexShader from './shaders/vert.glsl';
 import fragmentShader from './shaders/frag.glsl';
 
@@ -75,7 +76,7 @@ function createTreeGeometry() {
   const levels = 10;
 
   const treeGeometry = new THREE.CylinderGeometry(0.4, 0.0, height, 20, levels);
-  treeGeometry.vertices.forEach(vertex => {
+  treeGeometry.vertices.forEach((vertex) => {
     vertex.y += height * 0.5;
     const randomFactor = vertex.y * 0.1;
 
@@ -85,16 +86,14 @@ function createTreeGeometry() {
     vertex.z += randomInstance.value() * randomFactor;
   });
 
-  treeGeometry.vertices.forEach(vertex => {
+  treeGeometry.vertices.forEach((vertex) => {
     if (vertex.level % 2 === 0) {
       vertex.x *= 0.1;
       vertex.z *= 0.1;
       vertex.y -= 0.2;
-    } else {
-      if (vertex.level) {
+    } else if (vertex.level) {
         vertex.y += (randomInstance.value() - 0.5) * 0.1;
       }
-    }
 
     // Пилим верхушки
     if (vertex.level <= 2) {
@@ -150,7 +149,7 @@ const sketch = ({ context }) => {
   lightDir2.castShadow = true;
   scene.add(lightDir2);
 
-  [lightDir1, lightDir2].forEach(light => {
+  [lightDir1, lightDir2].forEach((light) => {
     // Set up shadow properties for the light
     light.shadow.mapSize.width = 512; // default
     light.shadow.mapSize.height = 512; // default
@@ -172,7 +171,7 @@ const sketch = ({ context }) => {
   // ---------------------------------------------
   {
     const geometry = new THREE.PlaneGeometry(60, 60, 100, 100);
-    geometry.vertices.forEach(vertex => {
+    geometry.vertices.forEach((vertex) => {
       vertex.z += randomInstance.noise2D(vertex.x * 0.1, vertex.y * 0.1) * 0.5;
     });
     const plane = new THREE.Mesh(geometry, createGroundSnowMaterial());
@@ -251,7 +250,7 @@ const sketch = ({ context }) => {
   // const particles = new THREE.PlaneGeometry(40, 40, 50, 50);
   const particles = new THREE.Geometry(40, 40, 50, 50);
   // particles.rotateX(Math.PI * 0.5);
-  particles.vertices = particles.vertices.map(v => {
+  particles.vertices = particles.vertices.map((v) => {
     v.x += (randomInstance.value() - 0.5) * 0.05;
     v.y += (randomInstance.value() - 0.5) * 4 + 6;
     v.z += (randomInstance.value() - 0.5) * 0.05;
@@ -309,7 +308,7 @@ const sketch = ({ context }) => {
     bevelOffset: 0,
     bevelSegments: 20,
   });
-  geometry.vertices.forEach(v => {
+  geometry.vertices.forEach((v) => {
     v.x += (randomInstance.value() - 0.5) * 0.05;
     v.y += (randomInstance.value() - 0.5) * 0.05;
     v.z += (randomInstance.value() - 0.5) * 0.05;

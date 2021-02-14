@@ -11,11 +11,12 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 
+import { getWebGLContext } from '@/utils/webgl';
 import effectPixelShader from './shaders/effectPixelShader.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

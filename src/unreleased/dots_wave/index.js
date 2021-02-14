@@ -1,3 +1,4 @@
+import { getWebGLContext } from '@/utils/webgl';
 import fragmentShader from './shaders/frag.glsl';
 import vertexShader from './shaders/vert.glsl';
 
@@ -9,7 +10,7 @@ require('three/examples/js/controls/OrbitControls');
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: getWebGLContext(),
 };
 
 const sketch = ({ context, viewportWidth, viewportHeight }) => {

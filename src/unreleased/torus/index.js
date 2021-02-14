@@ -19,6 +19,7 @@ import colors from 'nice-color-palettes';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import { PostProcess } from '@babylonjs/core';
+import { getWebGLContext } from '@/utils/webgl';
 import postprocessFragment from './shaders/postprocess/fragment.glsl';
 import sphere_vertexDefinitions from './shaders/sphere/vertexDefinitions.glsl';
 import sphere_vertexBeforePositionUpdated from './shaders/sphere/vertexBeforePositionUpdated.glsl';
@@ -29,7 +30,7 @@ const colorPalette = [...colors[0], '#ffff00'];
 
 const settings = {
   animate: true,
-  context: 'webgl',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {

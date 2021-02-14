@@ -10,15 +10,16 @@ import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPi
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Effect } from '@babylonjs/core/Materials/effect';
 
-import emissiveNoisePixelShader from './shaders/emissiveNoisePixelShader.glsl';
-import opacityNoisePixelShader from './shaders/opacityNoisePixelShader.glsl';
 
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { ProceduralTexture } from '@babylonjs/core';
+import { getWebGLContext } from '@/utils/webgl';
+import opacityNoisePixelShader from './shaders/opacityNoisePixelShader.glsl';
+import emissiveNoisePixelShader from './shaders/emissiveNoisePixelShader.glsl';
 
 const settings = {
   animate: true,
-  context: 'webgl2',
+  context: getWebGLContext(),
 };
 
 const sketch = async ({ canvas, width, height }) => {
@@ -100,7 +101,7 @@ const sketch = async ({ canvas, width, height }) => {
       opacityTexture.setFloat('iTime', t);
       emissiveTexture.setFloat('iTime', t);
 
-      const phaseFactor = Math.sin(t)*.25;
+      const phaseFactor = Math.sin(t) * 0.25;
 
       opacityTexture.setFloat('phaseFactor', phaseFactor);
       emissiveTexture.setFloat('phaseFactor', phaseFactor);

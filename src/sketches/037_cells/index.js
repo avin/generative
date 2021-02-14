@@ -4,9 +4,10 @@ import createQuad from 'primitive-quad';
 
 import fragmentShader from './shaders/frag_main.glsl';
 import vertexShader from './shaders/vert.glsl';
+import { getWebGLContext } from '@/utils/webgl';
 
 const settings = {
-  context: 'webgl2',
+  context: getWebGLContext(),
   animate: true,
 };
 
