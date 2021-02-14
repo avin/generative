@@ -95,6 +95,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const mat = new CustomMaterial('plastic', scene);
   mat.diffuseColor = new Color3.FromHexString('#48AFF0');
+  mat.specularColor = new Color3(0.25, 0.25, 0.25);
   mesh.material = mat;
 
   let rotmatrixBlock = '';
