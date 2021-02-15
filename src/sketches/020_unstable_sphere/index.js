@@ -13,7 +13,7 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { getWebGLContext } from '@/utils/webgl';
 
-import postprocessFragment from '@/sketches/072_rotten_bagel/shaders/postprocess/fragment.glsl';
+import postprocessFragment from './shaders/postprocess/fragment.glsl';
 import particle_fragmentDefinitions from './shaders/particle/fragmentDefinitions.glsl';
 import particle_fragmentCustomAlpha from './shaders/particle/fragmentCustomAlpha.glsl';
 import particle_fragmentCustomAlbedo from './shaders/particle/fragmentCustomAlbedo.glsl';
