@@ -9,10 +9,8 @@ const UnreleasedCataloguePage = () => {
     <div>
       <ul>
         {scenes.map(({ id }) => (
-          <li>
-            <Link to={`/u/${id}`} key={id}>
-              {id}
-            </Link>
+          <li key={id}>
+            <Link to={`/u/${id}`}>{id}</Link>
           </li>
         ))}
       </ul>

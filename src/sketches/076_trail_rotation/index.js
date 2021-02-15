@@ -5,8 +5,6 @@ import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
-import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { getWebGLContext } from '@/utils/webgl';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
