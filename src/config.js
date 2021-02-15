@@ -90,7 +90,6 @@ const expSketches = [
   'particles_tornado',
   'rotate',
   'torus',
-  'unstable_sphere2',
   'yellow_snow',
 ];
 /* END EXP_SKETCHES */
