@@ -76,6 +76,7 @@ const sketches = [
   '074_chandelier',
   '075_bouquet',
   '076_trail_rotation',
+  '077_metallic_rotation',
 ];
 /* END SKETCHES */
 
