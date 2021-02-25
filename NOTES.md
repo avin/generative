@@ -78,6 +78,7 @@ https://playground.babylonjs.com/#17DP89#78
 https://playground.babylonjs.com/#199KHL#51
 https://playground.babylonjs.com/#2FPT1A#445
 https://playground.babylonjs.com/#4YBB22#0
+https://playground.babylonjs.com/#8F5HYV#9
 
 ### Bevel box
 
@@ -86,3 +87,7 @@ https://playground.babylonjs.com/#AY7B23#1
 ### Rotate mesh by mouse
 
 https://playground.babylonjs.com/#KUC86F
+
+### Matcap
+
+https://playground.babylonjs.com/#NGH9FM#2

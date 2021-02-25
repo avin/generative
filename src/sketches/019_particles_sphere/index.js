@@ -2,11 +2,11 @@ import { getWebGLContext } from '@/utils/webgl';
 import fragmentShader from './shaders/frag.glsl';
 import vertexShader from './shaders/vert.glsl';
 
-const THREE = require('three');
+const THREE = require('three113');
 
 global.THREE = THREE;
 
-require('three/examples/js/controls/OrbitControls');
+require('three113/examples/js/controls/OrbitControls');
 
 const settings = {
   animate: true,

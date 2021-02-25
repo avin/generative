@@ -90,6 +90,7 @@ const expSketches = [
   'goldenflower',
   'particles_tornado',
   'rotate',
+  'three-exp',
   'torus',
   'yellow_snow',
 ];

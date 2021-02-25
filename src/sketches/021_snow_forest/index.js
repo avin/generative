@@ -2,12 +2,12 @@ import { getWebGLContext } from '@/utils/webgl';
 import vertexShader from './shaders/vert.glsl';
 import fragmentShader from './shaders/frag.glsl';
 
-const THREE = require('three');
+const THREE = require('three113');
 const random = require('canvas-sketch-util').random;
 
 global.THREE = THREE;
 
-require('three/examples/js/controls/OrbitControls');
+require('three113/examples/js/controls/OrbitControls');
 
 const font = require('./font.json');
 
@@ -92,8 +92,8 @@ function createTreeGeometry() {
       vertex.z *= 0.1;
       vertex.y -= 0.2;
     } else if (vertex.level) {
-        vertex.y += (randomInstance.value() - 0.5) * 0.1;
-      }
+      vertex.y += (randomInstance.value() - 0.5) * 0.1;
+    }
 
     // Пилим верхушки
     if (vertex.level <= 2) {

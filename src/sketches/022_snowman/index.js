@@ -6,12 +6,12 @@ import generalVertexShader from './shaders/general/vert.glsl';
 import snowFragmentShader from './shaders/snow/frag.glsl';
 import snowVertexShader from './shaders/snow/vert.glsl';
 
-const THREE = require('three');
+const THREE = require('three113');
 const random = require('canvas-sketch-util').random;
 
 global.THREE = THREE;
 
-require('three/examples/js/controls/OrbitControls');
+require('three113/examples/js/controls/OrbitControls');
 
 const randomInstance = random.createRandom();
 randomInstance.setSeed('415761');

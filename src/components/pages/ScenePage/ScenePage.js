@@ -48,8 +48,8 @@ class ScenePage extends React.Component {
     };
 
     if (!sketchSettings.dimensions) {
-      sketchSettings.canvasWidth = this.containerRef.current.scrollWidth;
-      sketchSettings.canvasHeight = this.containerRef.current.scrollHeight;
+      // sketchSettings.canvasWidth = this.containerRef.current.scrollWidth;
+      // sketchSettings.canvasHeight = this.containerRef.current.scrollHeight;
 
       sketchSettings.styleCanvas = false;
     }

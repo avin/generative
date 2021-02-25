@@ -16,9 +16,6 @@
     "stylelint:fix": "npm run stylelint -- --fix",
     "prettier": "prettier --write \"src/**/*.{js,json,css,scss,md}\""
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -68,6 +65,7 @@
     "cross-env": "^7.0.3",
     "customize-cra": "1.0.0",
     "d3-array": "2.11.0",
+    "dat.gui": "^0.7.7",
     "gl-matrix": "3.3.0",
     "glsl-noise": "0.0.0",
     "glslify": "7.1.1",
@@ -97,7 +95,8 @@
     "redux-thunk": "2.3.0",
     "soundcloud-audio": "1.4.0",
     "stats.js": "0.17.0",
-    "three": "0.113.2",
+    "three113": "npm:three@0.113.2",
+    "three125": "npm:three@0.125.2",
     "web-audio-analyser": "2.0.1"
   },
   "devDependencies": {
