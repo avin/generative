@@ -53,6 +53,9 @@ const sketch = async ({ canvas, width, height }) => {
     diameter: radius * 2,
     segments: 512,
   });
+  sphere.isPickable = false;
+  sphere.doNotSyncBoundingInfo = false;
+  sphere.freezeWorldMatrix();
 
   const mainMaterial = new PBRCustomMaterial('sphereMaterial', scene);
 

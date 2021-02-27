@@ -67,6 +67,9 @@ const sketch = async ({ canvas, width, height }) => {
     height: 10,
     subdivisions,
   });
+  plane.isPickable = false;
+  plane.doNotSyncBoundingInfo = false;
+  plane.freezeWorldMatrix();
 
   const sidePlane1 = MeshBuilder.CreateGround('sphere', {
     width: 10,
@@ -78,6 +81,10 @@ const sketch = async ({ canvas, width, height }) => {
   sidePlane1.position.y = -0.5;
   sidePlane1.bakeCurrentTransformIntoVertices();
 
+  sidePlane1.isPickable = false;
+  sidePlane1.doNotSyncBoundingInfo = false;
+  sidePlane1.freezeWorldMatrix();
+
   const sidePlane2 = MeshBuilder.CreateGround('sphere', {
     width: 10,
     height: 1,
@@ -88,6 +95,10 @@ const sketch = async ({ canvas, width, height }) => {
   sidePlane2.position.x = -5;
   sidePlane2.position.y = -0.5;
   sidePlane2.bakeCurrentTransformIntoVertices();
+
+  sidePlane2.isPickable = false;
+  sidePlane2.doNotSyncBoundingInfo = false;
+  sidePlane2.freezeWorldMatrix();
 
   const mainMaterial = new PBRCustomMaterial('bloodMaterial', scene);
 
