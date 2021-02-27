@@ -112,8 +112,8 @@ const sketch = async ({ canvas, width, height }) => {
         const sf = decodeUInt32([
           data[rx * rowSize * 4 + rz * 4] / 255,
           data[rx * rowSize * 4 + rz * 4 + 1] / 255,
-          data[rx * rowSize * 4 + rz * 4 + 1] / 255,
-          data[rx * rowSize * 4 + rz * 4 + 1] / 255,
+          data[rx * rowSize * 4 + rz * 4 + 2] / 255,
+          data[rx * rowSize * 4 + rz * 4 + 3] / 255,
         ]);
 
         const scaleY = sf * 15 + 0;
