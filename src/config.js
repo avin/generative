@@ -77,6 +77,7 @@ const sketches = [
   '075_bouquet',
   '076_trail_rotation',
   '077_metallic_rotation',
+  '078_bio_ball',
 ];
 /* END SKETCHES */
 
@@ -85,7 +86,6 @@ const expSketches = [
   'black_hole',
   'bloom',
   'dots_wave',
-  'exp-sphere',
   'foo',
   'foo2',
   'goldenflower',
