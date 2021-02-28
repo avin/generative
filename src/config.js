@@ -86,6 +86,7 @@ const expSketches = [
   'black_hole',
   'bloom',
   'dots_wave',
+  'draw',
   'foo',
   'foo2',
   'goldenflower',
