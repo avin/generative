@@ -6,21 +6,18 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getWebGLContext } from '@/utils/webgl';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import { DisplayPassPostProcess, ProceduralTexture, RenderTargetTexture } from '@babylonjs/core';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
-import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
-import effectPixelShader from './shaders/effectPixelShader.glsl';
 
+import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
+import effectPixelShader from './shaders/effectPixelShader.glsl';
 import ground_vertexDefinitions from './shaders/ground/vertexDefinitions.glsl';
 import ground_vertexBeforePositionUpdated from './shaders/ground/vertexBeforePositionUpdated.glsl';
-import ground_fragmentDefinitions from './shaders/ground/fragmentDefinitions.glsl';
-import ground_fragmentCustomAlbedo from './shaders/ground/fragmentCustomAlbedo.glsl';
 
 const settings = {
   animate: true,
@@ -46,7 +43,7 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.clearColor = new Color3(16 / 255, 22 / 255, 26 / 255);
 
-  const camera = new ArcRotateCamera('camera', 1.28, 0.6, 50, new Vector3(0, 0, 0), scene);
+  const camera = new ArcRotateCamera('camera', 1.28, 0.5, 60, new Vector3(4, 0, 8), scene);
   camera.fov = 1.2;
   camera.minZ = 0.1;
   // camera.attachControl(canvas);
@@ -57,10 +54,12 @@ const sketch = async ({ canvas, width, height }) => {
   baseLight.specular = Color3.Black();
   baseLight.intensity = 0.25;
 
-  const dirLight = new DirectionalLight('dirLight', new Vector3(-1, -1, 1), scene);
+  const dirLight = new DirectionalLight('dirLight', new Vector3(-1, -3, 1), scene);
   dirLight.intensity = 1.25;
   dirLight.position = new Vector3(10, 10, -20);
-  dirLight.specular = Color3.Black();
+  // dirLight.specular = Color3.Black();
+
+  // ------------------------------
 
   const pickGround = new MeshBuilder.CreateGround('g', {
     width: planeSize,
@@ -73,18 +72,25 @@ const sketch = async ({ canvas, width, height }) => {
   const ground = new MeshBuilder.CreateGround('g', {
     width: planeSize,
     height: planeSize,
-    subdivisions: 1000,
+    subdivisions: 500,
     updatable: false,
   });
   ground.isPickable = false;
 
   const penSize = 5;
-  const sphere = new MeshBuilder.CreateSphere('s', { diameter: penSize });
+  const sphere = new MeshBuilder.CreateCapsule('s', {
+    radius: penSize / 2,
+    tessellation: 32,
+    height: penSize * 2,
+  });
   sphere.isPickable = false;
-  sphere.visibility = 0.2;
+  sphere.visibility = 0.5;
 
-  const sphereMat = new StandardMaterial('', scene);
-  sphereMat.diffuseColor = new Color3(1, 1, 1);
+  const sphereMat = new PBRMaterial('', scene);
+  sphereMat.metallic = 0;
+  sphereMat.roughness = 0.1;
+  sphereMat.albedoColor = new Color3.FromHexString('#7157D9').toLinearSpace();
+  // sphereMat.specularColor = Color3.Black();
   sphere.material = sphereMat;
 
   //
@@ -93,7 +99,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const textureCamera = new Camera('camera', Vector3.Zero(), null);
 
-  const texureSize = 5000;
+  const texureSize = 1000;
 
   Effect.ShadersStore.effectPixelShader = effectPixelShader;
   const effectTexture = new ProceduralTexture('effectTexture', texureSize, 'effect', scene, null, false, false);
@@ -114,20 +120,6 @@ const sketch = async ({ canvas, width, height }) => {
   // Move ball
   //
 
-  let lastPosition = sphere.position;
-  function moveBall() {
-    const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-
-    let pickPoint = lastPosition;
-    if (pickInfo.hit) {
-      pickPoint = pickInfo.pickedPoint;
-      lastPosition = pickPoint;
-    }
-
-    Vector3.LerpToRef(sphere.position, pickPoint, 0.2, sphere.position);
-    // sphere.position = pickPoint;
-  }
-
   let isDrawing = false;
   canvas.addEventListener('pointerdown', () => {
     isDrawing = true;
@@ -139,28 +131,44 @@ const sketch = async ({ canvas, width, height }) => {
     isDrawing = false;
   });
 
+  let lastPosition = sphere.position;
+  function moveBall() {
+    const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
+
+    let pickPoint = lastPosition;
+    if (pickInfo.hit) {
+      pickPoint = pickInfo.pickedPoint;
+      lastPosition = pickPoint;
+    }
+
+    Vector3.LerpToRef(sphere.position, pickPoint, 0.2, sphere.position);
+
+    sphere.position.y = isDrawing ? penSize / 2 : penSize;
+  }
+
   //
   // Ground
   //
 
   const groundMat = new PBRCustomMaterial('m', scene);
+  groundMat.albedoColor = Color3.FromHexString('#FF66A1').toLinearSpace();
   groundMat.metallic = 0.05;
-  groundMat.roughness = 0.075;
+  groundMat.roughness = 0.35;
   // groundMat.albedoTexture = effectTexture;
   // groundMat.wireframe = true;
   ground.material = groundMat;
 
   groundMat.Vertex_Definitions(ground_vertexDefinitions);
   groundMat.Vertex_Before_PositionUpdated(ground_vertexBeforePositionUpdated);
-  groundMat.Fragment_Definitions(ground_fragmentDefinitions);
-  groundMat.Fragment_Custom_Albedo(ground_fragmentCustomAlbedo);
 
-  groundMat.AddUniform('size', 'float');
+  groundMat.AddUniform('planeSize', 'float');
+  groundMat.AddUniform('penSize', 'float');
   groundMat.AddUniform('heightTexture', 'sampler2D');
 
   groundMat.onBind = () => {
     groundMat.getEffect().setTexture('heightTexture', effectTexture);
-    groundMat.getEffect().setFloat('size', planeSize);
+    groundMat.getEffect().setFloat('penSize', penSize);
+    groundMat.getEffect().setFloat('planeSize', planeSize);
   };
 
   // ----------------------------
@@ -181,9 +189,9 @@ const sketch = async ({ canvas, width, height }) => {
       effectTexture.setVector2('penPosition', penPosition);
       effectTexture.setVector2('prevPenPosition', prevPenPosition);
       prevPenPosition = penPosition;
-      effectTexture.setFloat('penSize', penSize / planeSize / 2);
+      effectTexture.setFloat('penSize', penSize / planeSize);
       effectTexture.setInt('isDrawing', isDrawing ? 1 : 0);
-      effectTexture.setFloat('fadeFactor', 0.002);
+      effectTexture.setFloat('fadeFactor', 0.00175);
       effectTexture.setVector2('iResolution', new Vector2(texureSize, texureSize));
 
       scene.render();

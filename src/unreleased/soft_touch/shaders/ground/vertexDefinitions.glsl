@@ -1,13 +1,9 @@
-
-
 vec3 distortFunct(vec3 transformed) {
-  vec2 uv = vec2(transformed.x, transformed.z) / size + vec2(.5);
-
+  vec2 uv = vec2(transformed.x, transformed.z) / planeSize + vec2(.5);
   float rv = texture2D(heightTexture, uv).x;
-
-  // float rv = sin(transformed.z);
-
-  return transformed - sqrt(vec3(0., rv, 0.))*5.;
+  float s = penSize*1.25;
+  rv = min((-(s - (rv * rv))) * exp2(-s * (rv*rv)), 0.);
+  return transformed - vec3(0., rv + s, 0.);
 }
 
 vec3 orthogonal(vec3 v) { return cross(v, vec3(1., 1., 1.)); }
