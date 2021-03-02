@@ -78,6 +78,8 @@ const sketches = [
   '076_trail_rotation',
   '077_metallic_rotation',
   '078_bio_ball',
+  '079_soft_touch',
+  '080_black_sun',
 ];
 /* END SKETCHES */
 
@@ -92,7 +94,6 @@ const expSketches = [
   'lowpoly_waves',
   'particles_tornado',
   'rotate',
-  'soft_touch',
   'three-exp',
   'torus',
   'yellow_snow',

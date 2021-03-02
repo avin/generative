@@ -6,14 +6,12 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { getWebGLContext } from '@/utils/webgl';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import { DisplayPassPostProcess, ProceduralTexture, RenderTargetTexture } from '@babylonjs/core';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
-
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import effectPixelShader from './shaders/effectPixelShader.glsl';
 import ground_vertexDefinitions from './shaders/ground/vertexDefinitions.glsl';
@@ -154,7 +152,6 @@ const sketch = async ({ canvas, width, height }) => {
   groundMat.albedoColor = Color3.FromHexString('#FF66A1').toLinearSpace();
   groundMat.metallic = 0.05;
   groundMat.roughness = 0.35;
-  // groundMat.albedoTexture = effectTexture;
   // groundMat.wireframe = true;
   ground.material = groundMat;
 
@@ -176,12 +173,8 @@ const sketch = async ({ canvas, width, height }) => {
   let prevPenPosition = 0;
   return {
     render({ time, width, height, deltaTime }) {
-      const delta = Math.min(deltaTime, 1 / 60);
-      time += delta;
-
       moveBall();
 
-      effectTexture.setFloat('iTime', time);
       const penPosition = new Vector2(sphere.position.x / planeSize, sphere.position.z / planeSize);
       if (!prevPenPosition) {
         prevPenPosition = penPosition;
