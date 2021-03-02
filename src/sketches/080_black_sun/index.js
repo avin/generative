@@ -7,27 +7,15 @@ import { Matrix, Quaternion, Vector2, Vector3 } from '@babylonjs/core/Maths/math
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
-import {
-  AxisDragGizmo,
-  ImageProcessingConfiguration,
-  LightGizmo,
-  PointLight,
-  PostProcess,
-  UtilityLayerRenderer,
-} from '@babylonjs/core';
 import { Effect } from '@babylonjs/core/Materials/effect';
-
 import { getWebGLContext } from '@/utils/webgl';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
-import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
 import wave_vertexDefinitions from './shaders/wave/vertexDefinitions.glsl';
 import wave_fragmentBeforeFragColor from './shaders/wave/fragmentBeforeFragColor.glsl';
 import wave_vertexBeforePositionUpdated from './shaders/wave/vertexBeforePositionUpdated.glsl';
 import sun_fragment from './shaders/sun/fragment.glsl';
 import sun_vertex from './shaders/sun/vertex.glsl';
-import postprocessFragment from './shaders/postprocess/fragment.glsl';
 
 const settings = {
   animate: true,
@@ -49,10 +37,6 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.clearColor = new Color3(0, 0, 0);
 
-  // scene.imageProcessingConfiguration.toneMappingEnabled = true;
-  // scene.imageProcessingConfiguration.toneMappingType = ImageProcessingConfiguration.TONEMAPPING_ACES;
-  // scene.imageProcessingConfiguration.exposure = 2;
-
   const camera = new ArcRotateCamera('camera', Math.PI / 4 + 0.3, 1.575, 10.0, new Vector3(0, 2, 0), scene);
   camera.wheelPrecision = 50;
   camera.minZ = 0.125;
@@ -67,14 +51,6 @@ const sketch = async ({ canvas, width, height }) => {
   const dirLight = new DirectionalLight('dirLight', new Vector3(1, -1.5, 1), scene);
   dirLight.intensity = 1.25;
   dirLight.position = new Vector3(-20, 5, -20);
-
-  // const pLight = new PointLight('pl', scene);
-  // pLight.position = dirLight.position;
-  // pLight.intensity = 1.;
-
-  // const utilLayer = new UtilityLayerRenderer(scene);
-  // const gizmo = new LightGizmo(utilLayer);
-  // gizmo.light = dirLight;
 
   const subdivisions = 40;
 
@@ -112,9 +88,9 @@ const sketch = async ({ canvas, width, height }) => {
             cellPosArr.push([x, y]);
           }
         } else if (!(Math.abs(x) < 10 || Math.abs(y) < 10)) {
-            matrixArr.push(Matrix.Translation(x, 0, y));
-            cellPosArr.push([x, y]);
-          }
+          matrixArr.push(Matrix.Translation(x, 0, y));
+          cellPosArr.push([x, y]);
+        }
       }
     }
 
@@ -194,26 +170,6 @@ const sketch = async ({ canvas, width, height }) => {
     shader.setFloat('iTime', time);
     shader.setVector2('iResolution', new Vector2(1, 1));
   });
-
-  // ------------------------------
-
-  // Effect.ShadersStore.customFragmentShader = postprocessFragment;
-  // new PostProcess('shade-sides', 'custom', null, null, 1.0, camera);
-
-  // const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
-  // defaultPipeline.fxaaEnabled = true;
-  // defaultPipeline.imageProcessingEnabled = false;
-  // defaultPipeline.samples = 8;
-  //
-  // defaultPipeline.bloomEnabled = true;
-  // defaultPipeline.bloomThreshold = 0.0;
-  // defaultPipeline.bloomWeight = .5;
-  // defaultPipeline.bloomKernel = 100;
-  // defaultPipeline.bloomScale = 0.9;
-  //
-  // defaultPipeline.grainEnabled = true;
-  // defaultPipeline.grain.intensity = 5;
-  // defaultPipeline.grain.animated = true;
 
   // ------------------------------
 
