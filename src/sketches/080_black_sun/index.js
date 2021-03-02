@@ -1,6 +1,7 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
 import '@babylonjs/core/Materials/standardMaterial';
+import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { Matrix, Quaternion, Vector2, Vector3 } from '@babylonjs/core/Maths/math';
