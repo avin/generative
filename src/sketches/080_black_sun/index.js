@@ -42,7 +42,7 @@ const sketch = async ({ canvas, width, height }) => {
   camera.wheelPrecision = 50;
   camera.minZ = 0.125;
   camera.fov = 1.0;
-  camera.attachControl(canvas, true);
+  // camera.attachControl(canvas, true);
 
   const baseLight = new HemisphericLight('hemiLight', new Vector3(1, 1, 0), scene);
   baseLight.diffuse = new Color3(1, 1, 1);
