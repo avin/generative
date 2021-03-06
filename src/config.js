@@ -80,6 +80,7 @@ const sketches = [
   '078_bio_ball',
   '079_soft_touch',
   '080_black_sun',
+  '081_dot_waves',
 ];
 /* END SKETCHES */
 

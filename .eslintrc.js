@@ -38,6 +38,7 @@ module.exports = {
     'no-await-in-loop': 0,
     'no-continue': 0,
     'react/static-property-placement': 0,
+    'global-require': 0,
   },
   settings: {
     react: {
