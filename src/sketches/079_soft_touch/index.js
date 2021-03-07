@@ -4,7 +4,6 @@ import '@babylonjs/core/Collisions/pickingInfo';
 import { Vector2, Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
-import { getWebGLContext } from '@/utils/webgl';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { Effect } from '@babylonjs/core/Materials/effect';
@@ -18,7 +17,7 @@ import ground_vertexBeforePositionUpdated from './shaders/ground/vertexBeforePos
 
 const settings = {
   animate: true,
-  context: getWebGLContext(),
+  context: 'webgl2',
 };
 
 const sketch = async ({ canvas, width, height }) => {

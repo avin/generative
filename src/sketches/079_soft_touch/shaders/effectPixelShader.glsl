@@ -22,7 +22,7 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
   vec2 pos1 = penPosition;
   vec2 pos2 = prevPenPosition;
 
-  float backCol = texture(sameTexture, ouv).r;
+  float backCol = texture2D(sameTexture, ouv).r;
 
   float d = 0.;
 
