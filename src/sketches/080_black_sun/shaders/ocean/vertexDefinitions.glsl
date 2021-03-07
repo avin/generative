@@ -1,3 +1,5 @@
+uniform float iTime;
+
 attribute vec2 cellPos;
 
 #define MOD3 vec3(.1031, .11369, .13787)

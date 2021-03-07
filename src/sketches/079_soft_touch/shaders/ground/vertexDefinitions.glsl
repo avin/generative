@@ -1,8 +1,12 @@
+uniform float planeSize;
+uniform float penSize;
+uniform sampler2D heightTexture;
+
 vec3 distortFunct(vec3 transformed) {
   vec2 uv = vec2(transformed.x, transformed.z) / planeSize + vec2(.5);
   float rv = texture2D(heightTexture, uv).x;
-  float s = penSize*1.25;
-  rv = min((-(s - (rv * rv))) * exp2(-s * (rv*rv)), 0.);
+  float s = penSize * 1.25;
+  rv = min((-(s - (rv * rv))) * exp2(-s * (rv * rv)), 0.);
   return transformed - vec3(0., rv + s, 0.);
 }
 

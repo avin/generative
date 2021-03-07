@@ -1,6 +1,5 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
-import '@babylonjs/core/Materials/standardMaterial';
 import '@babylonjs/core/Meshes/thinInstanceMesh';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
@@ -10,11 +9,11 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import { getWebGLContext } from '@/utils/webgl';
-import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial';
-import wave_vertexDefinitions from './shaders/wave/vertexDefinitions.glsl';
-import wave_fragmentBeforeFragColor from './shaders/wave/fragmentBeforeFragColor.glsl';
-import wave_vertexBeforePositionUpdated from './shaders/wave/vertexBeforePositionUpdated.glsl';
+import ocean_vertexDefinitions from './shaders/ocean/vertexDefinitions.glsl';
+import ocean_fragmentBeforeFragColor from './shaders/ocean/fragmentBeforeFragColor.glsl';
+import ocean_vertexBeforePositionUpdated from './shaders/ocean/vertexBeforePositionUpdated.glsl';
 import sun_fragment from './shaders/sun/fragment.glsl';
 import sun_vertex from './shaders/sun/vertex.glsl';
 
@@ -55,7 +54,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const subdivisions = 40;
 
-  const plane = MeshBuilder.CreateGround('sphere', {
+  const plane = MeshBuilder.CreateGround('ocean', {
     width: 1,
     height: 1,
     subdivisions,
@@ -64,16 +63,16 @@ const sketch = async ({ canvas, width, height }) => {
   plane.doNotSyncBoundingInfo = false;
   plane.freezeWorldMatrix();
 
-  const farPlane = MeshBuilder.CreateGround('sphere', {
+  const farPlane = MeshBuilder.CreateGround('oceanFar', {
     width: 1,
     height: 1,
     subdivisions: 20,
   });
 
-  const mainMaterial = new CustomMaterial('bloodMaterial', scene);
+  const oceanMaterial = new StandardMaterial('oceanMaterial', scene);
 
-  plane.material = mainMaterial;
-  farPlane.material = mainMaterial;
+  plane.material = oceanMaterial;
+  farPlane.material = oceanMaterial;
 
   // -------------------------
 
@@ -112,25 +111,42 @@ const sketch = async ({ canvas, width, height }) => {
     }
   }
 
-  mainMaterial.AddAttribute('cellPos');
+  oceanMaterial.customShaderNameResolve = (
+    shaderName,
+    uniforms,
+    uniformBuffers,
+    samplers,
+    defines,
+    attributes,
+    options,
+  ) => {
+    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.defaultVertexShader;
+    Effect.ShadersStore.oceanPixelShader = Effect.ShadersStore.defaultPixelShader;
 
-  //
-  // Shaders
-  //
+    uniforms.push('iTime');
+    attributes.push('cellPos');
 
-  mainMaterial.Vertex_Definitions(wave_vertexDefinitions);
-  mainMaterial.Fragment_Before_FragColor(wave_fragmentBeforeFragColor);
-  mainMaterial.Vertex_Before_PositionUpdated(wave_vertexBeforePositionUpdated);
+    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.oceanVertexShader.replace(
+      `#define CUSTOM_VERTEX_DEFINITIONS`,
+      ocean_vertexDefinitions,
+    );
 
-  //
-  // Attributes
-  //
+    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.oceanVertexShader.replace(
+      `#define CUSTOM_VERTEX_UPDATE_POSITION`,
+      ocean_vertexBeforePositionUpdated,
+    );
 
-  mainMaterial.AddUniform('iTime', 'float');
+    Effect.ShadersStore.oceanPixelShader = Effect.ShadersStore.oceanPixelShader.replace(
+      `#define CUSTOM_FRAGMENT_BEFORE_FRAGCOLOR`,
+      ocean_fragmentBeforeFragColor,
+    );
 
-  mainMaterial.onBind = () => {
+    return 'ocean';
+  };
+
+  oceanMaterial.onBind = () => {
     const time = (+new Date() - initTime) * 0.001;
-    mainMaterial.getEffect().setFloat('iTime', time);
+    oceanMaterial.getEffect().setFloat('iTime', time);
   };
 
   // SUN --------------------------

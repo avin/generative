@@ -11,7 +11,6 @@ import { Effect } from '@babylonjs/core/Materials/effect';
 import { DisplayPassPostProcess, ProceduralTexture, RenderTargetTexture } from '@babylonjs/core';
 import { Camera } from '@babylonjs/core/Cameras/camera';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
-import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import effectPixelShader from './shaders/effectPixelShader.glsl';
 import ground_vertexDefinitions from './shaders/ground/vertexDefinitions.glsl';
@@ -148,19 +147,42 @@ const sketch = async ({ canvas, width, height }) => {
   // Ground
   //
 
-  const groundMat = new PBRCustomMaterial('m', scene);
+  const groundMat = new PBRMaterial('m', scene);
   groundMat.albedoColor = Color3.FromHexString('#FF66A1').toLinearSpace();
   groundMat.metallic = 0.05;
   groundMat.roughness = 0.35;
   // groundMat.wireframe = true;
   ground.material = groundMat;
 
-  groundMat.Vertex_Definitions(ground_vertexDefinitions);
-  groundMat.Vertex_Before_PositionUpdated(ground_vertexBeforePositionUpdated);
+  groundMat.customShaderNameResolve = (
+    shaderName,
+    uniforms,
+    uniformBuffers,
+    samplers,
+    defines,
+    attributes,
+    options,
+  ) => {
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.pbrVertexShader;
+    Effect.ShadersStore.customPixelShader = Effect.ShadersStore.pbrPixelShader;
 
-  groundMat.AddUniform('planeSize', 'float');
-  groundMat.AddUniform('penSize', 'float');
-  groundMat.AddUniform('heightTexture', 'sampler2D');
+    uniforms.push('planeSize');
+    uniforms.push('penSize');
+
+    samplers.push('heightTexture');
+
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader.replace(
+      `#define CUSTOM_VERTEX_DEFINITIONS`,
+      ground_vertexDefinitions,
+    );
+
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader.replace(
+      `#define CUSTOM_VERTEX_UPDATE_POSITION`,
+      ground_vertexBeforePositionUpdated,
+    );
+
+    return 'custom';
+  };
 
   groundMat.onBind = () => {
     groundMat.getEffect().setTexture('heightTexture', effectTexture);
