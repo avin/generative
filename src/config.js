@@ -94,6 +94,7 @@ const expSketches = [
   'goldenflower',
   'lowpoly_waves',
   'particles_tornado',
+  'plane',
   'rotate',
   'three-exp',
   'torus',

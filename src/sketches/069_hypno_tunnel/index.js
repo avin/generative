@@ -44,7 +44,7 @@ const sketch = async ({ canvas, width, height }) => {
   camera.wheelPrecision = 50;
   camera.minZ = 0.01;
   camera.fov = 1.2;
-  camera.attachControl(canvas, true);
+  // camera.attachControl(canvas, true);
 
   const pLight1 = new PointLight('pLight', Vector3.Zero(), scene);
   pLight1.intensity = 0.01;
@@ -85,6 +85,10 @@ const sketch = async ({ canvas, width, height }) => {
       tessellation: 128,
     });
 
+    mesh.isPickable = false;
+    mesh.doNotSyncBoundingInfo = false;
+    mesh.freezeWorldMatrix();
+
     camera.position = path[2];
     camera.target = path[6];
 
@@ -98,6 +102,7 @@ const sketch = async ({ canvas, width, height }) => {
   let tube = buildTube();
 
   const mainMaterial = new PBRCustomMaterial('bloodMaterial', scene);
+  mainMaterial.freeze();
 
   mainMaterial.metallic = 0.0;
   mainMaterial.roughness = 0.025;

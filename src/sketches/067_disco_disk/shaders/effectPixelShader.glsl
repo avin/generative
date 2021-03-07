@@ -58,7 +58,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
     m = min(m, 1.);
 
-    vec3 backCol = texture(sameTexture, ouv).rgb*.995;
+    vec3 backCol = texture2D(sameTexture, ouv).rgb*.995;
 
     col = mix(backCol, col, m);
     fragColor = vec4(col,1.0);
