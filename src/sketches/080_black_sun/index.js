@@ -126,15 +126,9 @@ const sketch = async ({ canvas, width, height }) => {
     uniforms.push('iTime');
     attributes.push('cellPos');
 
-    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.oceanVertexShader.replace(
-      `#define CUSTOM_VERTEX_DEFINITIONS`,
-      ocean_vertexDefinitions,
-    );
-
-    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.oceanVertexShader.replace(
-      `#define CUSTOM_VERTEX_UPDATE_POSITION`,
-      ocean_vertexBeforePositionUpdated,
-    );
+    Effect.ShadersStore.oceanVertexShader = Effect.ShadersStore.oceanVertexShader
+      .replace(`#define CUSTOM_VERTEX_DEFINITIONS`, ocean_vertexDefinitions)
+      .replace(`#define CUSTOM_VERTEX_UPDATE_POSITION`, ocean_vertexBeforePositionUpdated);
 
     Effect.ShadersStore.oceanPixelShader = Effect.ShadersStore.oceanPixelShader.replace(
       `#define CUSTOM_FRAGMENT_BEFORE_FRAGCOLOR`,

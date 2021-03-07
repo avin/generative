@@ -39,6 +39,7 @@ module.exports = {
     'no-continue': 0,
     'react/static-property-placement': 0,
     'global-require': 0,
+    'no-cond-assign': 0,
   },
   settings: {
     react: {

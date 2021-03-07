@@ -171,15 +171,9 @@ const sketch = async ({ canvas, width, height }) => {
 
     samplers.push('heightTexture');
 
-    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader.replace(
-      `#define CUSTOM_VERTEX_DEFINITIONS`,
-      ground_vertexDefinitions,
-    );
-
-    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader.replace(
-      `#define CUSTOM_VERTEX_UPDATE_POSITION`,
-      ground_vertexBeforePositionUpdated,
-    );
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader
+      .replace(`#define CUSTOM_VERTEX_DEFINITIONS`, ground_vertexDefinitions)
+      .replace(`#define CUSTOM_VERTEX_UPDATE_POSITION`, ground_vertexBeforePositionUpdated);
 
     return 'custom';
   };

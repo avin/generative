@@ -1,3 +1,8 @@
+uniform float iTime;
+uniform float radius;
+uniform float radiusVariationAmplitude;
+uniform float radiusNoiseFrequency;
+
 varying float vRv;
 
 #define MOD3 vec3(.1031, .11369, .13787)

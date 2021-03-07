@@ -1,17 +1,15 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
 import { Scene } from '@babylonjs/core/scene';
-import '@babylonjs/core/Materials/standardMaterial';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { Vector3 } from '@babylonjs/core/Maths/math';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
-import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
 import { Effect } from '@babylonjs/core/Materials/effect';
 import { PostProcess } from '@babylonjs/core';
 import { getWebGLContext } from '@/utils/webgl';
-
+import { PBRMaterial } from '@babylonjs/core/Materials/PBR/pbrMaterial';
 import main_vertexDefinitions from './shaders/main/vertexDefinitions.glsl';
 import main_vertexBeforePositionUpdated from './shaders/main/vertexBeforePositionUpdated.glsl';
 import main_fragmentDefinitions from './shaders/main/fragmentDefinitions.glsl';
@@ -62,36 +60,54 @@ const sketch = async ({ canvas, width, height }) => {
   sphere.doNotSyncBoundingInfo = false;
   sphere.freezeWorldMatrix();
 
-  const mainMaterial = new PBRCustomMaterial('sphereMaterial', scene);
+  const mainMaterial = new PBRMaterial('sphereMaterial', scene);
+  sphere.material = mainMaterial;
   mainMaterial.freeze();
 
   mainMaterial.metallic = 0.05;
   mainMaterial.roughness = 0.075;
-  // mainMaterial.emissiveColor = new Color3.FromHexString('#293742');
 
-  sphere.material = mainMaterial;
+  const replaceIncludes = (code) => {
+    ['pbrBlockAlbedoOpacity', 'pbrBlockReflectivity', 'pbrBlockFinalColorComposition'].forEach((partName) => {
+      code = code.replaceAll(`#include<${partName}>`, Effect.IncludesShadersStore[partName]);
+    });
 
-  //
-  // Shaders
-  //
+    return code;
+  };
 
-  mainMaterial.Vertex_Definitions(main_vertexDefinitions);
-  mainMaterial.Vertex_Before_PositionUpdated(main_vertexBeforePositionUpdated);
-  mainMaterial.Fragment_Definitions(main_fragmentDefinitions);
-  mainMaterial.Fragment_Custom_Albedo(main_fragmentCustomAlbedo);
+  mainMaterial.customShaderNameResolve = (
+    shaderName,
+    uniforms,
+    uniformBuffers,
+    samplers,
+    defines,
+    attributes,
+    options,
+  ) => {
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.pbrVertexShader;
+    Effect.ShadersStore.customPixelShader = Effect.ShadersStore.pbrPixelShader;
 
-  //
-  // Attributes
-  //
+    Effect.ShadersStore.customPixelShader = replaceIncludes(Effect.ShadersStore.customPixelShader);
 
-  mainMaterial.AddUniform('iTime', 'float');
-  mainMaterial.AddUniform('radius', 'float');
-  mainMaterial.AddUniform('radiusVariationAmplitude', 'float');
-  mainMaterial.AddUniform('radiusNoiseFrequency', 'float');
+    Effect.ShadersStore.customVertexShader = Effect.ShadersStore.customVertexShader
+      .replace(`#define CUSTOM_VERTEX_DEFINITIONS`, main_vertexDefinitions)
+      .replace(`#define CUSTOM_VERTEX_UPDATE_POSITION`, main_vertexBeforePositionUpdated);
+
+    Effect.ShadersStore.customPixelShader = Effect.ShadersStore.customPixelShader
+      .replace(`#define CUSTOM_FRAGMENT_DEFINITIONS`, main_fragmentDefinitions)
+      .replace(`#define CUSTOM_FRAGMENT_UPDATE_ALBEDO`, main_fragmentCustomAlbedo);
+
+    uniforms.push('iTime');
+    uniforms.push('radius');
+    uniforms.push('radiusVariationAmplitude');
+    uniforms.push('radiusNoiseFrequency');
+
+    return 'custom';
+  };
+
   mainMaterial.onBind = () => {
     const time = (+new Date() - initTime) * 0.001;
     mainMaterial.getEffect().setFloat('iTime', time);
-
     mainMaterial.getEffect().setFloat('radius', radius);
     mainMaterial.getEffect().setFloat('radiusVariationAmplitude', 0.75);
     mainMaterial.getEffect().setFloat('radiusNoiseFrequency', 0.5);
@@ -99,8 +115,8 @@ const sketch = async ({ canvas, width, height }) => {
 
   // ------------------------------
 
-  Effect.ShadersStore.customFragmentShader = postprocessFragment;
-  new PostProcess('shade-sides', 'custom', null, null, 1.0, camera);
+  Effect.ShadersStore.postProcessFragmentShader = postprocessFragment;
+  new PostProcess('shade-sides', 'postProcess', null, null, 1.0, camera);
 
   return {
     render({ time, width, height }) {
