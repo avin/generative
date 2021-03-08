@@ -96,6 +96,7 @@ const expSketches = [
   'particles_tornado',
   'plane',
   'rotate',
+  'spiral',
   'three-exp',
   'torus',
   'yellow_snow',
