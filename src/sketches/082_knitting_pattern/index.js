@@ -6,11 +6,11 @@ import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
-import '@babylonjs/core/Meshes/thinInstanceMesh';
 import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
+import '@babylonjs/core/Rendering/depthRendererSceneComponent';
 import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { SSAO2RenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/ssao2RenderingPipeline';
+import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 
 import { getWebGLContext } from '@/utils/webgl';
@@ -39,17 +39,12 @@ const sketch = async ({ canvas, width, height }) => {
   //
 
   const scene = new Scene(engine);
-  scene.clearColor = Color3.FromHexString('#182026');
+  scene.clearColor = Color3.FromHexString('#10161A');
 
-  const camera = new ArcRotateCamera('camera', -0.1, 0.9, 20, new Vector3(0, -5, 0), scene);
-  camera.fov = 1.2;
+  const camera = new ArcRotateCamera('camera', 0, 0, 14, new Vector3(0, -5, 0), scene);
+  camera.fov = 1.5;
   camera.minZ = 0.1;
-  // camera.lowerRadiusLimit = 1;
-  // camera.upperRadiusLimit = 50;
-  // camera.wheelDeltaPercentage = 0.01;
-  // camera.pinchDeltaPercentage = 0.01;
-  // camera.lowerBetaLimit = 0.1;
-  // camera.upperBetaLimit = Math.PI / 2 - 0.001;
+  camera.wheelDeltaPercentage = 0.1;
 
   camera.attachControl(canvas, true);
 
@@ -64,7 +59,7 @@ const sketch = async ({ canvas, width, height }) => {
   const makeMesh = (phase, instance) => {
     const path = (() => {
       const path = [];
-      const length = Math.PI * 2 * 100;
+      const length = Math.PI * 2 * 120;
 
       for (let i = phase; i < length + phase; i += 1) {
         const sF = 0.0125;
@@ -94,7 +89,7 @@ const sketch = async ({ canvas, width, height }) => {
         path,
 
         radius: 0.7,
-        tessellation: 14,
+        tessellation: 11,
         sideOrientation: Mesh.DOUBLESIDE,
         updatable: true,
         instance,
@@ -123,6 +118,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   meshMaterial.AddUniform('iTime', 'float');
   meshMaterial.AddUniform('iFrame', 'float');
+  meshMaterial.AddUniform('camPos', 'vec3');
 
   let frame = 0;
 
@@ -130,13 +126,38 @@ const sketch = async ({ canvas, width, height }) => {
     const time = (+new Date() - initTime) * 0.001;
     meshMaterial.getEffect().setFloat('iTime', time);
     meshMaterial.getEffect().setFloat('iFrame', frame);
+    meshMaterial.getEffect().setVector3('camPos', camera.position);
   };
 
-  // -------------------------------
+  // -------------------
+
+  const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
+  defaultPipeline.fxaaEnabled = true;
+  defaultPipeline.imageProcessingEnabled = false;
+  defaultPipeline.samples = 16;
+
+  defaultPipeline.chromaticAberrationEnabled = true;
+  defaultPipeline.chromaticAberration.aberrationAmount = 10.0;
+
+  defaultPipeline.bloomEnabled = true;
+  defaultPipeline.bloomThreshold = 0.25;
+  defaultPipeline.bloomWeight = 0.65;
+  defaultPipeline.bloomKernel = 100;
+  defaultPipeline.bloomScale = 0.9;
+
+  defaultPipeline.grainEnabled = true;
+  defaultPipeline.grain.intensity = 5;
+  defaultPipeline.grain.animated = true;
+
+  defaultPipeline.depthOfFieldEnabled = true;
+  defaultPipeline.depthOfFieldBlurLevel = DepthOfFieldEffectBlurLevel.Low;
+  defaultPipeline.depthOfField.fStop = 0.5;
+  defaultPipeline.depthOfField.focalLength = 800;
+  defaultPipeline.depthOfField.focusDistance = 10000;
+  defaultPipeline.depthOfField.lensSize = 10;
 
   return {
     render({ time, deltaTime }) {
-      // const t = time * .2;
       mesh = makeMesh(frame, mesh);
 
       frame += 1;
