@@ -106,7 +106,6 @@ const sketch = async ({ canvas, width, height }) => {
 
   const meshMaterial = new CustomMaterial('meshMaterial', scene);
 
-  meshMaterial.disableLighting = true;
   meshMaterial.emissiveColor = Color3.Black();
   meshMaterial.specularColor = Color3.Black();
   meshMaterial.diffuseTexture = new Texture('NONE', scene); // to appear UV attributes
