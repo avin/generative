@@ -41,7 +41,7 @@ const sketch = async ({ canvas, width, height }) => {
   const scene = new Scene(engine);
   scene.clearColor = Color3.FromHexString('#10161A');
 
-  const camera = new ArcRotateCamera('camera', 0, 0, 14, new Vector3(0, -5, 0), scene);
+  const camera = new ArcRotateCamera('camera', 0.5, 0.5, 5, new Vector3(0, 0, 0), scene);
   camera.fov = 1.5;
   camera.minZ = 0.1;
   camera.wheelDeltaPercentage = 0.1;
@@ -56,57 +56,10 @@ const sketch = async ({ canvas, width, height }) => {
 
   // -----------------------------
 
-  const makeMesh = (phase, instance) => {
-    const path = (() => {
-      const path = [];
-      const length = Math.PI * 2 * 120;
-
-      for (let i = phase; i < length + phase; i += 1) {
-        const sF = 0.0125;
-
-        const fi = -i * sF;
-
-        const radius = 5;
-        const stepFactor = 20 - Math.PI / 4;
-        const moveYFactor = Math.PI / 2;
-        const yOffset = -phase * sF * moveYFactor - 15;
-
-        const r = radius + Math.cos(fi * stepFactor + fi * Math.PI) * 1;
-        const r2 = (Math.cos(fi * stepFactor + fi * Math.PI + Math.PI / 2) * Math.PI) / 2;
-
-        const x = Math.cos(fi * 5) * r;
-        const y = fi * moveYFactor + r2 - yOffset;
-        const z = Math.sin(fi * 5) * r;
-
-        path.push(new Vector3(x, y, z));
-      }
-      return path;
-    })();
-
-    const newMesh = MeshBuilder.CreateTube(
-      'torus',
-      {
-        path,
-
-        radius: 0.7,
-        tessellation: 11,
-        sideOrientation: Mesh.DOUBLESIDE,
-        updatable: true,
-        instance,
-      },
-      scene,
-    );
-
-    return newMesh;
-  };
-
-  let mesh = makeMesh(0);
-
-  mesh.rotate(new Vector3(1, 0, 0), Math.PI);
+  const mesh = MeshBuilder.CreateTorusKnot('t', { radialSegments: 200, tubularSegments: 16 }, scene);
 
   const meshMaterial = new CustomMaterial('meshMaterial', scene);
 
-  meshMaterial.disableLighting = true;
   meshMaterial.emissiveColor = Color3.Black();
   meshMaterial.specularColor = Color3.Black();
   meshMaterial.diffuseTexture = new Texture('NONE', scene); // to appear UV attributes
@@ -121,7 +74,7 @@ const sketch = async ({ canvas, width, height }) => {
   meshMaterial.AddUniform('iFrame', 'float');
   meshMaterial.AddUniform('camPos', 'vec3');
 
-  let frame = 0;
+  const frame = 0;
 
   meshMaterial.onBind = () => {
     const time = (+new Date() - initTime) * 0.001;
@@ -130,39 +83,8 @@ const sketch = async ({ canvas, width, height }) => {
     meshMaterial.getEffect().setVector3('camPos', camera.position);
   };
 
-  // -------------------
-
-  const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
-  defaultPipeline.fxaaEnabled = true;
-  defaultPipeline.imageProcessingEnabled = false;
-  defaultPipeline.samples = 16;
-
-  defaultPipeline.chromaticAberrationEnabled = true;
-  defaultPipeline.chromaticAberration.aberrationAmount = 10.0;
-
-  defaultPipeline.bloomEnabled = true;
-  defaultPipeline.bloomThreshold = 0.25;
-  defaultPipeline.bloomWeight = 0.65;
-  defaultPipeline.bloomKernel = 100;
-  defaultPipeline.bloomScale = 0.9;
-
-  defaultPipeline.grainEnabled = true;
-  defaultPipeline.grain.intensity = 5;
-  defaultPipeline.grain.animated = true;
-
-  defaultPipeline.depthOfFieldEnabled = true;
-  defaultPipeline.depthOfFieldBlurLevel = DepthOfFieldEffectBlurLevel.Low;
-  defaultPipeline.depthOfField.fStop = 0.5;
-  defaultPipeline.depthOfField.focalLength = 800;
-  defaultPipeline.depthOfField.focusDistance = 10000;
-  defaultPipeline.depthOfField.lensSize = 10;
-
   return {
     render({ time, deltaTime }) {
-      mesh = makeMesh(frame, mesh);
-
-      frame += 1;
-
       scene.render();
     },
     resize({ pixelRatio, width, height }) {

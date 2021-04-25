@@ -81,6 +81,7 @@ const sketches = [
   '079_soft_touch',
   '080_black_sun',
   '081_dot_waves',
+  '082_knitting_pattern',
 ];
 /* END SKETCHES */
 
@@ -96,7 +97,7 @@ const expSketches = [
   'particles_tornado',
   'plane',
   'rotate',
-  'spiral',
+  'shading',
   'three-exp',
   'torus',
   'yellow_snow',
