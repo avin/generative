@@ -14,6 +14,13 @@ import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositio
 import tube_vertexAfterWorldPosComputed from './shaders/tube/vertexAfterWorldPosComputed.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
 import tube_fragmentCustomAlbedo from './shaders/tube/fragmentCustomAlbedo.glsl';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
+import '@babylonjs/core/Rendering/depthRendererSceneComponent';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
+import { Effect } from '@babylonjs/core/Materials/effect';
+import postprocessFragment from "../078_bio_ball/shaders/postprocess/fragment.glsl";
+import { PostProcess } from '@babylonjs/core';
 
 const random = require('canvas-sketch-util/random');
 
@@ -62,6 +69,7 @@ const sketch = async ({ canvas, width, height }) => {
   const baseTube = MeshBuilder.CreateTube(
     'tube',
     {
+      cap: 2,
       path: (() => {
         const path = [];
         for (let j = 0; j < segments; j += 1) {
@@ -73,9 +81,10 @@ const sketch = async ({ canvas, width, height }) => {
       })(),
       radiusFunction: (i) => {
         const iS = (i + 1) / segments;
-        return Math.max(Math.sqrt(1 - iS) ** 1.25 - 0.1, 0);
+        const r = Math.max(Math.abs(Math.sqrt(1 - iS) ** 1.25 - 0.2), 0.05);
+        return r;
       },
-      tessellation: 12,
+      tessellation: 8,
     },
     scene,
   );
@@ -97,7 +106,7 @@ const sketch = async ({ canvas, width, height }) => {
 
   const mat = new PBRCustomMaterial('plastic', scene);
   mat.metallic = 0.0;
-  mat.roughness = 0.2;
+  mat.roughness = 0.3;
   // mat.albedoColor = new Color3.FromHexString('#48AFF0');
   mat.specularColor = new Color3(0.25, 0.25, 0.25);
   mesh.material = mat;
@@ -176,6 +185,29 @@ const sketch = async ({ canvas, width, height }) => {
       rotationMatrices[i] = rotationMatrices[i - 1].clone();
     }
   }, 20);
+
+  // -------------------------
+
+  Effect.ShadersStore.postProcessFragmentShader = postprocessFragment;
+  new PostProcess('shade-sides', 'postProcess', null, null, 1.0, camera);
+
+  const defaultPipeline = new DefaultRenderingPipeline('default', true, scene, [camera]);
+  defaultPipeline.fxaaEnabled = false;
+  defaultPipeline.imageProcessingEnabled = false;
+  defaultPipeline.samples = 16;
+
+  defaultPipeline.chromaticAberrationEnabled = true;
+  defaultPipeline.chromaticAberration.aberrationAmount = 2.0;
+
+  defaultPipeline.bloomEnabled = true;
+  defaultPipeline.bloomThreshold = 0.25;
+  defaultPipeline.bloomWeight = 1.25;
+  defaultPipeline.bloomKernel = 120;
+  defaultPipeline.bloomScale = 0.5;
+
+  defaultPipeline.grainEnabled = true;
+  defaultPipeline.grain.intensity = 5;
+  defaultPipeline.grain.animated = true;
 
   return {
     render({ time, width, height, deltaTime }) {
