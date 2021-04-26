@@ -7,20 +7,18 @@ import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera';
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { getWebGLContext } from '@/utils/webgl';
-import { CustomMaterial } from '@babylonjs/materials/custom/customMaterial';
 import { PBRCustomMaterial } from '@babylonjs/materials/custom/pbrCustomMaterial';
+import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
+import '@babylonjs/core/Rendering/depthRendererSceneComponent';
+import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
+import { Effect } from '@babylonjs/core/Materials/effect';
+import { PostProcess } from '@babylonjs/core';
 import tube_vertexDefinitions from './shaders/tube/vertexDefinitions.glsl';
 import tube_vertexBeforePositionUpdated from './shaders/tube/vertexBeforePositionUpdated.glsl';
 import tube_vertexAfterWorldPosComputed from './shaders/tube/vertexAfterWorldPosComputed.glsl';
 import tube_fragmentDefinitions from './shaders/tube/fragmentDefinitions.glsl';
 import tube_fragmentCustomAlbedo from './shaders/tube/fragmentCustomAlbedo.glsl';
-import '@babylonjs/core/Rendering/prePassRendererSceneComponent';
-import '@babylonjs/core/Rendering/depthRendererSceneComponent';
-import { DefaultRenderingPipeline } from '@babylonjs/core/PostProcesses/RenderPipeline';
-import { DepthOfFieldEffectBlurLevel } from '@babylonjs/core/PostProcesses/depthOfFieldEffect';
-import { Effect } from '@babylonjs/core/Materials/effect';
-import postprocessFragment from "../078_bio_ball/shaders/postprocess/fragment.glsl";
-import { PostProcess } from '@babylonjs/core';
+import postprocessFragment from './shaders/postprocess/fragment.glsl';
 
 const random = require('canvas-sketch-util/random');
 

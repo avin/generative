@@ -83,6 +83,7 @@ const sketches = [
   '081_dot_waves',
   '082_knitting_pattern',
   '083_glowing_multipede',
+  '084_multicube',
 ];
 /* END SKETCHES */
 
