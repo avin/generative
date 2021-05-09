@@ -78,6 +78,7 @@
     "node-sass": "4.13.1",
     "point-in-polygon": "1.0.1",
     "popmotion": "^9.1.0",
+    "preact": "^10.5.13",
     "preval.macro": "5.0.0",
     "prop-types": "15.7.2",
     "raw-loader": "4.0.2",

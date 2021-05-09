@@ -11,6 +11,11 @@ module.exports = {
     enable: false,
   },
   webpack: {
+    alias: {
+      react: 'preact/compat',
+      'react-dom': 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+    },
     configure: (webpackConfig, { env, paths }) => {
       // console.log(webpackConfig);
       // process.exit(0);
