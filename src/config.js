@@ -84,6 +84,8 @@ const sketches = [
   '082_knitting_pattern',
   '083_glowing_multipede',
   '084_multicube',
+  '085_fibrous_ring',
+  '086_fabric_skirt',
 ];
 /* END SKETCHES */
 
