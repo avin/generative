@@ -86,6 +86,7 @@ const sketches = [
   '084_multicube',
   '085_fibrous_ring',
   '086_fabric_skirt',
+  '087_tentacles',
 ];
 /* END SKETCHES */
 
