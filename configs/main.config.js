@@ -46,7 +46,7 @@ module.exports = {
 
   customOptions: {
     variables: {
-      demos,
+      demos: _.reverse(demos),
     },
   },
 

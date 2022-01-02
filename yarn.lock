@@ -4213,11 +4213,6 @@ normalize-path@^3.0.0, normalize-path@~3.0.0:
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
   integrity sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==
 
-npm-install-subfolders@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/npm-install-subfolders/-/npm-install-subfolders-0.1.2.tgz#63f88d6ed307009e992d48da012c404e04595415"
-  integrity sha512-JDcRqnmbFX4xfAyL2vifprKptlARVM1tMEZLCL0BPlWoyVWvqlnduuRXOvu/soPlm3ktieiAp33RhTq+0sOL/g==
-
 nth-check@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.0.1.tgz#2efe162f5c3da06a28959fbd3db75dbeea9f0fc2"

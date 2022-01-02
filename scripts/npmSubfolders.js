@@ -49,7 +49,7 @@ const walk = (dir, done) => {
     if (fileSrc.endsWith(`${path.sep}package.json`) && !/node_modules/.exec(fileSrc)) {
       const filePath = fileSrc.replace(`${path.sep}package.json`, '');
 
-      if (!argv.all && fs.existsSync(path.join(filePath, 'SKIP_BUILD'))) {
+      if (!argv.all && !fs.existsSync(path.join(filePath, 'BUILD'))) {
         continue;
       }
 
