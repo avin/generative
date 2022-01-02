@@ -1,4 +1,4 @@
-# Creative experiments [![Build Status](https://travis-ci.org/avin/generative.svg?branch=master)](https://travis-ci.org/avin/generative)
+# Creative experiments
 
 **Live**: [https://avin.github.io/generative/](https://avin.github.io/generative/)
 
