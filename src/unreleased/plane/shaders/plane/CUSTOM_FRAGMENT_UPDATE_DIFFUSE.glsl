@@ -1,1 +1,0 @@
-mainImage(diffuseColor, vUv * iResolution);

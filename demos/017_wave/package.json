@@ -1,0 +1,13 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "canvas-sketch": "^0.7.4",
+    "canvas-sketch-util": "^1.10.0",
+    "d3-array": "^3.1.1",
+    "soundcloud-audio": "^1.4.0",
+    "web-audio-analyser": "^2.0.1"
+  }
+}

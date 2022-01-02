@@ -1,0 +1,13 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@babylonjs/core": "5.0.0-alpha.12",
+    "@babylonjs/loaders": "5.0.0-alpha.12",
+    "@babylonjs/materials": "5.0.0-alpha.12",
+    "canvas-sketch": "^0.7.4",
+    "canvas-sketch-util": "^1.10.0"
+  }
+}
