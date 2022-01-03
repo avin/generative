@@ -20,6 +20,7 @@ module.exports = {
     'no-continue': 0,
     'no-await-in-loop': 0,
     'no-new': 0,
+    'no-plusplus': 0,
     camelcase: 0,
     'arrow-body-style': 0,
     'import/order': 0,

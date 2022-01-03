@@ -2,21 +2,6 @@
 # yarn lockfile v1
 
 
-"@babylonjs/core@5.0.0-alpha.12":
-  version "5.0.0-alpha.12"
-  resolved "https://registry.yarnpkg.com/@babylonjs/core/-/core-5.0.0-alpha.12.tgz#b4d5f0c94c5ce9c7c0ad501e09768da206889a55"
-  integrity sha512-yRKUuBu9cyEQk8KFnn3NuBzU9qnIQW66V+9NJyELcfxrMWeGHB/bxtczBb0JAuBwZ7VAShS3eEajNz7hDB67WA==
-  dependencies:
-    tslib "^2.1.0"
-
-"@babylonjs/materials@5.0.0-alpha.12":
-  version "5.0.0-alpha.12"
-  resolved "https://registry.yarnpkg.com/@babylonjs/materials/-/materials-5.0.0-alpha.12.tgz#59fc8d20dc701f364cc170ea407b0f3e2a70818c"
-  integrity sha512-LGpUFT2mUJk2ETGUqCnQxWS2Z7dzkNckLyBCSoIGgrcGK9t7hG/KwBEaNdmdeIWwAUxw+bcGi6V3488lrZCTcw==
-  dependencies:
-    "@babylonjs/core" "5.0.0-alpha.12"
-    tslib "^2.1.0"
-
 abs-svg-path@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/abs-svg-path/-/abs-svg-path-0.1.1.tgz#df601c8e8d2ba10d4a76d625e236a9a39c2723bf"
@@ -360,11 +345,6 @@ svg-path-contours@^2.0.0:
     adaptive-bezier-curve "^1.0.3"
     normalize-svg-path "^0.1.0"
     vec2-copy "^1.0.0"
-
-tslib@^2.1.0:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
-  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 vec2-copy@^1.0.0:
   version "1.0.0"
