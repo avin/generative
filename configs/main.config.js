@@ -208,7 +208,7 @@ module.exports = {
       fs.removeSync(path.join(this.buildPath, demo));
     }
 
-    await preparePreviews(demosToBuild);
+    await preparePreviews(demos);
   },
 
   afterBuild() {
