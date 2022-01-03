@@ -40,7 +40,7 @@ body {
   }
 
   &__contacts {
-    display: block;
+    display: flex;
 
     & > * + * {
       position: relative;

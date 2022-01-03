@@ -363,7 +363,7 @@ body {
   margin-left: 10px;
 }
 .header__contacts {
-  display: block;
+  display: flex;
 }
 .header__contacts > * + * {
   position: relative;
