@@ -4,7 +4,7 @@ import fragmentShaderSrc from './shaders/fragment.glsl';
 import vertexShaderSrc from './shaders/vertext.glsl';
 
 const VERT_ACCURACY = 0.03; // Расстояние между линиями
-const CONGESTION = 1000; // Кучность волн
+const CONGESTION = 3000; // Кучность волн
 const LINES_COUNT = 30; // Число линий
 const SHADOW_SIZE = 0.012; // Толщина тени
 const LINE_SIZE = 0.01; // Толщина линии
@@ -192,7 +192,7 @@ const sketch = async ({ gl }) => {
       gl.clear(gl.COLOR_BUFFER_BIT);
 
       gl.uniform1f(iTimeLoc, time);
-      gl.uniform1f(sizeFactorLoc, (width * pixelRatio) / CONGESTION);
+      gl.uniform1f(sizeFactorLoc, (1 / height * pixelRatio) * CONGESTION);
       gl.uniform1f(countLoc, meshesCount);
       gl.uniform3fv(backColorLoc, BACK_COLOR);
       gl.uniform2f(iResolutionLoc, width * pixelRatio, height * pixelRatio);
