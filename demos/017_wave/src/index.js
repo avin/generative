@@ -1,6 +1,5 @@
 import canvasSketch from 'canvas-sketch';
 import { lerp } from 'canvas-sketch-util/math';
-import SoundCloudAudio from 'soundcloud-audio';
 import audioAnalyser from 'web-audio-analyser';
 import { median } from 'd3-array';
 import { compressArray } from './array';
@@ -20,26 +19,19 @@ const sketch = async ({ width, height, canvas }) => {
 
   let ready = false;
   let analyser;
+  let audio;
 
   let matrixF = [];
-
-  const scPlayer = new SoundCloudAudio('b95f61a90da961736c03f659c03cb0cc');
 
   canvas.addEventListener('click', () => {
     if (ready) {
       return;
     }
     ready = true;
-    scPlayer.resolve('https://soundcloud.com/lil_peep/spotlight-1', (data) => {
-      scPlayer.play();
 
-      const audio = scPlayer.audio;
-      audio.crossOrigin = 'Anonymous';
-      audio.autoplay = true;
-      audio.play();
-
-      analyser = audioAnalyser(audio, { stereo: false });
-    });
+    audio = new Audio('assets/songs/lil_peep--spotlight-1.mp3');
+    audio.play();
+    analyser = audioAnalyser(audio, { stereo: false });
   });
 
   return {
@@ -100,9 +92,6 @@ const sketch = async ({ width, height, canvas }) => {
 
         drawLine(context, circleCoords, true);
       });
-    },
-    unload() {
-      scPlayer.stop();
     },
   };
 };
