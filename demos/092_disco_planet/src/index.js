@@ -2,7 +2,6 @@ import canvasSketch from 'canvas-sketch';
 import { createScene } from './scene';
 import { createCamera } from './camera';
 import { createRenderer } from './renderer';
-import { createControls } from './controls';
 import { createLights } from './lights';
 import { createSphere } from './sphere';
 import { createBackground } from './background';
@@ -21,7 +20,6 @@ const sketch = ({ canvas }) => {
   createScene(ctx);
   createCamera(ctx);
   createRenderer(ctx);
-  createControls(ctx);
   createLights(ctx);
   createSphere(ctx);
 
