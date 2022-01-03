@@ -1,7 +1,5 @@
 import canvasSketch from 'canvas-sketch';
 
-import SoundCloudAudio from 'soundcloud-audio';
-
 import floorFragmentShader from './shaders/floor/frag.glsl';
 import glassFragmentShader from './shaders/glass/frag.glsl';
 import generalVertexShader from './shaders/general/vert.glsl';
@@ -115,14 +113,13 @@ function createWoodMaterial() {
 const shadowMaterial = new THREE.ShadowMaterial();
 shadowMaterial.opacity = 0.9182;
 
-const scPlayer = new SoundCloudAudio('b95f61a90da961736c03f659c03cb0cc');
-
 const sketch = ({ context, canvas }) => {
   let ready = false;
 
   const el = document.createElement('div');
-  el.innerHTML = 'Click to let it snow!';
-  el.style.cssText = 'position: absolute; font-size: 100px; font-weight: bold; cursor:pointer; font-family: cursive;';
+  el.innerHTML = '<span>Click to let it snow!</span>';
+  el.style.cssText =
+    'position: absolute; font-size: 100px; font-weight: bold; cursor:pointer; font-family: cursive; height: 100%; width:100%; display: flex;justify-content: center; align-items: center;';
   canvas.parentNode.appendChild(el);
 
   canvas.parentNode.addEventListener('mousedown', () => {
@@ -133,14 +130,8 @@ const sketch = ({ context, canvas }) => {
     canvas.parentNode.removeChild(el);
     ready = true;
 
-    scPlayer.resolve('https://soundcloud.com/trap-seacrest/let-it-snow-trap-remix', (data) => {
-      scPlayer.play();
-
-      const audio = scPlayer.audio;
-      audio.crossOrigin = 'Anonymous';
-      audio.autoplay = true;
-      audio.play();
-    });
+    const audio = new Audio('assets/songs/Let_It_Snow_(Trap_Remix).mp3');
+    audio.play();
   });
 
   // Create a renderer
