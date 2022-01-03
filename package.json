@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "multi-static-dev --config ./configs/main.config.js",
     "build": "multi-static-build --config ./configs/main.config.js",
-    "prettier": "prettier-eslint --write \"./**/*.{js,json,css,scss}\"",
     "postinstall": "npm run npm-subfolders",
     "npm-subfolders": "node ./scripts/npmSubfolders.js",
     "npm-subfolders:all": "node ./scripts/npmSubfolders.js --all",
