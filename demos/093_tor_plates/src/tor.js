@@ -3,7 +3,7 @@ import * as THREE from 'three';
 export const createTor = (ctx) => {
   const { scene } = ctx;
 
-  const geometry = new THREE.TorusGeometry(2.5, 0.5, 12, 64);
+  const geometry = new THREE.TorusGeometry(2.5, 0.55, 12, 64);
 
   const material = new THREE.MeshStandardMaterial({
     roughness: 0.0,
