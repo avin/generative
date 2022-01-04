@@ -7,5 +7,5 @@ export const createRenderer = (ctx) => {
   ctx.renderer = renderer;
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(0x666666, 1);
+  renderer.autoClear = false;
 };

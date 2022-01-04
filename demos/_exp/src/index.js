@@ -6,6 +6,7 @@ import { createLights } from './lights';
 import { createBoxes, createBoxesPositions } from './boxes';
 import { createControls } from './controls';
 import { createTor } from './tor';
+import { createBackground } from './background';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -29,9 +30,11 @@ const sketch = ({ canvas }) => {
   createCamera(ctx);
   createRenderer(ctx);
   createControls(ctx);
+  createBackground(ctx);
   createLights(ctx);
   createBoxes(ctx);
   createTor(ctx);
+
 
   let frame = 0;
   return {
@@ -50,10 +53,14 @@ const sketch = ({ canvas }) => {
       ctx.time = time;
       ctx.frame = frame;
 
-      console.log(ctx.camera.position);
+      ctx.backMaterial.uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
+      ctx.backMaterial.uniforms.iTime.value = time;
+
+      // console.log(ctx.camera.position);
 
       createBoxesPositions(ctx);
 
+      renderer.render(ctx.backScene, ctx.backCamera);
       renderer.render(ctx.scene, ctx.camera);
     },
     unload() {

@@ -3,24 +3,23 @@
 uniform vec3 iResolution;
 uniform float iTime;
 
-#pragma glslify: noise = require('glsl-noise/simplex/3d')
-
+#define COL vec3(245, 248, 250) / 255.
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    vec2 uv = (fragCoord - iResolution.xy*.5)/iResolution.y;
+    // vec2 uv = (fragCoord - iResolution.xy*.5)/iResolution.y;
 
-    float l = length(uv);
+    vec2 uv = fragCoord / iResolution.xy;
 
-    float t = iTime;
-    float wave = clamp(1. - (floor(l*10. - t)/10. + t/10. + l/3.), 0., 1.);
+    // vec3 col = vec3(1.,0.,0.);
+    vec3 col = COL;
 
-    float star = clamp(.001 / smoothstep(.85,.1, noise(vec3(uv*40., .5 + .5))) * l, .0, .5);
-    vec3 blue = vec3(0.121, 0.294, 0.6);
-    vec3 col = mix(blue, blue + vec3(l), star) + wave*.5;
+    col *= 0.5 + 0.5 * pow(16.0 * uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y), 0.1);
 
-    // Output to screen
-    fragColor = vec4(col, 1.0);
+    col = clamp(col, 0.0, 1.0);
+    col = col * 0.6 + 0.4 * col * col * (3.0 - 2.0 * col) + vec3(0.0, 0.0, 0.04);
+
+    fragColor = vec4(col, 1.);
 }
 
 void main() {
