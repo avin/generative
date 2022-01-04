@@ -24,10 +24,12 @@ const demosToBuild = [];
 klawSync('./demos', { depthLimit: 0 }).forEach(({ path }) => {
   const folder = _.last(path.split('/'));
 
-  const addDemoToMapping = () => mapping.push([`./demos/${folder}/static`, `/${folder}`]);
-
-  if (!folder.startsWith('_')) {
+  const addDemoToMapping = () => {
     demos.push(folder);
+    mapping.push([`./demos/${folder}/static`, `/${folder}`]);
+  };
+
+  if (folder.startsWith('_')) {
     if (!argv.$0.includes('multi-static-build')) {
       addDemoToMapping();
     }
