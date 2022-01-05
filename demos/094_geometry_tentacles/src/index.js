@@ -4,9 +4,11 @@ import { lerp } from 'canvas-sketch-util/math';
 import { drawLine } from './ctx';
 import { rope } from './shape';
 
+const size = Math.min(window.innerWidth, 1024);
+
 const settings = {
   canvas: document.querySelector('#canvas'),
-  dimensions: [1024, 1024],
+  dimensions: [size, size],
   animate: true,
 };
 
@@ -15,6 +17,9 @@ const sketch = ({ width, height }) => {
 
   const sx = (v) => lerp(margin, width - margin, v);
   const sy = (v) => lerp(margin, height - margin, v);
+
+  const outerStep = Math.PI / 11;
+  const innerStep = 10 / size;
 
   return ({ context, width, height, time }) => {
     context.fillStyle = 'hsl(0, 0%, 98%)';
@@ -26,16 +31,14 @@ const sketch = ({ width, height }) => {
 
     let odd = true;
 
-    const step = Math.PI / 11;
-
-    for (let i = step; i <= Math.PI * 2; i += step) {
+    for (let i = outerStep; i <= Math.PI * 2; i += outerStep) {
       odd = !odd;
       const line = [];
 
-      for (let j = 0.0; j <= 1; j += 0.02) {
+      for (let j = 0.0; j <= 1; j += innerStep) {
         line.push([
-          (Math.cos(i + Math.cos(j * Math.PI + time) * (odd ? 1 : -1)) / 2) * j + 0.5, // x
-          (Math.sin(i + Math.cos(j * Math.PI - time) * (odd ? 1 : -1)) / 2) * j + 0.5, // y
+          sx((Math.cos(i + Math.cos(j * Math.PI + time) * (odd ? 1 : -1)) / 2) * j + 0.5), // x
+          sy((Math.sin(i + Math.cos(j * Math.PI - time) * (odd ? 1 : -1)) / 2) * j + 0.5), // y
           Math.max(5 - j * 6, 0), // width
         ]);
       }
@@ -46,15 +49,15 @@ const sketch = ({ width, height }) => {
       });
     }
 
-    lines.forEach(({ line, color }) => {
-      line = line.map((p) => [sx(p[0]), sy(p[1]), p[2]]);
+    for (let i = 0; i < lines.length; i += 1) {
+      const { line, color } = lines[i];
 
       context.strokeStyle = color;
 
       const ropeCoords = rope(line);
       drawLine(context, ropeCoords, true);
       context.fill();
-    });
+    }
 
     context.beginPath();
     context.arc(sx(0.5), sy(0.5), width / 8.5 - margin, 0, Math.PI * 2);
