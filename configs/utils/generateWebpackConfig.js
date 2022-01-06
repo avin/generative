@@ -1,4 +1,5 @@
 const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 const path = require('path');
 
 function generateWebpackConfig({
@@ -31,7 +32,11 @@ function generateWebpackConfig({
       path: dstPath,
       publicPath,
     },
-    plugins: [],
+    plugins: [
+      new webpack.DefinePlugin({
+        __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })',
+      }),
+    ],
     performance: false,
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],

@@ -1,0 +1,117 @@
+{
+  "sheetsById": {
+    "Scene": {
+      "staticOverrides": {
+        "byObject": {
+          "Ball": {
+            "position": {
+              "x": 0,
+              "y": 7.1000000000000005
+            }
+          }
+        }
+      },
+      "sequence": {
+        "subUnitsPerUnit": 30,
+        "length": 3,
+        "type": "PositionalSequence",
+        "tracksByObject": {
+          "Ball": {
+            "trackData": {
+              "0w4L43Y0ai": {
+                "type": "BasicKeyframedTrack",
+                "keyframes": [
+                  {
+                    "id": "tocy3EUl9T",
+                    "position": 0,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5,
+                      1,
+                      0.5,
+                      0
+                    ],
+                    "value": 3
+                  },
+                  {
+                    "id": "5K2jHRAFab",
+                    "position": 1.4,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5,
+                      1,
+                      0.5,
+                      0
+                    ],
+                    "value": 0
+                  },
+                  {
+                    "id": "GfH2yqgvDZ",
+                    "position": 3,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5618063394353261,
+                      0.9940423584272964,
+                      0.5,
+                      0
+                    ],
+                    "value": 3
+                  }
+                ]
+              },
+              "L0QmtGcHMT": {
+                "type": "BasicKeyframedTrack",
+                "keyframes": [
+                  {
+                    "id": "onI5oGnVYj",
+                    "position": 0.5,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5,
+                      1,
+                      0.5,
+                      0
+                    ],
+                    "value": 1
+                  },
+                  {
+                    "id": "Y_eRu14AeE",
+                    "position": 1.367,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5,
+                      1,
+                      0.5,
+                      0
+                    ],
+                    "value": 0.75
+                  },
+                  {
+                    "id": "7kw4k31QAY",
+                    "position": 2.367,
+                    "connectedRight": true,
+                    "handles": [
+                      0.5,
+                      1,
+                      0.5,
+                      0
+                    ],
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "trackIdByPropPath": {
+              "[\"position\",\"y\"]": "0w4L43Y0ai",
+              "[\"scale\",\"y\"]": "L0QmtGcHMT"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitionVersion": "0.4.0",
+  "revisionHistory": [
+    "VJfYkBSXyXfGg8ih"
+  ]
+}
