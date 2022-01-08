@@ -1,33 +1,27 @@
-#include <packing>
 #include <common>
 
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
-uniform sampler2D tDepth;
-uniform float cameraNear;
-uniform float cameraFar;
+uniform float iTime;
 
 
-float readDepth( sampler2D depthSampler, vec2 coord ) {
+vec3 readCol( sampler2D sampler, vec2 uv ) {
 
-  float fragCoordZ = texture2D( depthSampler, coord ).x;
+  vec3 col = texture2D( sampler, uv ).rgb;
 
-  //  float fragCoordZ = 0.;
-  //  for(int i=0;i<3;i+=1){
-  //    float v = texture2D( depthSampler, coord + vec2(rand(coord + vec2(323. * float(i)))*.025, rand(coord + vec2(100. * float(i)))*.025) ).x;
-  //    fragCoordZ+=v;
-  //  }
-  //  fragCoordZ /= 3.;
+  float l = length(uv)*.0025;
 
-  float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
-  return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+  col.x = texture2D( sampler, uv - vec2(l, 0.) ).x;
+  col.b = texture2D( sampler, uv + vec2(l, 0.) ).x;
+
+  col.rgb += vec3(rand(uv + vec2(iTime))-.5)*l*25.;
+
+  return col;
 }
 
 void main() {
-  //vec3 diffuse = texture2D( tDiffuse, vUv ).rgb;
-  float depth = readDepth( tDepth, vUv );
+  vec3 col = readCol( tDiffuse, vUv );
 
-  gl_FragColor.rgb = 1.0 - vec3( depth );
-  // gl_FragColor.rgb = vec3(.5, .1, .9);
+  gl_FragColor.rgb = col;
   gl_FragColor.a = 1.0;
 }

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export const createPlusScene = (ctx) => {
@@ -26,15 +25,6 @@ export const createPlusScene = (ctx) => {
   camera.lookAt(new THREE.Vector3());
 
   // ***************
-  // CONTROLS
-  // ***************
-
-  const controls = new OrbitControls(camera, renderer.domElement);
-  ctx.plusScene.controls = controls;
-  controls.target = new THREE.Vector3(0, 0, 0);
-  controls.update();
-
-  // ***************
   // MESH
   // ***************
 
@@ -43,5 +33,8 @@ export const createPlusScene = (ctx) => {
   const geometry = mergeBufferGeometries([geometry1, geometry2]);
   const material = new THREE.MeshStandardMaterial({ color: 0xff00ee });
   const mesh = new THREE.Mesh(geometry, material);
+  ctx.plusScene.mesh = mesh;
+  mesh.visible = false;
   scene.add(mesh);
 };
+

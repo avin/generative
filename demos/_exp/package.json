@@ -4,8 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@theatre/core": "^0.4.7",
     "canvas-sketch": "^0.7.4",
     "canvas-sketch-util": "^1.10.0",
+    "glsl-noise": "^0.0.0",
     "three": "^0.136.0"
+  },
+  "devDependencies": {
+    "@theatre/studio": "^0.4.7"
   }
 }

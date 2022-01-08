@@ -1,27 +1,23 @@
 import canvasSketch from 'canvas-sketch';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
-
-import vertexShader from './shaders/post/vert.glsl';
-import fragmentShader from './shaders/post/frag.glsl';
 import { createPlusScene } from './plus';
 import { createLinesScene } from './lines';
+import { setupTheatre } from './theatre';
+import { createPostScene } from './post';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
   context: 'webgl',
+  dimensions: [1500, 1024],
   animate: true,
+  hotkeys: false,
 };
 
 const sketch = ({ canvas, width, height }) => {
   const ctx = {
     time: 0,
     frame: 0,
-    options: {
-      totalBoxes: 30,
-      bigCircleRadius: 2.5,
-    },
+    theatre: {},
   };
 
   ctx.canvas = canvas;
@@ -32,12 +28,17 @@ const sketch = ({ canvas, width, height }) => {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
   ctx.renderer = renderer;
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(width, height);
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0xffffff, 1);
 
   createPlusScene(ctx);
 
   createLinesScene(ctx);
+
+  createPostScene(ctx);
+
+  setupTheatre(ctx);
 
   // ***************
   // RENDER TARGET
@@ -49,31 +50,17 @@ const sketch = ({ canvas, width, height }) => {
   plusSceneTarget.texture.minFilter = THREE.NearestFilter;
   plusSceneTarget.texture.magFilter = THREE.NearestFilter;
   plusSceneTarget.texture.generateMipmaps = false;
-  // target.stencilBuffer = ( format === THREE.DepthStencilFormat ) ? true : false;
   plusSceneTarget.depthBuffer = true;
   plusSceneTarget.depthTexture = new THREE.DepthTexture();
   plusSceneTarget.depthTexture.format = THREE.DepthFormat;
   plusSceneTarget.depthTexture.type = THREE.UnsignedShortType;
 
-  // // ***************
-  // // POST
-  // // ***************
-  //
-  // const postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  // const postMaterial = new THREE.ShaderMaterial({
-  //   vertexShader,
-  //   fragmentShader,
-  //   uniforms: {
-  //     cameraNear: { value: ctx.plusScene.camera.near },
-  //     cameraFar: { value: ctx.plusScene.camera.far },
-  //     tDiffuse: { value: null },
-  //     tDepth: { value: null },
-  //   },
-  // });
-  // const postPlane = new THREE.PlaneGeometry(2, 2);
-  // const postQuad = new THREE.Mesh(postPlane, postMaterial);
-  // const postScene = new THREE.Scene();
-  // postScene.add(postQuad);
+  const linesSceneTarget = new THREE.WebGLRenderTarget(width, height);
+  ctx.target = linesSceneTarget;
+  linesSceneTarget.texture.format = THREE.RGBFormat;
+  linesSceneTarget.texture.minFilter = THREE.NearestFilter;
+  linesSceneTarget.texture.magFilter = THREE.NearestFilter;
+  linesSceneTarget.texture.generateMipmaps = false;
 
   // ***************
 
@@ -83,27 +70,46 @@ const sketch = ({ canvas, width, height }) => {
       ctx.plusScene.camera.aspect = viewportWidth / viewportHeight;
       ctx.plusScene.camera.updateProjectionMatrix();
 
+      // ctx.linesScene.camera.aspect = viewportWidth / viewportHeight;
+      // ctx.linesScene.camera.updateProjectionMatrix();
+      //
+      // ctx.postScene.camera.aspect = viewportWidth / viewportHeight;
+      // ctx.postScene.camera.updateProjectionMatrix();
+
+      const dpr = renderer.getPixelRatio();
+      plusSceneTarget.setSize(viewportWidth * dpr, viewportHeight * dpr);
+      linesSceneTarget.setSize(viewportWidth * dpr, viewportHeight * dpr);
+      renderer.setSize(viewportWidth, viewportHeight);
+
       // ctx.composer.setSize(viewportWidth, viewportHeight);
-      ctx.renderer.setSize(viewportWidth, viewportHeight);
+      // ctx.renderer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
       frame++;
       ctx.time = time;
       ctx.frame = frame;
 
-      // render scene into target
+      // render plus scene
       renderer.setRenderTarget(plusSceneTarget);
       renderer.render(ctx.plusScene.scene, ctx.plusScene.camera);
 
-      // render post FX
+      // render lines
       if (ctx.linesScene.materialShader) {
         ctx.linesScene.materialShader.uniforms.iTime.value = time;
         ctx.linesScene.materialShader.uniforms.tDiffuse.value = plusSceneTarget.texture;
         ctx.linesScene.materialShader.uniforms.tDepth.value = plusSceneTarget.depthTexture;
       }
 
-      renderer.setRenderTarget(null);
+      renderer.clearColor();
+
+      renderer.setRenderTarget(linesSceneTarget);
       renderer.render(ctx.linesScene.scene, ctx.linesScene.camera);
+
+      ctx.postScene.material.uniforms.iTime.value = time;
+      ctx.postScene.material.uniforms.tDiffuse.value = linesSceneTarget.texture;
+
+      renderer.setRenderTarget(null);
+      renderer.render(ctx.postScene.scene, ctx.postScene.camera);
     },
     unload() {
       ctx.plusScene.controls.dispose();
