@@ -2,8 +2,6 @@ import * as THREE from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 export const createPlusScene = (ctx) => {
-  const { renderer } = ctx;
-
   ctx.plusScene = {};
 
   // ***************
@@ -37,4 +35,3 @@ export const createPlusScene = (ctx) => {
   mesh.visible = false;
   scene.add(mesh);
 };
-

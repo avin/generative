@@ -10,7 +10,7 @@ const settings = {
   context: 'webgl',
   dimensions: [1500, 1024],
   animate: true,
-  hotkeys: false,
+  hotkeys: process.env.NODE_ENV !== 'development',
 };
 
 const sketch = ({ canvas, width, height }) => {
@@ -70,19 +70,10 @@ const sketch = ({ canvas, width, height }) => {
       ctx.plusScene.camera.aspect = viewportWidth / viewportHeight;
       ctx.plusScene.camera.updateProjectionMatrix();
 
-      // ctx.linesScene.camera.aspect = viewportWidth / viewportHeight;
-      // ctx.linesScene.camera.updateProjectionMatrix();
-      //
-      // ctx.postScene.camera.aspect = viewportWidth / viewportHeight;
-      // ctx.postScene.camera.updateProjectionMatrix();
-
       const dpr = renderer.getPixelRatio();
       plusSceneTarget.setSize(viewportWidth * dpr, viewportHeight * dpr);
       linesSceneTarget.setSize(viewportWidth * dpr, viewportHeight * dpr);
       renderer.setSize(viewportWidth, viewportHeight);
-
-      // ctx.composer.setSize(viewportWidth, viewportHeight);
-      // ctx.renderer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
       frame++;
@@ -99,8 +90,6 @@ const sketch = ({ canvas, width, height }) => {
         ctx.linesScene.materialShader.uniforms.tDiffuse.value = plusSceneTarget.texture;
         ctx.linesScene.materialShader.uniforms.tDepth.value = plusSceneTarget.depthTexture;
       }
-
-      renderer.clearColor();
 
       renderer.setRenderTarget(linesSceneTarget);
       renderer.render(ctx.linesScene.scene, ctx.linesScene.camera);

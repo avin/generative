@@ -33,6 +33,9 @@ export const createLinesScene = (ctx) => {
   const controls = new OrbitControls(camera, ctx.renderer.domElement);
   ctx.plusScene.controls = controls;
   controls.target = new THREE.Vector3(0, 0, 0);
+  controls.minDistance = 5;
+  controls.maxDistance = 20;
+  controls.maxPolarAngle = Math.PI / 3 - 0.1;
   controls.update();
 
   // ***************

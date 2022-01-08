@@ -1,10 +1,10 @@
 import { getProject, types as t } from '@theatre/core';
 import state from './state.json';
-// import studio from '@theatre/studio';
+import studio from '@theatre/studio';
 
 export const setupTheatre = (ctx) => {
   if (process.env.NODE_ENV === 'development') {
-    // studio.initialize();
+    studio.initialize();
   }
 
   const theatreProject = getProject('Animation', { state });
@@ -12,7 +12,7 @@ export const setupTheatre = (ctx) => {
 
   const sheet = theatreProject.sheet('Scene1');
 
-  const obj = sheet.object('Plus', {
+  const plusObj = sheet.object('Plus', {
     position: {
       x: t.number(0, { nudgeMultiplier: 0.1 }),
       y: t.number(0, { nudgeMultiplier: 0.1 }),
@@ -25,7 +25,7 @@ export const setupTheatre = (ctx) => {
     },
   });
 
-  obj.onValuesChange(function callback({ position, rotation }) {
+  plusObj.onValuesChange(function callback({ position, rotation }) {
     const {
       plusScene: { mesh: plusMesh },
     } = ctx;
