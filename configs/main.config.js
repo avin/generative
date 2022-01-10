@@ -14,6 +14,8 @@ const mustacheProcessFile = require('./utils/mustacheProcessFile');
 const preparePreviews = require('./utils/preparePreviews');
 const argv = require('yargs').argv;
 
+const isBuilding = argv.$0.includes('multi-static-build');
+
 const _webpackMiddlewaresCache = {};
 
 const mapping = [['./root', '/']];
@@ -30,7 +32,7 @@ klawSync('./demos', { depthLimit: 0 }).forEach(({ path }) => {
   };
 
   if (folder.startsWith('_')) {
-    if (!argv.$0.includes('multi-static-build')) {
+    if (!isBuilding) {
       addDemoToMapping();
     }
   } else {
@@ -41,6 +43,19 @@ klawSync('./demos', { depthLimit: 0 }).forEach(({ path }) => {
     demosToBuild.push(folder);
   }
 });
+
+if (!isBuilding) {
+  klawSync('./exp', { depthLimit: 0 }).forEach(({ path }) => {
+    const folder = _.last(path.split('/'));
+
+    const addExpDemoToMapping = () => {
+      demos.push(folder);
+      mapping.push([`./exp/${folder}/static`, `/exp/${folder}`]);
+    };
+
+    addExpDemoToMapping();
+  });
+}
 
 module.exports = {
   mapping,
