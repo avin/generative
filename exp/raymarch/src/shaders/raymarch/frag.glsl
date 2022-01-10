@@ -12,8 +12,7 @@ varying vec3 v_position;
 #define MAX_DIST 100.
 
 float GetDist(vec3 p) {
-  float d = length(p) - .5;  // sphere
-  d = length(vec2(length(p.xz) - .4, p.y)) - .1;
+  float d = length(vec2(length(p.xz) - .4, p.y)) - (sin((p.x)*10. + iTime * 5.)*.05 + .1);
   return d;
 }
 

@@ -40,7 +40,6 @@ const sketch = ({ canvas }) => {
       ctx.camera.aspect = viewportWidth / viewportHeight;
       ctx.camera.updateProjectionMatrix();
 
-      // ctx.composer.setSize(viewportWidth, viewportHeight);
       ctx.renderer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
