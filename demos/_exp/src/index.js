@@ -56,8 +56,8 @@ const sketch = ({ canvas }) => {
       // ctx.backMaterial.uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
       // ctx.backMaterial.uniforms.iTime.value = time;
 
-      if (ctx.boxShader) {
-        ctx.boxShader.uniforms.iTime.value = time;
+      if (ctx.sphereShader) {
+        ctx.sphereShader.uniforms.iTime.value = time;
       }
 
       // renderer.render(ctx.backScene, ctx.backCamera);

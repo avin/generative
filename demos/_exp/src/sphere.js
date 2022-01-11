@@ -5,7 +5,7 @@ import fragment__common from './shaders/sphere/fragment__common.glsl';
 export const createSphere = (ctx) => {
   const { scene } = ctx;
 
-  const geometry = new THREE.SphereGeometry(5, 64, 32);
+  const geometry = new THREE.SphereGeometry(5, 128, 64);
 
   const material = new THREE.MeshStandardMaterial({
     roughness: 0.1,
@@ -13,6 +13,8 @@ export const createSphere = (ctx) => {
     color: 0xdb2c6f,
   });
 
+  material.side = THREE.DoubleSide;
+  material.transparent = true;
   material.defines.USE_UV = true;
 
   material.onBeforeCompile = (shader) => {
@@ -21,7 +23,7 @@ export const createSphere = (ctx) => {
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', fragment__common);
     shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', fragment__color_fragment);
 
-    ctx.boxShader = shader;
+    ctx.sphereShader = shader;
   };
 
   const mesh = new THREE.Mesh(geometry, material);

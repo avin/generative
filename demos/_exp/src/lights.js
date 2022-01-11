@@ -12,7 +12,7 @@ export const createLights = (ctx) => {
   pLight.position.set(5, 5, -7);
   scene.add(pLight);
 
-  // const pLight2 = new THREE.PointLight(whiteColor, 0.75);
-  // pLight.position.set(-2.28, 1.647, 7.114);
-  // scene.add(pLight2);
+  const pLight2 = new THREE.PointLight(0xffffff, 0.25);
+  pLight.position.set(-2.28, 1.647, 7.114);
+  scene.add(pLight2);
 };
