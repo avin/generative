@@ -5,10 +5,10 @@ import fragment__common from './shaders/sphere/fragment__common.glsl';
 export const createSphere = (ctx) => {
   const { scene } = ctx;
 
-  const geometry = new THREE.SphereGeometry(5, 128, 64);
+  const geometry = new THREE.SphereGeometry(6, 128, 64);
 
   const material = new THREE.MeshStandardMaterial({
-    roughness: 0.1,
+    roughness: 0.0,
     metalness: 0.0,
     color: 0xdb2c6f,
   });
