@@ -7,8 +7,5 @@ export const createControls = (ctx) => {
   const controls = new OrbitControls(camera, renderer.domElement);
   ctx.controls = controls;
   controls.target = new THREE.Vector3(0, 0, 0);
-  // controls.minDistance = 5;
-  // controls.maxDistance = 70;
-  // controls.maxPolarAngle = Math.PI / 2 - 0.1;
   controls.update();
 };

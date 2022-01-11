@@ -17,10 +17,7 @@ const sketch = ({ canvas }) => {
   const ctx = {
     time: 0,
     frame: 0,
-    options: {
-      totalBoxes: 30,
-      bigCircleRadius: 2.5,
-    },
+    options: {},
   };
 
   ctx.canvas = canvas;
@@ -41,9 +38,6 @@ const sketch = ({ canvas }) => {
 
       ctx.renderer.setSize(viewportWidth, viewportHeight);
       ctx.composer.setSize(viewportWidth, viewportHeight);
-
-      // ctx.composer.setSize(viewportWidth, viewportHeight);
-      // ctx.renderer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
       frame++;
@@ -53,20 +47,14 @@ const sketch = ({ canvas }) => {
       ctx.time = time;
       ctx.frame = frame;
 
-      // ctx.backMaterial.uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
-      // ctx.backMaterial.uniforms.iTime.value = time;
-
       if (ctx.sphereShader) {
         ctx.sphereShader.uniforms.iTime.value = time;
       }
-
-      // renderer.render(ctx.backScene, ctx.backCamera);
-      // renderer.render(ctx.scene, ctx.camera);
       composer.render();
     },
     unload() {
       ctx.controls.dispose();
-      // ctx.renderer.dispose();
+      ctx.renderer.dispose();
     },
   };
 };

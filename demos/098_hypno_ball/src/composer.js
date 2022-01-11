@@ -9,9 +9,8 @@ export const createComposer = (ctx) => {
   const renderScene = new RenderPass(scene, camera);
 
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.0, 0.25);
-  // const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.0, 0.0, 0.0);
   bloomPass.nMips = 3;
-  bloomPass.highPassUniforms['smoothWidth'].value = 0.15;
+  bloomPass.highPassUniforms.smoothWidth.value = 0.15;
 
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const target = new THREE.WebGLMultisampleRenderTarget(size.width, size.height, {
@@ -23,6 +22,5 @@ export const createComposer = (ctx) => {
   const composer = new EffectComposer(renderer, target);
   ctx.composer = composer;
   composer.addPass(renderScene);
-  // composer.addPass(fxaaPass);
   composer.addPass(bloomPass);
 };
