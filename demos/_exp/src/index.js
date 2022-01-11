@@ -6,6 +6,7 @@ import { createLights } from './lights';
 import { createBox } from './box';
 import { createControls } from './controls';
 import { createComposer } from './composer';
+import { createEnv } from './env';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -29,6 +30,7 @@ const sketch = ({ canvas }) => {
   createControls(ctx);
   createLights(ctx);
   createBox(ctx);
+  createEnv(ctx);
 
   let frame = 0;
   return {

@@ -5,7 +5,7 @@ export const createLights = (ctx) => {
 
   const light1 = new THREE.HemisphereLight(0xffffff, 0x000000, .5);
   scene.add(light1);
-  const light2 = new THREE.AmbientLight(0xffffff, .2);
+  const light2 = new THREE.AmbientLight(0xffffff, .75);
   scene.add(light2);
 
   const pLight = new THREE.DirectionalLight(0xffffff, 0.2);

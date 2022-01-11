@@ -1,16 +1,18 @@
 import * as THREE from 'three';
 import vertex__common from './shaders/box/vertex__common.glsl';
 import vertex__begin_vertex from './shaders/box/vertex__begin_vertex.glsl';
+import fragment__output_fragment from './shaders/box/fragment__output_fragment.glsl';
 
 export const createBox = (ctx) => {
   const { scene } = ctx;
 
-  const size = 4;
+  const size = 2;
   const geometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
+  // const geometry = new THREE.SphereGeometry(4);
 
   const material = new THREE.MeshStandardMaterial({
-    roughness: 0.0,
-    metalness: 0.0,
+    roughness: 0.2,
+    metalness: 0.9,
     color: 0xdb2c6f,
     envMapIntensity: 1.0,
   });
@@ -21,20 +23,12 @@ export const createBox = (ctx) => {
 
     shader.vertexShader = shader.vertexShader.replace('#include <common>', vertex__common);
     shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', vertex__begin_vertex);
+    shader.fragmentShader = shader.fragmentShader.replace('#include <output_fragment>', fragment__output_fragment);
 
     ctx.boxShader = shader;
   };
-  //
-  // new THREE.TextureLoader().load('assets/img/equirectangular.png', (texture) => {
-  //   texture.encoding = THREE.sRGBEncoding;
-  //
-  //   pngCubeRenderTarget = pmremGenerator.fromEquirectangular(texture);
-  //
-  //   pngBackground = pngCubeRenderTarget.texture;
-  //
-  //   texture.dispose();
-  // });
 
   const mesh = new THREE.Mesh(geometry, material);
+  ctx.boxMesh = mesh;
   scene.add(mesh);
 };
