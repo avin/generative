@@ -7,10 +7,11 @@ import { createLights } from './lights';
 import { createBalls } from './balls';
 import { createControls } from './controls';
 import { createCenterBall } from './centerBall';
+import { createComposer } from './composer';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
-  context: 'webgl',
+  context: 'webgl2',
   animate: true,
 };
 
@@ -32,6 +33,7 @@ const sketch = ({ canvas }) => {
   createScene(ctx);
   createCamera(ctx);
   createRenderer(ctx);
+  createComposer(ctx);
   createControls(ctx);
   createLights(ctx);
   createBalls(ctx);
@@ -43,13 +45,13 @@ const sketch = ({ canvas }) => {
       ctx.camera.aspect = viewportWidth / viewportHeight;
       ctx.camera.updateProjectionMatrix();
 
-      // ctx.composer.setSize(viewportWidth, viewportHeight);
       ctx.renderer.setSize(viewportWidth, viewportHeight);
+      ctx.composer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
       frame++;
 
-      const { renderer } = ctx;
+      const { composer } = ctx;
 
       ctx.time = time;
       ctx.frame = frame;
@@ -59,7 +61,7 @@ const sketch = ({ canvas }) => {
       }
 
       // renderer.render(ctx.backScene, ctx.backCamera);
-      renderer.render(ctx.scene, ctx.camera);
+      composer.render();
     },
     unload() {
       ctx.controls.dispose();
