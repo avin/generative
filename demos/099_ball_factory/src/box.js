@@ -26,7 +26,7 @@ export const createBox = (ctx) => {
     }
   }
 
-  const baseGeometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
+  const baseGeometry = new THREE.BoxGeometry(size, size, size, 12, 12, 12);
   baseGeometry.scale(0.9, 0.9, 0.9);
 
   const geometry = new THREE.InstancedBufferGeometry();

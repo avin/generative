@@ -7,7 +7,7 @@ export const createGround = (ctx) => {
     options: { countPerRow, size },
   } = ctx;
 
-  const geometry = new RoundedBoxGeometry(countPerRow * size + 0.5, 2.25, countPerRow * size + 0.5, 10, 0.4);
+  const geometry = new RoundedBoxGeometry(countPerRow * size + 0.5, 2.25, countPerRow * size + 0.5, 3, 0.4);
   const material = new THREE.MeshStandardMaterial({
     roughness: 0.15,
     metalness: 0.7,
