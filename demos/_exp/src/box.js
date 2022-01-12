@@ -7,11 +7,36 @@ export const createBox = (ctx) => {
   const { scene } = ctx;
 
   const size = 2;
-  const geometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
+
+  const countPerRow = 6;
+  const count = countPerRow ** 3;
+
+  const offsetArray = new Float32Array(count * 3);
+
+  let i = 0;
+  for (let x = 0; x < countPerRow; x += 1) {
+    for (let y = 0; y < countPerRow; y += 1) {
+      for (let z = 0; z < countPerRow; z += 1) {
+        offsetArray[i * 3 + 0] = x * 2.1 - countPerRow / 2;
+        offsetArray[i * 3 + 1] = y * 2.1 - countPerRow / 2;
+        offsetArray[i * 3 + 2] = z * 2.1 - countPerRow / 2;
+
+        i++;
+      }
+    }
+  }
+
+  const baseGeometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
+
+  const geometry = new THREE.InstancedBufferGeometry();
+  geometry.index = baseGeometry.index;
+  geometry.attributes = baseGeometry.attributes;
+
+  geometry.setAttribute('offset', new THREE.InstancedBufferAttribute(offsetArray, 3));
 
   const material = new THREE.MeshStandardMaterial({
     roughness: 0.2,
-    metalness: 0.9,
+    metalness: 0.7,
     color: 0xeeeeee,
     envMapIntensity: 1.0,
   });

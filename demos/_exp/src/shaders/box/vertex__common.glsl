@@ -1,5 +1,7 @@
 #include <common>
 
+attribute vec3 offset;
+
 uniform float iTime;
 uniform float radius;
 
