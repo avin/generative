@@ -18,10 +18,10 @@ export const createBalls = (ctx) => {
 
   for (let i = 0; i < count; i += 1) {
     translateArray[i * 3 + 0] = 0;
-    translateArray[i * 3 + 1] = randomInstance.gaussian(-.5, .75);
+    translateArray[i * 3 + 1] = randomInstance.gaussian(-0.5, 0.75);
     translateArray[i * 3 + 2] = 0;
 
-    scaleArray[i] = randomInstance.range(0.05, .75);
+    scaleArray[i] = randomInstance.range(0.05, 0.75);
     rFactor1Array[i] = randomInstance.range(0, 1);
     rFactor2Array[i] = randomInstance.range(0, 1);
     rFactor3Array[i] = randomInstance.range(0, 1);
@@ -40,7 +40,7 @@ export const createBalls = (ctx) => {
   geometry.setAttribute('rFactor3', new THREE.InstancedBufferAttribute(rFactor3Array, 1));
 
   const material = new THREE.MeshStandardMaterial({
-    roughness: 2.0,
+    roughness: 1.0,
     metalness: 0.5,
     color: 0xffffff,
   });
