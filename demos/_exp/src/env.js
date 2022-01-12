@@ -15,6 +15,7 @@ export const createEnv = (ctx) => {
     // scene.background = ctx.background;
 
     ctx.boxMesh.material.envMap = ctx.background;
+    ctx.groundMaterial.envMap = ctx.background;
     // ctx.boxMesh.material.map = ctx.background;
 
     texture.dispose();

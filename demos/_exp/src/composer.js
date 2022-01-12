@@ -8,7 +8,7 @@ export const createComposer = (ctx) => {
 
   const renderScene = new RenderPass(scene, camera);
 
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.0, 0.25);
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.25, 0.0, 0.25);
   bloomPass.nMips = 3;
   bloomPass.highPassUniforms.smoothWidth.value = 0.15;
 
@@ -22,5 +22,5 @@ export const createComposer = (ctx) => {
   const composer = new EffectComposer(renderer, target);
   ctx.composer = composer;
   composer.addPass(renderScene);
-  // composer.addPass(bloomPass);
+  composer.addPass(bloomPass);
 };

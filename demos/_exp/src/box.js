@@ -4,11 +4,11 @@ import vertex__begin_vertex from './shaders/box/vertex__begin_vertex.glsl';
 import fragment__output_fragment from './shaders/box/fragment__output_fragment.glsl';
 
 export const createBox = (ctx) => {
-  const { scene } = ctx;
+  const {
+    scene,
+    options: { countPerRow, size },
+  } = ctx;
 
-  const size = 2;
-
-  const countPerRow = 6;
   const count = countPerRow ** 3;
 
   const offsetArray = new Float32Array(count * 3);
@@ -17,9 +17,9 @@ export const createBox = (ctx) => {
   for (let x = 0; x < countPerRow; x += 1) {
     for (let y = 0; y < countPerRow; y += 1) {
       for (let z = 0; z < countPerRow; z += 1) {
-        offsetArray[i * 3 + 0] = x * 2.1 - countPerRow / 2;
-        offsetArray[i * 3 + 1] = y * 2.1 - countPerRow / 2;
-        offsetArray[i * 3 + 2] = z * 2.1 - countPerRow / 2;
+        offsetArray[i * 3 + 0] = (x - countPerRow / 2) * size + size / 2;
+        offsetArray[i * 3 + 1] = y * size;
+        offsetArray[i * 3 + 2] = (z - countPerRow / 2) * size + size / 2;
 
         i++;
       }
@@ -27,6 +27,7 @@ export const createBox = (ctx) => {
   }
 
   const baseGeometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
+  baseGeometry.scale(0.9, 0.9, 0.9);
 
   const geometry = new THREE.InstancedBufferGeometry();
   geometry.index = baseGeometry.index;
@@ -43,6 +44,7 @@ export const createBox = (ctx) => {
 
   material.onBeforeCompile = (shader) => {
     shader.uniforms.iTime = { value: 0 };
+    shader.uniforms.countPerRow = { value: countPerRow };
     shader.uniforms.radius = { value: size / 2 };
 
     shader.vertexShader = shader.vertexShader.replace('#include <common>', vertex__common);

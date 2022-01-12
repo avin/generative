@@ -7,6 +7,7 @@ import { createBox } from './box';
 import { createControls } from './controls';
 import { createComposer } from './composer';
 import { createEnv } from './env';
+import { createGround } from './ground';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -18,7 +19,7 @@ const sketch = ({ canvas }) => {
   const ctx = {
     time: 0,
     frame: 0,
-    options: {},
+    options: { countPerRow: 5, size: 2 },
   };
 
   ctx.canvas = canvas;
@@ -30,6 +31,7 @@ const sketch = ({ canvas }) => {
   createControls(ctx);
   createLights(ctx);
   createBox(ctx);
+  createGround(ctx);
   createEnv(ctx);
 
   let frame = 0;

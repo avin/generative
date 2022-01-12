@@ -4,6 +4,7 @@ attribute vec3 offset;
 
 uniform float iTime;
 uniform float radius;
+uniform float countPerRow;
 
 vec3 boxPosToSpherePos(vec3 pos, float radius) {
   vec3 result = vec3(0.);
