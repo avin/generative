@@ -9,5 +9,6 @@ export const createRenderer = (ctx) => {
   renderer.setPixelRatio(window.devicePixelRatio);
 
   renderer.setClearColor(0x182026, 1);
+  renderer.setClearColor(0x999999, 1);
   // renderer.setClearColor(0x999999, 1);
 };

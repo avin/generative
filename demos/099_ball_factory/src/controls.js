@@ -10,6 +10,6 @@ export const createControls = (ctx) => {
 
   const controls = new OrbitControls(camera, renderer.domElement);
   ctx.controls = controls;
-  controls.target = new THREE.Vector3(0, countPerRow * size / 2., 0);
+  controls.target = ctx.center;
   controls.update();
 };

@@ -8,6 +8,7 @@ import { createControls } from './controls';
 import { createComposer } from './composer';
 import { createEnv } from './env';
 import { createGround } from './ground';
+import * as THREE from 'three';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -23,12 +24,13 @@ const sketch = ({ canvas }) => {
   };
 
   ctx.canvas = canvas;
+  ctx.center = new THREE.Vector3(0, (ctx.options.countPerRow * ctx.options.size) / 2, 0);
 
   createScene(ctx);
   createCamera(ctx);
   createRenderer(ctx);
   createComposer(ctx);
-  createControls(ctx);
+  // createControls(ctx);
   createLights(ctx);
   createBox(ctx);
   createGround(ctx);
@@ -46,10 +48,18 @@ const sketch = ({ canvas }) => {
     render({ time }) {
       frame++;
 
-      const { composer } = ctx;
+      const { composer, camera } = ctx;
 
       ctx.time = time;
       ctx.frame = frame;
+
+      const t = time * 0.25;
+      camera.position.x = Math.cos(t) * 23;
+      camera.position.z = Math.sin(t) * 15;
+      camera.position.y = Math.sin(t * 1.425) * 10;
+      camera.position.add(ctx.center);
+
+      camera.lookAt(ctx.center);
 
       if (ctx.boxShader) {
         ctx.boxShader.uniforms.iTime.value = time;
