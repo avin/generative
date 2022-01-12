@@ -8,12 +8,11 @@ export const createBox = (ctx) => {
 
   const size = 2;
   const geometry = new THREE.BoxGeometry(size, size, size, 64, 64, 64);
-  // const geometry = new THREE.SphereGeometry(4);
 
   const material = new THREE.MeshStandardMaterial({
     roughness: 0.2,
     metalness: 0.9,
-    color: 0xdb2c6f,
+    color: 0xeeeeee,
     envMapIntensity: 1.0,
   });
 

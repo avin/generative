@@ -12,7 +12,7 @@ export const createEnv = (ctx) => {
     const pngCubeRenderTarget = pmremGenerator.fromEquirectangular(texture);
 
     ctx.background = pngCubeRenderTarget.texture;
-    scene.background = ctx.background;
+    // scene.background = ctx.background;
 
     ctx.boxMesh.material.envMap = ctx.background;
     // ctx.boxMesh.material.map = ctx.background;
