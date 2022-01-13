@@ -1,0 +1,133 @@
+import canvasSketch from 'canvas-sketch';
+import GUI from 'lil-gui';
+import * as THREE from 'three';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass';
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { DofPass } from './DofPass';
+
+const settings = {
+  canvas: document.querySelector('#canvas'),
+  context: 'webgl2',
+  animate: true,
+};
+
+const sketch = ({ canvas, width, height }) => {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x999999, 1);
+  renderer.autoClear = false;
+
+  const { scene, camera } = (() => {
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(5, 3, 3);
+    camera.lookAt(0, 0, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = new THREE.Vector3(0, 0, 0);
+    controls.update();
+
+    const lightHem = new THREE.HemisphereLight(0xffffff, 0x333333, 0.75);
+    scene.add(lightHem);
+
+    const lightDir = new THREE.DirectionalLight(0xffffff, 0.75);
+    lightDir.position.set(5, 5, -7);
+    scene.add(lightDir);
+
+    const geometry = new THREE.BoxGeometry(0.75, 0.75, 2);
+    const material = new THREE.MeshStandardMaterial({ color: 0xff6600 });
+    const count = 300;
+    const mesh = new THREE.InstancedMesh(geometry, material, count);
+
+    const matrix = new THREE.Matrix4();
+    for (let i = 0; i < count; i++) {
+      matrix.compose(
+        new THREE.Vector3(i - count / 2, 0, 0),
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), (Math.random() * Math.PI) / 2),
+        new THREE.Vector3(1, 1, 1),
+      );
+      mesh.setMatrixAt(i, matrix);
+      mesh.setColorAt(
+        i,
+        new THREE.Color(Math.random() * 0.75 + 0.25, Math.random() * 0.75 + 0.25, Math.random() * 0.75 + 0.25),
+      );
+    }
+
+    mesh.position.set(0, 0, 0);
+    scene.add(mesh);
+
+    return { scene, camera };
+  })();
+
+  // ---------------------------------
+
+  const renderPass = new RenderPass(scene, camera);
+
+  const dofPass = new DofPass(scene, camera, {
+    focus: 1.0,
+    aperture: 0.025,
+    maxblur: 0.01,
+
+    width,
+    height,
+  });
+
+  const outputPass = new ShaderPass(CopyShader);
+  outputPass.renderToScreen = true;
+
+  const smaaPass = new SMAAPass();
+
+  const composer = new EffectComposer(renderer);
+
+  composer.addPass(renderPass);
+  composer.addPass(dofPass);
+  // composer.addPass(outputPass);
+  // composer.addPass(smaaPass);
+
+  // ---------------------------------
+
+  const effectController = {
+    focus: 500.0,
+    aperture: 5,
+    maxblur: 0.01,
+  };
+
+  const matChanger = () => {
+    dofPass.uniforms.focus.value = effectController.focus;
+    dofPass.uniforms.aperture.value = effectController.aperture * 0.00001;
+    dofPass.uniforms.maxblur.value = effectController.maxblur;
+  };
+
+  const gui = new GUI();
+  gui.add(effectController, 'focus', 10.0, 3000.0, 10).onChange(matChanger);
+  gui.add(effectController, 'aperture', 0, 10, 0.1).onChange(matChanger);
+  gui.add(effectController, 'maxblur', 0.0, 0.01, 0.001).onChange(matChanger);
+  // gui.close();
+
+  // ---------------------------------
+
+  return {
+    resize({ viewportWidth, viewportHeight }) {
+      camera.aspect = viewportWidth / viewportHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(viewportWidth, viewportHeight);
+      composer.setSize(viewportWidth, viewportHeight);
+    },
+    render({ time }) {
+      // renderer.render(scene, camera);
+      composer.render();
+    },
+    unload() {
+      renderer.dispose();
+    },
+  };
+};
+
+canvasSketch(sketch, settings);

@@ -11,7 +11,7 @@
     "postinstall": "npm run npm-subfolders",
     "npm-subfolders": "node ./scripts/npmSubfolders.js",
     "npm-subfolders:all": "node ./scripts/npmSubfolders.js --all",
-    "npm-clean": "find ./{demos,exp} -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "npm-clean": "find ./demos ./exp -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "pub": "yarn run build && git add -A && git commit -m \"upd\" && git push -f origin master"
   },
   "dependencies": {
