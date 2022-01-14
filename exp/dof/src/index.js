@@ -70,8 +70,10 @@ const sketch = ({ canvas, width, height }) => {
   const renderPass = new RenderPass(scene, camera);
 
   const dofPass = new DofPass(scene, camera, {
-    uFar: 10.0,
-    radScale: 0.5,
+    uFar: 50.0,
+    radScale: 0.1,
+    focusPoint: 48,
+    focusScale: 200,
 
     width,
     height,
@@ -92,18 +94,30 @@ const sketch = ({ canvas, width, height }) => {
   // ---------------------------------
 
   const effectController = {
-    uFar: 10.0,
+    // uFar: 10.,
+    // radScale: .5,
+    // focusPoint: 88.,
+    // focusScale: 10.,
+
+    uFar: 68.5,
     radScale: 0.5,
+    focusPoint: 27.5,
+    focusScale: 7.8,
   };
 
   const matChanger = () => {
     dofPass.uniforms.uFar.value = effectController.uFar;
     dofPass.uniforms.radScale.value = effectController.radScale;
+    dofPass.uniforms.focusPoint.value = effectController.focusPoint;
+    dofPass.uniforms.focusScale.value = effectController.focusScale;
   };
 
   const gui = new GUI();
-  gui.add(effectController, 'uFar', 1.0, 15000.0, 0.5).onChange(matChanger);
+  gui.add(effectController, 'uFar', 1.0, 100.0, 0.5).onChange(matChanger);
   gui.add(effectController, 'radScale', 0.1, 5, 0.1).onChange(matChanger);
+  gui.add(effectController, 'focusPoint', 1, 500, 0.5).onChange(matChanger);
+  gui.add(effectController, 'focusScale', 0, 100, 0.05).onChange(matChanger);
+  matChanger();
   // gui.close();
 
   // ---------------------------------

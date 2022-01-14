@@ -7,6 +7,9 @@ import {
   ShaderMaterial,
   UniformsUtils,
   WebGLRenderTarget,
+  Uniform,
+  Vector2,
+  BasicDepthPacking,
 } from 'three';
 import { Pass, FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass';
 import vertexShader from './shaders/dof/vert.glsl';
@@ -23,6 +26,9 @@ const DofShader = {
     tDepth: { value: null },
     uFar: { value: 10.0 },
     radScale: { value: 0.5 },
+    focusPoint: { value: 88 },
+    focusScale: { value: 100 },
+    resolution: new Uniform(new Vector2()),
   },
   vertexShader,
   fragmentShader,
@@ -35,9 +41,11 @@ export class DofPass extends Pass {
     this.scene = scene;
     this.camera = camera;
 
-    const { uFar, radScale } = {
+    const { uFar, radScale, focusPoint, focusScale } = {
       uFar: 10,
       radScale: 0.5,
+      focusPoint: 88,
+      focusScale: 100,
       ...params,
     };
 
@@ -58,6 +66,11 @@ export class DofPass extends Pass {
     this.materialDepth = new MeshDepthMaterial();
     this.materialDepth.depthPacking = RGBADepthPacking;
     this.materialDepth.blending = NoBlending;
+    this.materialDepth.isMeshDepthMaterial = true;
+
+    // this.materialDepth.onBeforeCompile = (shader) => {
+    //   shader.vertexShader = shader.vertexShader.replace('#include <logdepthbuf_vertex>', '');
+    // };
 
     // dof material
 
@@ -68,6 +81,10 @@ export class DofPass extends Pass {
 
     dofUniforms.uFar.value = uFar;
     dofUniforms.radScale.value = radScale;
+    dofUniforms.focusPoint.value = focusPoint;
+    dofUniforms.focusScale.value = focusScale;
+    dofUniforms.resolution.value.x = width;
+    dofUniforms.resolution.value.y = height;
 
     this.materialDof = new ShaderMaterial({
       defines: { ...dofShader.defines },
