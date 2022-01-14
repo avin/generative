@@ -4,94 +4,90 @@ varying vec2 vUv;
 
 uniform sampler2D tColor;
 uniform sampler2D tDepth;
+uniform float uFar;
+uniform float radScale;
 
-uniform float maxblur;   // max blur amount
-uniform float aperture;  // aperture - bigger values for shallower depth of field
+#define DISPLAY_GAMMA 1.5
 
-uniform float nearClip;
-uniform float farClip;
+#define GOLDEN_ANGLE 2.39996323
+#define MAX_BLUR_SIZE 20.0
 
-uniform float focus;
-uniform float aspect;
-
+#define iResolution vec2(1000., 1000.)
 #include <packing>
 
 float getDepth(const in vec2 screenPosition) {
 #if DEPTH_PACKING == 1
-  return unpackRGBAToDepth(texture2D(tDepth, screenPosition));
+  return 1. - unpackRGBAToDepth(texture2D(tDepth, screenPosition));
 #else
-  return texture2D(tDepth, screenPosition).x;
+  return 1. - texture2D(tDepth, screenPosition).x;
 #endif
 }
 
-float getViewZ(const in float depth) {
-#if PERSPECTIVE_CAMERA == 1
-  return perspectiveDepthToViewZ(depth, nearClip, farClip);
-#else
-  return orthographicDepthToViewZ(depth, nearClip, farClip);
-#endif
+float getBlurSize(float depth, float focusPoint, float focusScale) {
+  float coc = clamp((1.0 / focusPoint - 1.0 / depth) * focusScale, -1.0, 1.0);
+  return abs(coc) * MAX_BLUR_SIZE;
+}
+
+vec3 depthOfField(vec2 texCoord, float focusPoint, float focusScale) {
+  vec3 color = texture2D(tColor, texCoord).rgb;
+  // vec3 color = vec3(getDepth(texCoord));
+  float depth = getDepth(texCoord);
+  float centerDepth = depth * uFar;
+  float centerSize = getBlurSize(centerDepth, focusPoint, focusScale);
+  float tot = 1.0;
+
+  vec2 texelSize = 1.0 / iResolution.xy;
+
+  float radius = radScale;
+  for (float ang = 0.0; radius < MAX_BLUR_SIZE; ang += GOLDEN_ANGLE) {
+    vec2 tc = texCoord + vec2(cos(ang), sin(ang)) * texelSize * radius;
+
+    vec3 sampleColor = texture2D(tColor, tc).rgb;
+    // vec3 sampleColor = vec3(getDepth(tc));
+    float sampleDepth = getDepth(tc) * uFar;
+    float sampleSize = getBlurSize(sampleDepth, focusPoint, focusScale);
+
+    if (sampleDepth > centerDepth) {
+      sampleSize = clamp(sampleSize, 0.0, centerSize * 2.0);
+    }
+
+    float m = smoothstep(radius - 0.5, radius + 0.5, sampleSize);
+    color += mix(color / tot, sampleColor, m);
+    tot += 1.0;
+    radius += radScale / radius;
+  }
+
+  return color /= tot;
 }
 
 void main() {
-  vec2 aspectcorrect = vec2(1.0, aspect);
+  vec2 uv = vUv;
 
-  float viewZ = getViewZ(getDepth(vUv));
+  float focusPoint = 88.0;
+  float focusScale = iResolution.y / 15.;
 
-  float factor = (focus + viewZ);  // viewZ is <= 0, so this is a difference equation
+  vec3 color = depthOfField(uv, focusPoint, focusScale);
 
-  vec2 dofblur = vec2(clamp(factor * aperture, -maxblur, maxblur));
+  // tone mapping
+  color = vec3(1.7, 1.8, 1.9) * color / (1.0 + color);
 
-  vec2 dofblur9 = dofblur * 0.9;
-  vec2 dofblur7 = dofblur * 0.7;
-  vec2 dofblur4 = dofblur * 0.4;
+  //-----------------------------------------------------
+  // postprocessing
+  //-----------------------------------------------------
 
-  vec4 col = vec4(0.0);
+  // Color control
+  color = 0.5 * color + 0.5 * color * color * (3.0 - 2.0 * color);
 
-  col += texture2D(tColor, vUv.xy);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, 0.4) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.15, 0.37) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, 0.29) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.37, 0.15) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.40, 0.0) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.37, -0.15) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, -0.29) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.15, -0.37) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, -0.4) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.15, 0.37) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, 0.29) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.37, 0.15) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.4, 0.0) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.37, -0.15) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, -0.29) * aspectcorrect) * dofblur);
-  col += texture2D(tColor, vUv.xy + (vec2(0.15, -0.37) * aspectcorrect) * dofblur);
+  // Border dark
+  color *= 0.2 + 0.8 * pow(32.0 * uv.x * uv.y * (1.0 - uv.x) * (1.0 - uv.y), 0.3);
 
-  col += texture2D(tColor, vUv.xy + (vec2(0.15, 0.37) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.37, 0.15) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(0.37, -0.15) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.15, -0.37) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.15, 0.37) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(0.37, 0.15) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.37, -0.15) * aspectcorrect) * dofblur9);
-  col += texture2D(tColor, vUv.xy + (vec2(0.15, -0.37) * aspectcorrect) * dofblur9);
+  // Fade in
+  // color *= smoothstep(0.0, 1.0, iTime);
 
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, 0.29) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(0.40, 0.0) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, -0.29) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, -0.4) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, 0.29) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.4, 0.0) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, -0.29) * aspectcorrect) * dofblur7);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, 0.4) * aspectcorrect) * dofblur7);
+  color.rgb = color;
 
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, 0.29) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(0.4, 0.0) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(0.29, -0.29) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, -0.4) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, 0.29) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.4, 0.0) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(-0.29, -0.29) * aspectcorrect) * dofblur4);
-  col += texture2D(tColor, vUv.xy + (vec2(0.0, 0.4) * aspectcorrect) * dofblur4);
+  // -----------------------------------------------------
 
-  gl_FragColor = col / 41.0;
-  gl_FragColor.a = 1.0;
+  // inverse gamma correction
+  gl_FragColor = vec4(pow(color.rgb, vec3(1.0 / DISPLAY_GAMMA)), 1.0);
 }

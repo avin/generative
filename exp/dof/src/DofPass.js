@@ -21,12 +21,8 @@ const DofShader = {
   uniforms: {
     tColor: { value: null },
     tDepth: { value: null },
-    focus: { value: 1.0 },
-    aspect: { value: 1.0 },
-    aperture: { value: 0.025 },
-    maxblur: { value: 0.01 },
-    nearClip: { value: 1.0 },
-    farClip: { value: 1000.0 },
+    uFar: { value: 10.0 },
+    radScale: { value: 0.5 },
   },
   vertexShader,
   fragmentShader,
@@ -39,11 +35,9 @@ export class DofPass extends Pass {
     this.scene = scene;
     this.camera = camera;
 
-    const { focus, aspect, aperture, maxblur } = {
-      focus: 1,
-      aspect: camera.aspect,
-      aperture: 0.025,
-      maxblur: 1,
+    const { uFar, radScale } = {
+      uFar: 10,
+      radScale: 0.5,
       ...params,
     };
 
@@ -72,12 +66,8 @@ export class DofPass extends Pass {
 
     dofUniforms.tDepth.value = this.renderTargetDepth.texture;
 
-    dofUniforms.focus.value = focus;
-    dofUniforms.aspect.value = aspect;
-    dofUniforms.aperture.value = aperture;
-    dofUniforms.maxblur.value = maxblur;
-    dofUniforms.nearClip.value = camera.near;
-    dofUniforms.farClip.value = camera.far;
+    dofUniforms.uFar.value = uFar;
+    dofUniforms.radScale.value = radScale;
 
     this.materialDof = new ShaderMaterial({
       defines: { ...dofShader.defines },
@@ -113,8 +103,8 @@ export class DofPass extends Pass {
     // Render dof composite
 
     this.uniforms.tColor.value = readBuffer.texture;
-    this.uniforms.nearClip.value = this.camera.near;
-    this.uniforms.farClip.value = this.camera.far;
+    // this.uniforms.nearClip.value = this.camera.near;
+    // this.uniforms.farClip.value = this.camera.far;
 
     if (this.renderToScreen) {
       renderer.setRenderTarget(null);
