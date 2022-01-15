@@ -69,10 +69,6 @@ export class DofPass extends Pass {
     this.materialDepth.blending = NoBlending;
     this.materialDepth.isMeshDepthMaterial = true;
 
-    // this.materialDepth.onBeforeCompile = (shader) => {
-    //   shader.vertexShader = shader.vertexShader.replace('#include <logdepthbuf_vertex>', '');
-    // };
-
     // dof material
 
     const dofShader = DofShader;
@@ -122,8 +118,6 @@ export class DofPass extends Pass {
     // Render dof composite
 
     this.uniforms.tColor.value = readBuffer.texture;
-    // this.uniforms.nearClip.value = this.camera.near;
-    // this.uniforms.farClip.value = this.camera.far;
 
     if (this.renderToScreen) {
       renderer.setRenderTarget(null);

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import fragment__common from './shaders/centerBall/fragment__common.glsl';
 import fragment__output_fragment from './shaders/centerBall/fragment__output_fragment.glsl';
 
 export const createCenterBall = (ctx) => {
@@ -14,9 +13,6 @@ export const createCenterBall = (ctx) => {
   });
 
   material.onBeforeCompile = (shader) => {
-    shader.uniforms.iTime = { value: 0 };
-
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', fragment__common);
     shader.fragmentShader = shader.fragmentShader.replace('#include <output_fragment>', fragment__output_fragment);
 
     ctx.centerBallShader = shader;

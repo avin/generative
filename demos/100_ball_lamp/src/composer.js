@@ -12,11 +12,11 @@ export const createComposer = (ctx) => {
   const renderScene = new RenderPass(scene, camera);
 
   const dofPass = new DofPass(scene, camera, {
-    uFar: 50.0,
-    radScale: 0.1,
-    focusPoint: 48,
-    focusScale: 200,
-    depthFactor: 10,
+    uFar: 112.5,
+    radScale: 1.0,
+    focusPoint: 52.5,
+    focusScale: 48.4,
+    depthFactor: 91.5,
 
     width,
     height,
@@ -24,9 +24,7 @@ export const createComposer = (ctx) => {
 
   const postPass = new ShaderPass(PrettyShader);
 
-  const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), 1.75, 1.5, 0.0);
-  bloomPass.nMips = 5;
-  bloomPass.highPassUniforms.smoothWidth.value = 1.0;
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 0.25, 1.5, 0.0);
 
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const target = new THREE.WebGLMultisampleRenderTarget(size.width, size.height, {
@@ -38,12 +36,12 @@ export const createComposer = (ctx) => {
   const composer = new EffectComposer(renderer, target);
   ctx.composer = composer;
   composer.addPass(renderScene);
-  // composer.addPass(dofPass);
+  composer.addPass(dofPass);
   composer.addPass(postPass);
-  // composer.addPass(bloomPass);
+  composer.addPass(bloomPass);
 
   ctx.passes = {
     dofPass,
     postPass,
-  }
+  };
 };
