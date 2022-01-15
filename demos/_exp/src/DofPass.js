@@ -9,7 +9,6 @@ import {
   WebGLRenderTarget,
   Uniform,
   Vector2,
-  BasicDepthPacking,
 } from 'three';
 import { Pass, FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass';
 import vertexShader from './shaders/dof/vert.glsl';

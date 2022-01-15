@@ -24,6 +24,7 @@ module.exports = {
     camelcase: 0,
     'arrow-body-style': 0,
     'import/order': 0,
+    'import/no-relative-packages': 0,
     'no-bitwise': 0,
     'no-restricted-syntax': 0,
     'import/prefer-default-export': 0,

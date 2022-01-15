@@ -4,10 +4,11 @@ import * as THREE from 'three';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass';
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
+import { SepiaShader } from 'three/examples/jsm/shaders/SepiaShader';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DofPass } from './DofPass';
+import { PrettyShader } from '../../../common/shaders/PrettyShader/PrettyShader';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -80,8 +81,8 @@ const sketch = ({ canvas, width, height }) => {
     height,
   });
 
-  const outputPass = new ShaderPass(CopyShader);
-  outputPass.renderToScreen = true;
+  const postPass1 = new ShaderPass(PrettyShader);
+  const postPass2 = new ShaderPass(SepiaShader);
 
   const smaaPass = new SMAAPass();
 
@@ -89,8 +90,10 @@ const sketch = ({ canvas, width, height }) => {
 
   composer.addPass(renderPass);
   composer.addPass(dofPass);
-  // composer.addPass(outputPass);
-  // composer.addPass(smaaPass);
+  composer.addPass(postPass1);
+  composer.addPass(smaaPass);
+  // composer.addPass(postPass2);
+
 
   // ---------------------------------
 
@@ -135,6 +138,8 @@ const sketch = ({ canvas, width, height }) => {
       composer.setSize(viewportWidth, viewportHeight);
     },
     render({ time }) {
+      postPass1.uniforms.iTime.value = time;
+
       // renderer.render(scene, camera);
       composer.render();
     },

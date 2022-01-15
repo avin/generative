@@ -38,8 +38,8 @@ float getBlurSize(float depth, float focusPoint, float focusScale) {
 }
 
 vec3 depthOfField(vec2 texCoord, float focusPoint, float focusScale) {
-  vec3 color = texture2D(tColor, texCoord).rgb;
-  // vec3 color = vec3(getDepth(texCoord));
+  // vec3 color = texture2D(tColor, texCoord).rgb;
+  vec3 color = vec3(getDepth(texCoord));
   float depth = getDepth(texCoord);
   float centerDepth = depth * uFar;
   float centerSize = getBlurSize(centerDepth, focusPoint, focusScale);
@@ -104,10 +104,10 @@ void main() {
   // inverse gamma correction
   gl_FragColor = vec4(pow(color.rgb, vec3(1.0 / DISPLAY_GAMMA)), 1.0);
 
-  //  float z = getDepth(vUv);
-  //  if(vUv.x > .5){
-  //    z = 1. - z;
-  //  }
-  //  vec3 col = vec3(z);
-  //  gl_FragColor = vec4(col, 1.);
+    float z = getDepth(vUv);
+    if(vUv.x > .5){
+      z = 1. - z;
+    }
+    vec3 col = vec3(z);
+    gl_FragColor = vec4(col, 1.);
 }
