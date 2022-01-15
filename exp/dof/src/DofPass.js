@@ -26,6 +26,7 @@ const DofShader = {
     tDepth: { value: null },
     uFar: { value: 10.0 },
     radScale: { value: 0.5 },
+    depthFactor: { value: 10. },
     focusPoint: { value: 88 },
     focusScale: { value: 100 },
     resolution: new Uniform(new Vector2()),
@@ -41,9 +42,10 @@ export class DofPass extends Pass {
     this.scene = scene;
     this.camera = camera;
 
-    const { uFar, radScale, focusPoint, focusScale } = {
+    const { uFar, radScale, focusPoint, focusScale, depthFactor } = {
       uFar: 10,
       radScale: 0.5,
+      depthFactor: 10,
       focusPoint: 88,
       focusScale: 100,
       ...params,
@@ -81,6 +83,7 @@ export class DofPass extends Pass {
 
     dofUniforms.uFar.value = uFar;
     dofUniforms.radScale.value = radScale;
+    dofUniforms.depthFactor.value = depthFactor;
     dofUniforms.focusPoint.value = focusPoint;
     dofUniforms.focusScale.value = focusScale;
     dofUniforms.resolution.value.x = width;

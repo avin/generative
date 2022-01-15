@@ -8,6 +8,7 @@ uniform float uFar;
 uniform float focusPoint;
 uniform float focusScale;
 uniform float radScale;
+uniform float depthFactor;
 uniform vec2 resolution;
 
 #define DISPLAY_GAMMA 1.5
@@ -19,16 +20,16 @@ uniform vec2 resolution;
 #include <packing>
 
 float getDepth(const in vec2 screenPosition) {
-float r;
+  float r;
 #if DEPTH_PACKING == 1
   r = unpackRGBAToDepth(texture2D(tDepth, screenPosition));
 #else
-  r =  texture2D(tDepth, screenPosition).x;
+  r = texture2D(tDepth, screenPosition).x;
 #endif
-if(r == 1.){
-return 1.;
-}
-return (1. - r) * 10.;
+  if (r == 1.) {
+    return 1.;
+  }
+  return (1. - r) * depthFactor;
 }
 
 float getBlurSize(float depth, float focusPoint, float focusScale) {
@@ -103,10 +104,10 @@ void main() {
   // inverse gamma correction
   gl_FragColor = vec4(pow(color.rgb, vec3(1.0 / DISPLAY_GAMMA)), 1.0);
 
-//  float z = getDepth(vUv);
-//  if(vUv.x > .5){
-//    z = 1. - z;
-//  }
-//  vec3 col = vec3(z);
-//  gl_FragColor = vec4(col, 1.);
+  //  float z = getDepth(vUv);
+  //  if(vUv.x > .5){
+  //    z = 1. - z;
+  //  }
+  //  vec3 col = vec3(z);
+  //  gl_FragColor = vec4(col, 1.);
 }
