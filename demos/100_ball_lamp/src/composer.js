@@ -3,7 +3,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { DofPass } from './DofPass';
-import { PrettyShader } from '../../../common/shaders/PrettyShader/PrettyShader';
+import { PrettyShader } from './PrettyShader/PrettyShader';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 
 export const createComposer = (ctx) => {

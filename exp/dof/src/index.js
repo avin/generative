@@ -8,7 +8,7 @@ import { SepiaShader } from 'three/examples/jsm/shaders/SepiaShader';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DofPass } from './DofPass';
-import { PrettyShader } from '../../../common/shaders/PrettyShader/PrettyShader';
+import { PrettyShader } from './PrettyShader/PrettyShader';
 
 const settings = {
   canvas: document.querySelector('#canvas'),
@@ -93,7 +93,6 @@ const sketch = ({ canvas, width, height }) => {
   composer.addPass(postPass1);
   composer.addPass(smaaPass);
   // composer.addPass(postPass2);
-
 
   // ---------------------------------
 
