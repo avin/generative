@@ -152,7 +152,7 @@ const drawAll = () => {
     }
   }
 
-  // Get lines
+  // Lines (canvas)
   {
     const canvasElement = document.querySelector('#canvas3');
     const ctx = canvasElement.getContext('2d');
@@ -184,14 +184,64 @@ const drawAll = () => {
     Object.keys(lines).forEach((key) => {
       const line = lines[key];
 
-      line.forEach(([from, to]) => {
+      line[0].processed = true;
+      const result = [line[0]];
+      const proc = (py, px, result) => {
+        // if (py === 1 && px === 2) {
+        //   debugger;
+        // }
+        const nextSeg = line.find((seg) => {
+          if (!seg.processed) {
+            if ((seg[0][0] === py && seg[0][1] === px) || (seg[1][0] === py && seg[1][1] === px)) {
+              return true;
+            }
+          }
+          return false;
+        });
+        if (nextSeg) {
+          nextSeg.processed = true;
+          let resultSeg;
+          if (nextSeg[0][0] === py && nextSeg[0][1] === px) {
+            resultSeg = [nextSeg[0], nextSeg[1]];
+          } else if (nextSeg[1][0] === py && nextSeg[1][1] === px) {
+            resultSeg = [nextSeg[1], nextSeg[0]];
+          }
+          result.push(resultSeg);
+          proc(resultSeg[1][0], resultSeg[1][1], result);
+        }
+      };
+      proc(line[0][1][0], line[0][1][1], result);
+
+      lines[key] = result;
+    });
+
+    const paths = [];
+    Object.keys(lines).forEach((key) => {
+      const line = lines[key];
+      const style = `hsl(${uniqHue[String(key)]}, 50%, 50%)`;
+
+      let path = '';
+      line.forEach(([from, to], idx) => {
         ctx.beginPath();
-        ctx.strokeStyle = `hsl(${uniqHue[String(key)]}, 50%, 50%)`;
+        ctx.strokeStyle = style;
         ctx.moveTo(from[1] * pointSize, from[0] * pointSize);
         ctx.lineTo(to[1] * pointSize, to[0] * pointSize);
         ctx.stroke();
+
+        if (idx === 0) {
+          path += `M${from[1] * pointSize} ${from[0] * pointSize} `;
+        } else if (idx === line.length - 1) {
+          path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
+          path += `L${to[1] * pointSize} ${to[0] * pointSize} `;
+          path += 'Z';
+        } else {
+          path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
+        }
       });
+      paths.push(`<path d="${path}" fill='${style}'/>`);
     });
+
+    document.querySelector('#svg1').innerHTML = paths.join('\n');
   }
 };
 
