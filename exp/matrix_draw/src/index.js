@@ -187,9 +187,6 @@ const drawAll = () => {
       line[0].processed = true;
       const result = [line[0]];
       const proc = (py, px, result) => {
-        // if (py === 1 && px === 2) {
-        //   debugger;
-        // }
         const nextSeg = line.find((seg) => {
           if (!seg.processed) {
             if ((seg[0][0] === py && seg[0][1] === px) || (seg[1][0] === py && seg[1][1] === px)) {
@@ -211,8 +208,22 @@ const drawAll = () => {
         }
       };
       proc(line[0][1][0], line[0][1][1], result);
-
       lines[key] = result;
+      lines[key].crops = [];
+
+      let checkCrops = true;
+      while (checkCrops) {
+        // Если есть остатки - делаем контур для вырезания
+        const notProcessedSeg = line.find((i) => !i.processed);
+        if (notProcessedSeg) {
+          notProcessedSeg.processed = true;
+          const cropResult = [notProcessedSeg];
+          proc(notProcessedSeg[1][0], notProcessedSeg[1][1], cropResult);
+          lines[key].crops.push(cropResult);
+        } else {
+          checkCrops = false;
+        }
+      }
     });
 
     const paths = [];
@@ -232,12 +243,34 @@ const drawAll = () => {
           path += `M${from[1] * pointSize} ${from[0] * pointSize} `;
         } else if (idx === line.length - 1) {
           path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
-          path += `L${to[1] * pointSize} ${to[0] * pointSize} `;
-          path += 'Z';
+          // path += `L${to[1] * pointSize} ${to[0] * pointSize} `;
+          path += 'Z ';
         } else {
           path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
         }
       });
+
+      line.crops.forEach((cropLine) => {
+        cropLine.reverse();
+        cropLine.forEach(([from, to], idx) => {
+          ctx.beginPath();
+          ctx.strokeStyle = style;
+          ctx.moveTo(from[1] * pointSize, from[0] * pointSize);
+          ctx.lineTo(to[1] * pointSize, to[0] * pointSize);
+          ctx.stroke();
+
+          if (idx === 0) {
+            path += `M${from[1] * pointSize} ${from[0] * pointSize} `;
+          } else if (idx === cropLine.length - 1) {
+            path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
+            // path += `L${to[1] * pointSize} ${to[0] * pointSize} `;
+            path += 'Z ';
+          } else {
+            path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
+          }
+        });
+      });
+
       paths.push(`<path d="${path}" fill='${style}'/>`);
     });
 
