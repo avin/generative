@@ -3,7 +3,6 @@ import set from 'lodash/set';
 import get from 'lodash/get';
 
 const randomInstance = random.createRandom();
-console.info('seed=', randomInstance.getSeed());
 
 const neighborOffsets = [
   [-1, 0],
@@ -12,12 +11,36 @@ const neighborOffsets = [
   [0, 1],
 ];
 
+const contour = [
+  [
+    [0, 0],
+    [0, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+  ],
+  [
+    [0, 1],
+    [1, 1],
+  ],
+];
+
 const generateRandomMatrix = (size) => {
   const result = [];
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      result[x] = result[x] || [];
-      result[x][y] = randomInstance.value() > 0.5 ? 1 : 0;
+      result[y] = result[y] || [];
+      result[y][x] = {
+        // pride: randomInstance.value() > 0.5 ? 1 : 0, // pride = 1 - закрашенная клетка
+        pride: 0,
+        x,
+        y,
+      };
     }
   }
   return result;
@@ -56,79 +79,158 @@ const findNeighbors = (matrix, cell, pride, expectCells = []) => {
   }
 };
 
-const uniqStyles = [];
-let lastUniqId = 0;
-const getUniqId = () => {
-  uniqStyles[lastUniqId] = `hsl(${Math.floor(randomInstance.value() * 360)},${
-    Math.floor(randomInstance.value() * 50) + 50
-  }%,50%)`;
-  return lastUniqId++;
-};
+const matrixSize = 5;
+let canvasSize;
+let pointSize;
+const matrix = generateRandomMatrix(matrixSize);
 
-let matrix;
-const matrixSize = 10;
+const uniqHue = {};
+const drawAll = () => {
+  let lastUniqId = 0;
+  const getUniqId = () => {
+    uniqHue[lastUniqId] =
+      uniqHue[lastUniqId] === undefined ? Math.floor(randomInstance.value() * 360) : uniqHue[lastUniqId];
 
-// Draw basic
-{
-  matrix = generateRandomMatrix(matrixSize);
-  const canvasElement = document.querySelector('#canvas1');
-  const canvasSize = canvasElement.clientWidth;
-  const pointSize = canvasSize / matrixSize;
-  const ctx = canvasElement.getContext('2d');
-
-  drawGrid({ ctx, canvasSize, pointSize });
+    return lastUniqId++;
+  };
 
   for (let y = 0; y < matrixSize; y++) {
     for (let x = 0; x < matrixSize; x++) {
-      const value = matrix[y][x];
-      if (value) {
-        ctx.rect(pointSize * x, pointSize * y, pointSize, pointSize);
-        ctx.fill();
+      matrix[y][x].meshId = undefined;
+    }
+  }
+
+  // Draw basic
+  {
+    const canvasElement = document.querySelector('#canvas1');
+    canvasSize = canvasElement.clientWidth;
+    pointSize = canvasSize / matrixSize;
+    const ctx = canvasElement.getContext('2d');
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    drawGrid({ ctx, canvasSize, pointSize });
+
+    for (let y = 0; y < matrixSize; y++) {
+      for (let x = 0; x < matrixSize; x++) {
+        const value = matrix[y][x].pride;
+        if (value) {
+          ctx.fillRect(pointSize * x, pointSize * y, pointSize, pointSize);
+        }
       }
     }
   }
-}
 
-// Detect meshes
-{
-  const canvasElement = document.querySelector('#canvas2');
-  const canvasSize = canvasElement.clientWidth;
-  const pointSize = canvasSize / matrixSize;
-  const ctx = canvasElement.getContext('2d');
+  // Detect meshes
+  {
+    const canvasElement = document.querySelector('#canvas2');
+    const ctx = canvasElement.getContext('2d');
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
 
-  drawGrid({ ctx, canvasSize, pointSize });
+    drawGrid({ ctx, canvasSize, pointSize });
 
-  const objMatrix = matrix.map((yRow, y) => {
-    return yRow.map((i, x) => {
-      return {
-        pride: i ? 1 : 0, // pride = 1 - закрашенная клетка
-        x,
-        y,
-      };
-    });
-  });
+    for (let y = 0; y < matrixSize; y++) {
+      for (let x = 0; x < matrixSize; x++) {
+        const currCell = matrix[y][x];
+        if (currCell.meshId === undefined && currCell.pride === 1) {
+          const cells = [];
+          findNeighbors(matrix, currCell, 1, cells);
+          const meshId = getUniqId();
+          cells.forEach((cell) => {
+            cell.meshId = meshId;
+          });
+        }
+      }
+    }
 
-  for (let y = 0; y < matrixSize; y++) {
-    for (let x = 0; x < matrixSize; x++) {
-      const currCell = objMatrix[y][x];
-      if (currCell.meshId === undefined && currCell.pride === 1) {
-        const cells = [];
-        findNeighbors(objMatrix, currCell, 1, cells);
-        const meshId = getUniqId();
-        cells.forEach((cell) => {
-          cell.meshId = meshId;
+    for (let y = 0; y < matrixSize; y++) {
+      for (let x = 0; x < matrixSize; x++) {
+        const obj = matrix[y][x];
+        if (obj.pride === 1) {
+          ctx.fillStyle = `hsl(${uniqHue[String(obj.meshId)]}, 50%, 50%)`;
+          ctx.fillRect(pointSize * x, pointSize * y, pointSize, pointSize);
+        }
+      }
+    }
+  }
+
+  // Get lines
+  {
+    const canvasElement = document.querySelector('#canvas3');
+    const ctx = canvasElement.getContext('2d');
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+    const lines = {};
+
+    for (let y = 0; y < matrixSize; y++) {
+      for (let x = 0; x < matrixSize; x++) {
+        const cell = matrix[y][x];
+        if (cell.meshId === undefined) {
+          continue;
+        }
+
+        neighborOffsets.forEach((offset, idx) => {
+          const neighborCell = get(matrix, [y + offset[0], x + offset[1]]);
+          if (!neighborCell || neighborCell.meshId !== cell.meshId) {
+            // Нет соседа
+            lines[cell.meshId] = lines[cell.meshId] || [];
+            lines[cell.meshId].push([
+              [y + contour[idx][0][0], x + contour[idx][0][1]],
+              [y + contour[idx][1][0], x + contour[idx][1][1]],
+            ]);
+          }
         });
       }
     }
-  }
 
-  for (let y = 0; y < matrixSize; y++) {
-    for (let x = 0; x < matrixSize; x++) {
-      const obj = objMatrix[y][x];
-      if (obj.pride === 1) {
-        ctx.fillStyle = uniqStyles[obj.meshId];
-        ctx.fillRect(pointSize * x, pointSize * y, pointSize, pointSize);
-      }
+    Object.keys(lines).forEach((key) => {
+      const line = lines[key];
+
+      line.forEach(([from, to]) => {
+        ctx.beginPath();
+        ctx.strokeStyle = `hsl(${uniqHue[String(key)]}, 50%, 50%)`;
+        ctx.moveTo(from[1] * pointSize, from[0] * pointSize);
+        ctx.lineTo(to[1] * pointSize, to[0] * pointSize);
+        ctx.stroke();
+      });
+    });
+  }
+};
+
+drawAll();
+
+let drawMode = -1;
+const updMatrix = (y, x) => {
+  if (drawMode === 0) {
+    if (matrix[y][x].pride) {
+      matrix[y][x].pride = 0;
+      drawAll();
+    }
+  } else if (drawMode === 1) {
+    if (!matrix[y][x].pride) {
+      matrix[y][x].pride = 1;
+      drawAll();
     }
   }
-}
+};
+document.querySelector('#canvas1').addEventListener('mousedown', (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const y = Math.floor((e.clientY - rect.top) / pointSize);
+  const x = Math.floor((e.clientX - rect.left) / pointSize);
+  if (matrix[y][x].pride) {
+    drawMode = 0;
+  } else {
+    drawMode = 1;
+  }
+  updMatrix(y, x);
+});
+document.querySelector('#canvas1').addEventListener('mouseup', (e) => {
+  drawMode = -1;
+});
+document.querySelector('#canvas1').addEventListener('mousemove', (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const y = Math.floor((e.clientY - rect.top) / pointSize);
+  const x = Math.floor((e.clientX - rect.left) / pointSize);
+  if (matrix[y] && matrix[y][x]) {
+    updMatrix(y, x);
+  }
+});
