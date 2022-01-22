@@ -1,3 +1,4 @@
+/* eslint-disable */
 import random from 'canvas-sketch-util/random';
 import get from 'lodash/get';
 
@@ -30,7 +31,7 @@ const contour = [
 ];
 
 const generateRandomMatrix = (size) => {
-  const result = [];
+  let result = [];
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       result[y] = result[y] || [];
@@ -41,6 +42,12 @@ const generateRandomMatrix = (size) => {
         y,
       };
     }
+  }
+  // prettier-ignore
+  {
+    // result = [[{"pride":0,"x":0,"y":0},{"pride":0,"x":1,"y":0},{"pride":0,"x":2,"y":0},{"pride":1,"x":3,"y":0,"meshId":0},{"pride":1,"x":4,"y":0,"meshId":0},{"pride":1,"x":5,"y":0,"meshId":0},{"pride":0,"x":6,"y":0},{"pride":0,"x":7,"y":0},{"pride":0,"x":8,"y":0},{"pride":0,"x":9,"y":0}],[{"pride":0,"x":0,"y":1},{"pride":0,"x":1,"y":1},{"pride":1,"x":2,"y":1,"meshId":0},{"pride":1,"x":3,"y":1,"meshId":0},{"pride":0,"x":4,"y":1},{"pride":1,"x":5,"y":1,"meshId":0},{"pride":1,"x":6,"y":1,"meshId":0},{"pride":0,"x":7,"y":1},{"pride":0,"x":8,"y":1},{"pride":0,"x":9,"y":1}],[{"pride":1,"x":0,"y":2,"meshId":1},{"pride":1,"x":1,"y":2,"meshId":1},{"pride":0,"x":2,"y":2},{"pride":1,"x":3,"y":2,"meshId":0},{"pride":1,"x":4,"y":2,"meshId":0},{"pride":0,"x":5,"y":2},{"pride":1,"x":6,"y":2,"meshId":0},{"pride":0,"x":7,"y":2},{"pride":0,"x":8,"y":2},{"pride":0,"x":9,"y":2}],[{"pride":1,"x":0,"y":3,"meshId":1},{"pride":0,"x":1,"y":3},{"pride":0,"x":2,"y":3},{"pride":0,"x":3,"y":3},{"pride":0,"x":4,"y":3},{"pride":1,"x":5,"y":3,"meshId":0},{"pride":1,"x":6,"y":3,"meshId":0},{"pride":0,"x":7,"y":3},{"pride":0,"x":8,"y":3},{"pride":0,"x":9,"y":3}],[{"pride":1,"x":0,"y":4,"meshId":1},{"pride":1,"x":1,"y":4,"meshId":1},{"pride":0,"x":2,"y":4},{"pride":1,"x":3,"y":4,"meshId":0},{"pride":1,"x":4,"y":4,"meshId":0},{"pride":1,"x":5,"y":4,"meshId":0},{"pride":0,"x":6,"y":4},{"pride":0,"x":7,"y":4},{"pride":0,"x":8,"y":4},{"pride":0,"x":9,"y":4}],[{"pride":1,"x":0,"y":5,"meshId":1},{"pride":0,"x":1,"y":5},{"pride":1,"x":2,"y":5,"meshId":1},{"pride":1,"x":3,"y":5},{"pride":1,"x":4,"y":5,"meshId":0},{"pride":0,"x":5,"y":5},{"pride":0,"x":6,"y":5},{"pride":0,"x":7,"y":5},{"pride":0,"x":8,"y":5},{"pride":0,"x":9,"y":5}],[{"pride":1,"x":0,"y":6,"meshId":1},{"pride":1,"x":1,"y":6,"meshId":1},{"pride":1,"x":2,"y":6,"meshId":1},{"pride":1,"x":3,"y":6,"meshId":1},{"pride":0,"x":4,"y":6},{"pride":0,"x":5,"y":6},{"pride":0,"x":6,"y":6},{"pride":0,"x":7,"y":6},{"pride":0,"x":8,"y":6},{"pride":0,"x":9,"y":6}],[{"pride":0,"x":0,"y":7},{"pride":0,"x":1,"y":7},{"pride":0,"x":2,"y":7},{"pride":0,"x":3,"y":7},{"pride":0,"x":4,"y":7},{"pride":0,"x":5,"y":7},{"pride":0,"x":6,"y":7},{"pride":0,"x":7,"y":7},{"pride":0,"x":8,"y":7},{"pride":0,"x":9,"y":7}],[{"pride":0,"x":0,"y":8},{"pride":0,"x":1,"y":8},{"pride":0,"x":2,"y":8},{"pride":0,"x":3,"y":8},{"pride":0,"x":4,"y":8},{"pride":0,"x":5,"y":8},{"pride":0,"x":6,"y":8},{"pride":0,"x":7,"y":8},{"pride":0,"x":8,"y":8},{"pride":0,"x":9,"y":8}],[{"pride":0,"x":0,"y":9},{"pride":0,"x":1,"y":9},{"pride":0,"x":2,"y":9},{"pride":0,"x":3,"y":9},{"pride":0,"x":4,"y":9},{"pride":0,"x":5,"y":9},{"pride":0,"x":6,"y":9},{"pride":0,"x":7,"y":9},{"pride":0,"x":8,"y":9},{"pride":0,"x":9,"y":9}]];
+    // result = [[{"pride":0,"x":0,"y":0},{"pride":0,"x":1,"y":0},{"pride":1,"x":2,"y":0},{"pride":1,"x":3,"y":0,"meshId":0},{"pride":0,"x":4,"y":0},{"pride":0,"x":5,"y":0},{"pride":0,"x":6,"y":0},{"pride":0,"x":7,"y":0},{"pride":0,"x":8,"y":0},{"pride":0,"x":9,"y":0}],[{"pride":1,"x":0,"y":1,"meshId":0},{"pride":1,"x":1,"y":1,"meshId":0},{"pride":0,"x":2,"y":1},{"pride":1,"x":3,"y":1,"meshId":0},{"pride":0,"x":4,"y":1},{"pride":0,"x":5,"y":1},{"pride":0,"x":6,"y":1},{"pride":0,"x":7,"y":1},{"pride":0,"x":8,"y":1},{"pride":0,"x":9,"y":1}],[{"pride":1,"x":0,"y":2,"meshId":0},{"pride":0,"x":1,"y":2},{"pride":1,"x":2,"y":2,"meshId":0},{"pride":1,"x":3,"y":2,"meshId":0},{"pride":0,"x":4,"y":2},{"pride":0,"x":5,"y":2},{"pride":0,"x":6,"y":2},{"pride":0,"x":7,"y":2},{"pride":0,"x":8,"y":2},{"pride":0,"x":9,"y":2}],[{"pride":1,"x":0,"y":3,"meshId":0},{"pride":1,"x":1,"y":3,"meshId":0},{"pride":0,"x":2,"y":3},{"pride":1,"x":3,"y":3,"meshId":0},{"pride":0,"x":4,"y":3},{"pride":0,"x":5,"y":3},{"pride":0,"x":6,"y":3},{"pride":0,"x":7,"y":3},{"pride":0,"x":8,"y":3},{"pride":0,"x":9,"y":3}],[{"pride":1,"x":0,"y":4,"meshId":0},{"pride":0,"x":1,"y":4},{"pride":1,"x":2,"y":4,"meshId":0},{"pride":1,"x":3,"y":4,"meshId":0},{"pride":0,"x":4,"y":4},{"pride":0,"x":5,"y":4},{"pride":0,"x":6,"y":4},{"pride":0,"x":7,"y":4},{"pride":0,"x":8,"y":4},{"pride":0,"x":9,"y":4}],[{"pride":1,"x":0,"y":5,"meshId":0},{"pride":1,"x":1,"y":5,"meshId":0},{"pride":1,"x":2,"y":5,"meshId":0},{"pride":1,"x":3,"y":5,"meshId":0},{"pride":0,"x":4,"y":5},{"pride":0,"x":5,"y":5},{"pride":0,"x":6,"y":5},{"pride":0,"x":7,"y":5},{"pride":0,"x":8,"y":5},{"pride":0,"x":9,"y":5}],[{"pride":0,"x":0,"y":6},{"pride":0,"x":1,"y":6},{"pride":0,"x":2,"y":6},{"pride":0,"x":3,"y":6},{"pride":0,"x":4,"y":6},{"pride":0,"x":5,"y":6},{"pride":0,"x":6,"y":6},{"pride":0,"x":7,"y":6},{"pride":0,"x":8,"y":6},{"pride":0,"x":9,"y":6}],[{"pride":0,"x":0,"y":7},{"pride":0,"x":1,"y":7},{"pride":0,"x":2,"y":7},{"pride":0,"x":3,"y":7},{"pride":0,"x":4,"y":7},{"pride":0,"x":5,"y":7},{"pride":0,"x":6,"y":7},{"pride":0,"x":7,"y":7},{"pride":0,"x":8,"y":7},{"pride":0,"x":9,"y":7}],[{"pride":0,"x":0,"y":8},{"pride":0,"x":1,"y":8},{"pride":0,"x":2,"y":8},{"pride":0,"x":3,"y":8},{"pride":0,"x":4,"y":8},{"pride":0,"x":5,"y":8},{"pride":0,"x":6,"y":8},{"pride":0,"x":7,"y":8},{"pride":0,"x":8,"y":8},{"pride":0,"x":9,"y":8}],[{"pride":0,"x":0,"y":9},{"pride":0,"x":1,"y":9},{"pride":0,"x":2,"y":9},{"pride":0,"x":3,"y":9},{"pride":0,"x":4,"y":9},{"pride":0,"x":5,"y":9},{"pride":0,"x":6,"y":9},{"pride":0,"x":7,"y":9},{"pride":0,"x":8,"y":9},{"pride":0,"x":9,"y":9}]];
+    result = [[{"pride":0,"x":0,"y":0},{"pride":0,"x":1,"y":0},{"pride":1,"x":2,"y":0,"meshId":0},{"pride":1,"x":3,"y":0,"meshId":0},{"pride":0,"x":4,"y":0},{"pride":0,"x":5,"y":0},{"pride":0,"x":6,"y":0},{"pride":0,"x":7,"y":0},{"pride":0,"x":8,"y":0},{"pride":0,"x":9,"y":0}],[{"pride":1,"x":0,"y":1,"meshId":1},{"pride":1,"x":1,"y":1,"meshId":1},{"pride":0,"x":2,"y":1},{"pride":1,"x":3,"y":1,"meshId":0},{"pride":0,"x":4,"y":1},{"pride":0,"x":5,"y":1},{"pride":0,"x":6,"y":1},{"pride":0,"x":7,"y":1},{"pride":0,"x":8,"y":1},{"pride":0,"x":9,"y":1}],[{"pride":1,"x":0,"y":2,"meshId":1},{"pride":0,"x":1,"y":2},{"pride":1,"x":2,"y":2,"meshId":0},{"pride":1,"x":3,"y":2,"meshId":0},{"pride":0,"x":4,"y":2},{"pride":0,"x":5,"y":2},{"pride":0,"x":6,"y":2},{"pride":0,"x":7,"y":2},{"pride":0,"x":8,"y":2},{"pride":0,"x":9,"y":2}],[{"pride":1,"x":0,"y":3,"meshId":1},{"pride":0,"x":1,"y":3},{"pride":0,"x":2,"y":3},{"pride":1,"x":3,"y":3,"meshId":0},{"pride":0,"x":4,"y":3},{"pride":0,"x":5,"y":3},{"pride":0,"x":6,"y":3},{"pride":0,"x":7,"y":3},{"pride":0,"x":8,"y":3},{"pride":0,"x":9,"y":3}],[{"pride":1,"x":0,"y":4,"meshId":1},{"pride":1,"x":1,"y":4,"meshId":1},{"pride":1,"x":2,"y":4,"meshId":1},{"pride":1,"x":3,"y":4},{"pride":0,"x":4,"y":4},{"pride":0,"x":5,"y":4},{"pride":0,"x":6,"y":4},{"pride":0,"x":7,"y":4},{"pride":0,"x":8,"y":4},{"pride":0,"x":9,"y":4}],[{"pride":0,"x":0,"y":5},{"pride":0,"x":1,"y":5},{"pride":0,"x":2,"y":5},{"pride":0,"x":3,"y":5},{"pride":0,"x":4,"y":5},{"pride":0,"x":5,"y":5},{"pride":0,"x":6,"y":5},{"pride":0,"x":7,"y":5},{"pride":0,"x":8,"y":5},{"pride":0,"x":9,"y":5}],[{"pride":0,"x":0,"y":6},{"pride":0,"x":1,"y":6},{"pride":0,"x":2,"y":6},{"pride":0,"x":3,"y":6},{"pride":0,"x":4,"y":6},{"pride":0,"x":5,"y":6},{"pride":0,"x":6,"y":6},{"pride":0,"x":7,"y":6},{"pride":0,"x":8,"y":6},{"pride":0,"x":9,"y":6}],[{"pride":0,"x":0,"y":7},{"pride":0,"x":1,"y":7},{"pride":0,"x":2,"y":7},{"pride":0,"x":3,"y":7},{"pride":0,"x":4,"y":7},{"pride":0,"x":5,"y":7},{"pride":0,"x":6,"y":7},{"pride":0,"x":7,"y":7},{"pride":0,"x":8,"y":7},{"pride":0,"x":9,"y":7}],[{"pride":0,"x":0,"y":8},{"pride":0,"x":1,"y":8},{"pride":0,"x":2,"y":8},{"pride":0,"x":3,"y":8},{"pride":0,"x":4,"y":8},{"pride":0,"x":5,"y":8},{"pride":0,"x":6,"y":8},{"pride":0,"x":7,"y":8},{"pride":0,"x":8,"y":8},{"pride":0,"x":9,"y":8}],[{"pride":0,"x":0,"y":9},{"pride":0,"x":1,"y":9},{"pride":0,"x":2,"y":9},{"pride":0,"x":3,"y":9},{"pride":0,"x":4,"y":9},{"pride":0,"x":5,"y":9},{"pride":0,"x":6,"y":9},{"pride":0,"x":7,"y":9},{"pride":0,"x":8,"y":9},{"pride":0,"x":9,"y":9}]];
   }
   return result;
 };
@@ -85,6 +92,8 @@ const matrix = generateRandomMatrix(matrixSize);
 
 const uniqHue = {};
 const drawAll = () => {
+  // console.log(JSON.stringify(matrix));
+
   let lastUniqId = 0;
   const getUniqId = () => {
     uniqHue[lastUniqId] =
@@ -218,7 +227,7 @@ const drawAll = () => {
         if (notProcessedSeg) {
           notProcessedSeg.processed = true;
           const cropResult = [notProcessedSeg];
-          proc(notProcessedSeg[1][0], notProcessedSeg[1][1], cropResult);
+          proc(notProcessedSeg[1][0], notProcessedSeg[1][1], cropResult, startY, startX);
           lines[key].crops.push(cropResult);
         } else {
           checkCrops = false;
@@ -249,6 +258,8 @@ const drawAll = () => {
           path += `L${from[1] * pointSize} ${from[0] * pointSize} `;
         }
       });
+
+      console.log(line.crops);
 
       line.crops.forEach((cropLine) => {
         cropLine.reverse();
