@@ -1,0 +1,9 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "canvas-sketch-util": "^1.10.0"
+  }
+}
