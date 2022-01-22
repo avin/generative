@@ -1,14 +1,23 @@
 import random from 'canvas-sketch-util/random';
+import set from 'lodash/set';
+import get from 'lodash/get';
 
 const randomInstance = random.createRandom();
 console.info('seed=', randomInstance.getSeed());
+
+const neighborOffsets = [
+  [-1, 0],
+  [0, -1],
+  [1, 0],
+  [0, 1],
+];
 
 const generateRandomMatrix = (size) => {
   const result = [];
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
       result[x] = result[x] || [];
-      result[x][y] = randomInstance.value() > 0.75 ? 1 : 0;
+      result[x][y] = randomInstance.value() > 0.5 ? 1 : 0;
     }
   }
   return result;
@@ -28,6 +37,32 @@ const drawGrid = ({ ctx, canvasSize, pointSize }) => {
     ctx.lineTo(canvasSize, i - halfLineWidth);
     ctx.stroke();
   }
+};
+
+const findNeighbors = (matrix, cell, pride, expectCells = []) => {
+  expectCells.push(cell);
+
+  for (const offset of neighborOffsets) {
+    const neighborCoord = { x: cell.x + offset[0], y: cell.y + offset[1] };
+
+    if (!expectCells.find((i) => i.x === neighborCoord.x && i.y === neighborCoord.y)) {
+      const neighborCell = get(matrix, [neighborCoord.y, neighborCoord.x]);
+
+      if (neighborCell && neighborCell.pride === pride) {
+        const pride = neighborCell.pride;
+        findNeighbors(matrix, neighborCell, pride, expectCells);
+      }
+    }
+  }
+};
+
+const uniqStyles = [];
+let lastUniqId = 0;
+const getUniqId = () => {
+  uniqStyles[lastUniqId] = `hsl(${Math.floor(randomInstance.value() * 360)},${
+    Math.floor(randomInstance.value() * 50) + 50
+  }%,50%)`;
+  return lastUniqId++;
 };
 
 let matrix;
@@ -63,20 +98,36 @@ const matrixSize = 10;
 
   drawGrid({ ctx, canvasSize, pointSize });
 
-  const objMatrix = matrix.map((yRow) => {
-    return yRow.map((i) => {
+  const objMatrix = matrix.map((yRow, y) => {
+    return yRow.map((i, x) => {
       return {
-        filled: !!i,
+        pride: i ? 1 : 0, // pride = 1 - закрашенная клетка
+        x,
+        y,
       };
     });
   });
 
   for (let y = 0; y < matrixSize; y++) {
     for (let x = 0; x < matrixSize; x++) {
-      const value = objMatrix[y][x].filled;
-      if (value) {
-        ctx.rect(pointSize * x, pointSize * y, pointSize, pointSize);
-        ctx.fill();
+      const currCell = objMatrix[y][x];
+      if (currCell.meshId === undefined && currCell.pride === 1) {
+        const cells = [];
+        findNeighbors(objMatrix, currCell, 1, cells);
+        const meshId = getUniqId();
+        cells.forEach((cell) => {
+          cell.meshId = meshId;
+        });
+      }
+    }
+  }
+
+  for (let y = 0; y < matrixSize; y++) {
+    for (let x = 0; x < matrixSize; x++) {
+      const obj = objMatrix[y][x];
+      if (obj.pride === 1) {
+        ctx.fillStyle = uniqStyles[obj.meshId];
+        ctx.fillRect(pointSize * x, pointSize * y, pointSize, pointSize);
       }
     }
   }
