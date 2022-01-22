@@ -1,5 +1,4 @@
 import random from 'canvas-sketch-util/random';
-import set from 'lodash/set';
 import get from 'lodash/get';
 
 const randomInstance = random.createRandom();
@@ -79,7 +78,7 @@ const findNeighbors = (matrix, cell, pride, expectCells = []) => {
   }
 };
 
-const matrixSize = 5;
+const matrixSize = 10;
 let canvasSize;
 let pointSize;
 const matrix = generateRandomMatrix(matrixSize);
@@ -212,25 +211,28 @@ const updMatrix = (y, x) => {
     }
   }
 };
-document.querySelector('#canvas1').addEventListener('mousedown', (e) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const y = Math.floor((e.clientY - rect.top) / pointSize);
-  const x = Math.floor((e.clientX - rect.left) / pointSize);
-  if (matrix[y][x].pride) {
-    drawMode = 0;
-  } else {
-    drawMode = 1;
-  }
-  updMatrix(y, x);
-});
-document.querySelector('#canvas1').addEventListener('mouseup', (e) => {
-  drawMode = -1;
-});
-document.querySelector('#canvas1').addEventListener('mousemove', (e) => {
-  const rect = e.currentTarget.getBoundingClientRect();
-  const y = Math.floor((e.clientY - rect.top) / pointSize);
-  const x = Math.floor((e.clientX - rect.left) / pointSize);
-  if (matrix[y] && matrix[y][x]) {
+
+['#canvas1', '#canvas2', '#canvas3'].forEach((selector) => {
+  document.querySelector(selector).addEventListener('mousedown', (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const y = Math.floor((e.clientY - rect.top) / pointSize);
+    const x = Math.floor((e.clientX - rect.left) / pointSize);
+    if (matrix[y][x].pride) {
+      drawMode = 0;
+    } else {
+      drawMode = 1;
+    }
     updMatrix(y, x);
-  }
+  });
+  document.querySelector(selector).addEventListener('mouseup', (e) => {
+    drawMode = -1;
+  });
+  document.querySelector(selector).addEventListener('mousemove', (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const y = Math.floor((e.clientY - rect.top) / pointSize);
+    const x = Math.floor((e.clientX - rect.left) / pointSize);
+    if (matrix[y] && matrix[y][x]) {
+      updMatrix(y, x);
+    }
+  });
 });
