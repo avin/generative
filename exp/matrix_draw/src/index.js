@@ -32,8 +32,8 @@ const generateRandomMatrix = (size) => {
     for (let x = 0; x < size; x++) {
       result[y] = result[y] || [];
       result[y][x] = {
-        // pride: Math.random() > 0.5 ? 1 : 0, // pride = 1 - закрашенная клетка
-        pride: 0,
+        pride: Math.random() > 0.5 ? 1 : 0, // pride = 1 - закрашенная клетка
+        // pride: 0,
         x,
         y,
       };
@@ -294,23 +294,23 @@ const drawAll = () => {
     };
 
     const cr = 5;
-    const getSubPath = (seg, prevSeg, roundInnerCorners) => {
+    const getSubPath = (seg, prevSeg, roundExternalCorners, roundInnerCorners) => {
       const { p1: p } = seg;
 
       const segDir = getDir(seg);
       const prevSegDir = getDir(prevSeg);
 
       let path = '';
-      if (prevSegDir === 'we' && segDir === 'ns') {
+      if (roundExternalCorners && prevSegDir === 'we' && segDir === 'ns') {
         path += `L${p.x * pointSize - cr} ${p.y * pointSize} `;
         path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize + cr}`;
-      } else if (prevSegDir === 'ns' && segDir === 'ew') {
+      } else if (roundExternalCorners && prevSegDir === 'ns' && segDir === 'ew') {
         path += `L${p.x * pointSize} ${p.y * pointSize - cr} `;
         path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize - cr} ${p.y * pointSize}`;
-      } else if (prevSegDir === 'ew' && segDir === 'sn') {
+      } else if (roundExternalCorners && prevSegDir === 'ew' && segDir === 'sn') {
         path += `L${p.x * pointSize + cr} ${p.y * pointSize} `;
         path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize - cr}`;
-      } else if (prevSegDir === 'sn' && segDir === 'we') {
+      } else if (roundExternalCorners && prevSegDir === 'sn' && segDir === 'we') {
         path += `L${p.x * pointSize} ${p.y * pointSize + cr} `;
         path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize + cr} ${p.y * pointSize}`;
       } else if (roundInnerCorners && prevSegDir === 'sn' && segDir === 'ew') {
@@ -332,9 +332,10 @@ const drawAll = () => {
     };
 
     [
-      { svgSelector: '#svg1', roundInnerCorners: true },
-      { svgSelector: '#svg2', roundInnerCorners: false },
-    ].forEach(({ svgSelector, roundInnerCorners }) => {
+      { svgSelector: '#svg1', roundExternalCorners: false, roundInnerCorners: false },
+      { svgSelector: '#svg2', roundExternalCorners: true, roundInnerCorners: false },
+      { svgSelector: '#svg3', roundExternalCorners: true, roundInnerCorners: true },
+    ].forEach(({ svgSelector, roundExternalCorners, roundInnerCorners }) => {
       // Generate SVG
       const paths = [];
 
@@ -352,17 +353,21 @@ const drawAll = () => {
             const prevSegDir = getDir(prevSeg);
 
             if (segIdx === 0) {
-              if (lineIdx === 0) {
-                path += `M${from.x * pointSize + cr} ${from.y * pointSize} `;
+              if (roundExternalCorners) {
+                if (lineIdx === 0) {
+                  path += `M${from.x * pointSize + cr} ${from.y * pointSize} `;
+                } else {
+                  path += `M${from.x * pointSize} ${from.y * pointSize + cr} `;
+                }
               } else {
-                path += `M${from.x * pointSize} ${from.y * pointSize + cr} `;
+                path += `M${from.x * pointSize} ${from.y * pointSize} `;
               }
             } else if (segIdx === line.length - 1) {
-              path += getSubPath(seg, prevSeg, roundInnerCorners);
-              path += getSubPath(nextSeg, seg, roundInnerCorners);
+              path += getSubPath(seg, prevSeg, roundExternalCorners, roundInnerCorners);
+              path += getSubPath(nextSeg, seg, roundExternalCorners, roundInnerCorners);
               path += 'Z ';
             } else if (prevSegDir !== segDir) {
-              path += getSubPath(seg, prevSeg, roundInnerCorners);
+              path += getSubPath(seg, prevSeg, roundExternalCorners, roundInnerCorners);
             }
           }
         }
@@ -401,7 +406,7 @@ const updMatrix = (y, x) => {
   }
 };
 
-['#canvas1', '#canvas2', '#canvas3', '#svg1', '#svg2'].forEach((selector) => {
+['#canvas1', '#canvas2', '#canvas3', '#svg1', '#svg2', '#svg3'].forEach((selector) => {
   document.querySelector(selector).addEventListener('mousedown', (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const y = Math.floor((e.clientY - rect.top) / pointSize);
