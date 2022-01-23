@@ -377,7 +377,17 @@ const drawAll = () => {
 drawAll();
 
 let drawMode = -1;
+let prevX;
+let prevY;
+let prevDrawMode;
 const updMatrix = (y, x) => {
+  if (prevX === x && prevY === y && drawMode === prevDrawMode) {
+    return;
+  }
+  prevX = x;
+  prevY = y;
+  prevDrawMode = drawMode;
+
   if (drawMode === 0) {
     if (matrix[y][x].pride) {
       matrix[y][x].pride = 0;
