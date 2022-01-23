@@ -1,8 +1,4 @@
-/* eslint-disable */
-import random from 'canvas-sketch-util/random';
 import get from 'lodash/get';
-
-const randomInstance = random.createRandom();
 
 const neighborOffsets = [
   [-1, 0],
@@ -36,8 +32,8 @@ const generateRandomMatrix = (size) => {
     for (let x = 0; x < size; x++) {
       result[y] = result[y] || [];
       result[y][x] = {
-        pride: randomInstance.value() > 0.5 ? 1 : 0, // pride = 1 - закрашенная клетка
-        // pride: 0,
+        // pride: Math.random() > 0.5 ? 1 : 0, // pride = 1 - закрашенная клетка
+        pride: 0,
         x,
         y,
       };
@@ -97,8 +93,7 @@ const drawAll = () => {
 
   let lastUniqId = 0;
   const getUniqId = () => {
-    uniqHue[lastUniqId] =
-      uniqHue[lastUniqId] === undefined ? Math.floor(randomInstance.value() * 360) : uniqHue[lastUniqId];
+    uniqHue[lastUniqId] = uniqHue[lastUniqId] === undefined ? Math.floor(Math.random() * 360) : uniqHue[lastUniqId];
 
     return lastUniqId++;
   };
@@ -196,25 +191,23 @@ const drawAll = () => {
       const line = lines[key];
 
       const proc = (py, px, result, oCell) => {
-        let nextSegs = line.filter((seg) => {
-          // console.log(seg);
-          if (!seg.processed) {
-            if ((seg.p1.y === py && seg.p1.x === px) || (seg.p2.y === py && seg.p2.x === px)) {
-              return true;
+        const nextSegs = line
+          .filter((seg) => {
+            // console.log(seg);
+            if (!seg.processed) {
+              if ((seg.p1.y === py && seg.p1.x === px) || (seg.p2.y === py && seg.p2.x === px)) {
+                return true;
+              }
             }
-          }
-          return false;
-        });
-        nextSegs = nextSegs.sort((a, b) => {
-          if (a.cell === oCell) {
-            return -1;
-          }
-          return 1;
-        });
-        // if (nextSegs.length > 1) {
-        //   console.log('nextSegs', nextSegs);
-        //   debugger;
-        // }
+            return false;
+          })
+          .sort((a, b) => {
+            // В приоритете соседняя линия того же квадратика
+            if (a.cell === oCell) {
+              return -1;
+            }
+            return 1;
+          });
 
         const nextSeg = nextSegs[0];
 
@@ -244,6 +237,13 @@ const drawAll = () => {
           notProcessedSeg.processed = true;
           const cropResult = [notProcessedSeg];
           proc(notProcessedSeg.p2.y, notProcessedSeg.p2.x, cropResult, notProcessedSeg.cell);
+          cropResult.reverse();
+          cropResult.map((seg) => {
+            const op2 = seg.p2;
+            seg.p2 = seg.p1;
+            seg.p1 = op2;
+            return seg;
+          });
           lines[key].crops.push(cropResult);
         } else {
           checkCrops = false;
@@ -251,61 +251,126 @@ const drawAll = () => {
       }
     });
 
-    const paths = [];
-    console.log(lines);
+    // Draw canvas counters
     Object.keys(lines).forEach((key) => {
-      const line = lines[key];
+      // const line = lines[key];
       const style = `hsl(${uniqHue[String(key)]}, 50%, 50%)`;
 
-      let path = '';
-      line.forEach(({ p1: from, p2: to }, idx) => {
-        ctx.beginPath();
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = style;
-        ctx.lineWidth = (idx / line.length) * 10 + 1;
-        ctx.moveTo(from.x * pointSize, from.y * pointSize);
-        ctx.lineTo(to.x * pointSize, to.y * pointSize);
-        ctx.stroke();
+      for (const [lineIdx, line] of [lines[key], ...lines[key].crops].entries()) {
+        for (const [segIdx, seg] of line.entries()) {
+          const { p1: from, p2: to } = seg;
 
-        if (idx === 0) {
-          path += `M${from.x * pointSize} ${from.y * pointSize} `;
-        } else if (idx === line.length - 1) {
-          path += `L${from.x * pointSize} ${from.y * pointSize} `;
-          path += `L${to.x * pointSize} ${to.y * pointSize} `;
-          path += 'Z ';
-        } else {
-          path += `L${from.x * pointSize} ${from.y * pointSize} `;
-        }
-      });
-
-      // console.log(line.crops);
-
-      line.crops.forEach((cropLine) => {
-        cropLine.reverse();
-        cropLine.forEach(({ p1: from, p2: to }, idx) => {
           ctx.beginPath();
-          ctx.strokeStyle = '#000';
-          ctx.lineWidth = (idx / line.length) * 10 + 1;
+
+          if (lineIdx === 0) {
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = style;
+          } else {
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = (segIdx / line.length) * 10 + 1;
+          }
+
+          ctx.lineWidth = (segIdx / line.length) * 10 + 1;
           ctx.moveTo(from.x * pointSize, from.y * pointSize);
           ctx.lineTo(to.x * pointSize, to.y * pointSize);
           ctx.stroke();
-
-          if (idx === 0) {
-            path += `M${from.x * pointSize} ${from.y * pointSize} `;
-          } else if (idx === cropLine.length - 1) {
-            path += `L${from.x * pointSize} ${from.y * pointSize} `;
-            // path += `L${to.x * pointSize} ${to.y * pointSize} `;
-            path += 'Z ';
-          } else {
-            path += `L${from.x * pointSize} ${from.y * pointSize} `;
-          }
-        });
-      });
-
-      paths.push(`<path d="${path}" fill='${style}'/>`);
+        }
+      }
     });
 
-    document.querySelector('#svg1').innerHTML = paths.join('\n');
+    const getDir = (seg) => {
+      if (seg.p1.x === seg.p2.x) {
+        if (seg.p1.y > seg.p2.y) {
+          return 'sn';
+        }
+        return 'ns';
+      }
+      if (seg.p1.y === seg.p2.y) {
+        if (seg.p1.x > seg.p2.x) {
+          return 'ew';
+        }
+        return 'we';
+      }
+    };
+
+    const cr = 5;
+    const getSubPath = (seg, prevSeg, roundInnerCorners) => {
+      const { p1: p } = seg;
+
+      const segDir = getDir(seg);
+      const prevSegDir = getDir(prevSeg);
+
+      let path = '';
+      if (prevSegDir === 'we' && segDir === 'ns') {
+        path += `L${p.x * pointSize - cr} ${p.y * pointSize} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize + cr}`;
+      } else if (prevSegDir === 'ns' && segDir === 'ew') {
+        path += `L${p.x * pointSize} ${p.y * pointSize - cr} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize - cr} ${p.y * pointSize}`;
+      } else if (prevSegDir === 'ew' && segDir === 'sn') {
+        path += `L${p.x * pointSize + cr} ${p.y * pointSize} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize - cr}`;
+      } else if (prevSegDir === 'sn' && segDir === 'we') {
+        path += `L${p.x * pointSize} ${p.y * pointSize + cr} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize + cr} ${p.y * pointSize}`;
+      } else if (roundInnerCorners && prevSegDir === 'sn' && segDir === 'ew') {
+        path += `L${p.x * pointSize} ${p.y * pointSize + cr} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize - cr} ${p.y * pointSize}`;
+      } else if (roundInnerCorners && prevSegDir === 'ew' && segDir === 'ns') {
+        path += `L${p.x * pointSize + cr} ${p.y * pointSize} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize + cr}`;
+      } else if (roundInnerCorners && prevSegDir === 'ns' && segDir === 'we') {
+        path += `L${p.x * pointSize} ${p.y * pointSize - cr} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize + cr} ${p.y * pointSize}`;
+      } else if (roundInnerCorners && prevSegDir === 'we' && segDir === 'sn') {
+        path += `L${p.x * pointSize - cr} ${p.y * pointSize} `;
+        path += `Q${p.x * pointSize} ${p.y * pointSize} ${p.x * pointSize} ${p.y * pointSize - cr}`;
+      } else {
+        path += `L${p.x * pointSize} ${p.y * pointSize} `;
+      }
+      return path;
+    };
+
+    [
+      { svgSelector: '#svg1', roundInnerCorners: true },
+      { svgSelector: '#svg2', roundInnerCorners: false },
+    ].forEach(({ svgSelector, roundInnerCorners }) => {
+      // Generate SVG
+      const paths = [];
+
+      Object.keys(lines).forEach((key) => {
+        const style = `hsl(${uniqHue[String(key)]}, 50%, 50%)`;
+
+        let path = '';
+        for (const [lineIdx, line] of [lines[key], ...lines[key].crops].entries()) {
+          for (const [segIdx, seg] of line.entries()) {
+            const { p1: from } = seg;
+            const prevSeg = line[segIdx - 1] || line[line.length - 1];
+            const nextSeg = line[segIdx + 1] || line[0];
+
+            const segDir = getDir(seg);
+            const prevSegDir = getDir(prevSeg);
+
+            if (segIdx === 0) {
+              if (lineIdx === 0) {
+                path += `M${from.x * pointSize + cr} ${from.y * pointSize} `;
+              } else {
+                path += `M${from.x * pointSize} ${from.y * pointSize + cr} `;
+              }
+            } else if (segIdx === line.length - 1) {
+              path += getSubPath(seg, prevSeg, roundInnerCorners);
+              path += getSubPath(nextSeg, seg, roundInnerCorners);
+              path += 'Z ';
+            } else if (prevSegDir !== segDir) {
+              path += getSubPath(seg, prevSeg, roundInnerCorners);
+            }
+          }
+        }
+        paths.push(`<path d="${path}" fill='${style}'/>`);
+      });
+
+      document.querySelector(svgSelector).innerHTML = paths.join('\n');
+    });
   }
 };
 
@@ -326,7 +391,7 @@ const updMatrix = (y, x) => {
   }
 };
 
-['#canvas1', '#canvas2', '#canvas3'].forEach((selector) => {
+['#canvas1', '#canvas2', '#canvas3', '#svg1', '#svg2'].forEach((selector) => {
   document.querySelector(selector).addEventListener('mousedown', (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const y = Math.floor((e.clientY - rect.top) / pointSize);
