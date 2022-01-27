@@ -5,6 +5,6 @@
   "license": "MIT",
   "dependencies": {
     "canvas-sketch": "^0.7.4",
-    "three": "^0.136.0"
+    "three": "^0.137.0"
   }
 }
