@@ -17,6 +17,7 @@ const isBuilding = argv.$0.includes('multi-static-build');
 const mapping = [['./root', '/']];
 
 const demos = [];
+const expDemos = [];
 const demosToBuild = [];
 
 klawSync('./demos', { depthLimit: 0 }).forEach(({ path }) => {
@@ -45,7 +46,7 @@ if (!isBuilding) {
     const folder = _.last(path.split(nodePath.sep));
 
     const addExpDemoToMapping = () => {
-      demos.push(folder);
+      expDemos.push(folder);
       mapping.push([`./exp/${folder}/static`, `/exp/${folder}`]);
     };
 
@@ -65,6 +66,7 @@ module.exports = defineConfig({
   customOptions: {
     variables: {
       demos: _.reverse(demos),
+      expDemos: _.reverse(expDemos),
     },
   },
 
@@ -94,5 +96,14 @@ module.exports = defineConfig({
       });
 
     shell.exec(`git add -A ${this.buildPath}`);
+  },
+
+  onBeforeSetupMiddleware({ app }) {
+    app.use('/', (req, res, next) => {
+      if (req.path === '/') {
+        return res.redirect(307, '/index.html');
+      }
+      return next();
+    });
   },
 });
