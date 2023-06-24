@@ -169,11 +169,6 @@ get-intrinsic@^1.0.2:
     has "^1.0.3"
     has-symbols "^1.0.1"
 
-glsl-noise@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/glsl-noise/-/glsl-noise-0.0.0.tgz#367745f3a33382c0eeec4cb54b7e99cfc1d7670b"
-  integrity sha1-NndF86MzgsDu7Ey1S36Zz8HXZws=
-
 has-symbols@^1.0.1, has-symbols@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/has-symbols/-/has-symbols-1.0.2.tgz#165d3070c00309752a1236a479331e3ac56f1423"
@@ -350,11 +345,6 @@ svg-path-contours@^2.0.0:
     adaptive-bezier-curve "^1.0.3"
     normalize-svg-path "^0.1.0"
     vec2-copy "^1.0.0"
-
-three@^0.136.0:
-  version "0.136.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.136.0.tgz#b1504db021b46398ef468aa7849f3dcabb814f50"
-  integrity sha512-+fEMX7nYLz2ZesVP/dyifli5Jf8gR3XPAnFJveQ80aMhibFduzrADnjMbARXh8+W9qLK7rshJCjAIL/6cDxC+A==
 
 vec2-copy@^1.0.0:
   version "1.0.0"

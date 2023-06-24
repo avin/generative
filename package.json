@@ -2,7 +2,6 @@
   "name": "generative",
   "version": "0.2.0",
   "private": true,
-  "description": "Sexy SVG QR-code generator",
   "author": "Avin Lambrero <avin.github@gmail.com> (https://github.com/avin/)",
   "license": "Creative Commons",
   "scripts": {
@@ -33,6 +32,7 @@
     "lodash": "4.17.21",
     "multi-static": "0.1.12",
     "mustache": "^4.2.0",
+    "npm-install-subfolders": "^0.1.3",
     "raw-loader": "^4.0.2",
     "read-first-line": "1.0.4",
     "sass": "^1.45.2",
@@ -50,5 +50,9 @@
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.5.1"
+  },
+  "volta": {
+    "node": "16.13.2",
+    "yarn": "1.22.17"
   }
 }

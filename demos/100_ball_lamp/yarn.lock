@@ -169,11 +169,6 @@ get-intrinsic@^1.0.2:
     has "^1.0.3"
     has-symbols "^1.0.1"
 
-glsl-noise@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/glsl-noise/-/glsl-noise-0.0.0.tgz#367745f3a33382c0eeec4cb54b7e99cfc1d7670b"
-  integrity sha1-NndF86MzgsDu7Ey1S36Zz8HXZws=
-
 has-symbols@^1.0.1, has-symbols@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/has-symbols/-/has-symbols-1.0.2.tgz#165d3070c00309752a1236a479331e3ac56f1423"
@@ -243,11 +238,6 @@ is-window@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-window/-/is-window-1.0.2.tgz#2c896ca53db97de45d3c33133a65d8c9f563480d"
   integrity sha1-LIlspT25feRdPDMTOmXYyfVjSA0=
-
-lil-gui@^0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/lil-gui/-/lil-gui-0.16.0.tgz#ac3f38e4b73331688f10f4430b1324cf888d3c41"
-  integrity sha512-wDySFozDfOed8UymoMprgQ+xuEZhbOP9h6cagszu/gIRpGjfoo8lHPYXXJN5OluHoM1Z4Y2ac0FJhiMQC5Ac0Q==
 
 lineclip@^1.1.5:
   version "1.1.5"
