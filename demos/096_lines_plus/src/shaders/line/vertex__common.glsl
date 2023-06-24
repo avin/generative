@@ -6,7 +6,7 @@ varying vec3 vPosition;
 #include <common>
 #include <packing>
 
-#pragma glslify : noise = require('glsl-noise/simplex/3d')
+#pragma glslify: noise = require('glsl-noise/simplex/3d')
 
 float readDepth(sampler2D depthSampler, vec2 coord) {
   float cameraNear = 5.;
