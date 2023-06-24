@@ -1,6 +1,4 @@
 const TerserPlugin = require('terser-webpack-plugin');
-const webpack = require('webpack');
-const path = require('path');
 
 function generateWebpackConfig({
   src = '',
@@ -32,17 +30,10 @@ function generateWebpackConfig({
       path: dstPath,
       publicPath,
     },
-    plugins: [
-      new webpack.DefinePlugin({
-        __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })',
-      }),
-    ],
+    plugins: [],
     performance: false,
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
-      alias: {
-        '@': path.resolve(process.cwd(), `static`),
-      },
     },
     module: {
       rules: [
@@ -115,6 +106,8 @@ function generateWebpackConfig({
       child_process: 'empty',
     },
   };
+
+  // console.log(JSON.stringify(config, null, 2));
 
   return config;
 }

@@ -171,11 +171,6 @@ svg-path-contours@^2.0.0:
     normalize-svg-path "^0.1.0"
     vec2-copy "^1.0.0"
 
-svg-path-round-corners@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/svg-path-round-corners/-/svg-path-round-corners-0.1.5.tgz#40b33efd184ca202b720304d0a7041d5909d10d5"
-  integrity sha512-IOEsGoDyaXJg7KG2W9xfPAOrBEzvqXLstyz3eClAEPxZAfaPsZ4Eo85DKYjL2hr5fmVKWcgiM3vBCEaROBCyFA==
-
 vec2-copy@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vec2-copy/-/vec2-copy-1.0.0.tgz#c6eec1d8dad54625194e5f71f8433b62d2f20a7a"
