@@ -36,7 +36,7 @@
     "raw-loader": "^4.0.2",
     "read-first-line": "1.0.4",
     "sass": "^1.45.2",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "static-hash-version": "1.0.0",
     "terser-webpack-plugin": "2.3.4",
     "webpack": "4.41.5",
